@@ -9,9 +9,8 @@ fi
 XCLIENTS_D=/etc/X11/xinit/Xclients.d
 if [ -d "$XCLIENTS_D" -a "$#" -eq 1 -a -x "$XCLIENTS_D/Xclients.$1.sh" ]; then
 	exec -l $SHELL -c "$CK_XINIT_SESSION $XCLIENTS_D/Xclients.$1.sh"
-else
+fi
 
-LXSESSION=
 if [ $# -eq 1 ]; then
 	LXSESSION=$1
 else
@@ -21,6 +20,6 @@ fi
 if [ -z "$CK_XINIT_SESSION" ]; then
 	exec /bin/sh -c "exec -l $SHELL -c \"$LXSESSION\""
 else
-	exec $CK_XINIT_SESSION "$LXSESSION"
+	exec -l $SHELL -c "$CK_XINIT_SESSION \"$LXSESSION\""
 fi
 
