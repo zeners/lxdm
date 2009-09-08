@@ -1,0 +1,26 @@
+#!/bin/bash
+
+. /etc/X11/xinit/xinitrc-common
+
+if [ -x /usr/bin/ck-xinit-session -a -z "$XDG_SESSION_COOKIE" ]; then
+    CK_XINIT_SESSION="/usr/bin/ck-xinit-session"
+fi
+
+XCLIENTS_D=/etc/X11/xinit/Xclients.d
+if [ -d "$XCLIENTS_D" -a "$#" -eq 1 -a -x "$XCLIENTS_D/Xclients.$1.sh" ]; then
+	exec -l $SHELL -c "$CK_XINIT_SESSION $XCLIENTS_D/Xclients.$1.sh"
+else
+
+LXSESSION=
+if [ $# -eq 1 ]; then
+	LXSESSION=$1
+else
+	LXSESSION=/usr/bin/startlxde
+fi
+
+if [ -z "$CK_XINIT_SESSION" ]; then
+	exec /bin/sh -c "exec -l $SHELL -c \"$LXSESSION\""
+else
+	exec $CK_XINIT_SESSION "$LXSESSION"
+fi
+

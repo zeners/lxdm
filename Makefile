@@ -17,7 +17,7 @@ clean:
 install: lxdm
 	install -m 700 lxdm $(DESTDIR)$(PREFIX)/bin/lxdm
 	test -e $(DESTDIR)/etc/lxdm || mkdir $(DESTDIR)/etc/lxdm
-	install -m 700 Xsession $(DESTDIR)/etc/lxdm/Xsession
+	install -m 755 Xsession $(DESTDIR)/etc/lxdm/Xsession
 	test -e $(DESTDIR)/etc/lxdm/lxdm.conf || install -m 300 lxdm.conf $(DESTDIR)/etc/lxdm/lxdm.conf
 
 uninstall:

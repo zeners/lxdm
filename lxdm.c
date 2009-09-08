@@ -20,7 +20,6 @@
 #include "lxdm.h"
 
 GKeyFile *config;
-static char cookie[33];
 static pid_t server;
 static pam_handle_t *pamh;
 static Window *my_xid;
@@ -153,7 +152,7 @@ int auth_user(char *user,char *pass,struct passwd **ppw)
 	return AUTH_SUCCESS;
 }
 
-void switch_user(struct passwd *pw,char *run,char **env,char *cookie)
+void switch_user(struct passwd *pw,char *run,char **env)
 {
 	if(!pw || initgroups(pw->pw_name, pw->pw_gid) ||
 		setgid(pw->pw_gid) || setuid(pw->pw_uid))
@@ -161,7 +160,7 @@ void switch_user(struct passwd *pw,char *run,char **env,char *cookie)
 		exit(EXIT_FAILURE);
 	}
 	chdir(pw->pw_dir);
-	execle(pw->pw_shell,pw->pw_shell,"-c",run,NULL,env);
+	execle("/etc/lxdm/Xsession","/etc/lxdm/Xsession",run,NULL,env);
 	exit(EXIT_FAILURE);
 }
 
@@ -380,7 +379,6 @@ void do_login(struct passwd *pw,char *session)
 	if(pid==0)
 	{
 		char *env[10];
-		char *run;
 		char *path;
 		int i=0;
 		
@@ -401,15 +399,8 @@ void do_login(struct passwd *pw,char *session)
 		if(!session)
 			session=g_key_file_get_string(config,"base","session",0);
 		if(!session) session=g_strdup("startlxde");
-		path=g_strdup_printf("%s/.xinitrc",pw->pw_dir);
-		if(g_file_test(path,G_FILE_TEST_EXISTS))
-			run=g_strdup_printf("exec bash -l ~/.xinitrc %s",session);
-		else if(g_file_test("/etc/X11/xinit/Xsession",G_FILE_TEST_EXISTS))
-			run=g_strdup_printf("/etc/X11/xinit/Xsession %s",session);
-		else
-			run=g_strdup_printf("/etc/X11/xinit/xinitrc %s",session);
-		g_free(path);
-		switch_user(pw,run,env,cookie);
+
+		switch_user(pw,session,env);
 		exit(EXIT_FAILURE);
 	}
 	wpid=-1;child=pid;
