@@ -253,16 +253,17 @@ void stopx(void)
 		if(errno==EPERM)
 			_exit(-1);
 		if(errno==ESRCH)
-			return;
+			;
 	}
+	if(0==kill(server,0))
+		kill(server,SIGTERM);
 	waitpid(server,0,0);
 	server=-1;
 }
 
 void exit_cb(void)
 {
-//	printf("exit cb %d\n",child);
-	if(child)
+	if(child>0)
 	{
 		if(0==killpg(child,SIGHUP))
 		{
@@ -270,15 +271,12 @@ void exit_cb(void)
 				killpg(child,SIGKILL);
 			waitpid(child,0,0);
 		}
-//
-		fprintf(stderr,"kill clients %d\n",child);
 	}
 	if(pamh) pam_end(pamh,PAM_SUCCESS);
 	stopx();
 	put_lock();
 	if(reason==0)
 	{
-//		fprintf(stderr,"restart %s\n",self);
 		execlp(self,self,NULL);
 	}
 }
@@ -353,7 +351,7 @@ void stop_clients(int top)
 
 void do_login(struct passwd *pw,char *session)
 {
-	pid_t pid,wpid;
+	int pid;
 	int status;
 	
 	if (pw->pw_shell[0] == '\0')
@@ -375,8 +373,8 @@ void do_login(struct passwd *pw,char *session)
 	
 	get_my_xid();
 
-	pid = fork();
-	if(pid==0)
+	child = pid = fork();
+	if(child==0)
 	{
 		char *env[10];
 		char *path;
@@ -401,33 +399,49 @@ void do_login(struct passwd *pw,char *session)
 		if(!session) session=g_strdup("startlxde");
 
 		switch_user(pw,session,env);
+		reason=3;
 		exit(EXIT_FAILURE);
 	}
-	wpid=-1;child=pid;
-	while (wpid != pid)
+	while(1)
 	{
-		wpid = wait(&status);
+		int wpid = wait(&status);
 		if(wpid==server)
 		{
 			server=-1;
 			break;
 		}
+		else if(wpid==child)
+		{
+			child=-1;
+			break;
+		}
 	}
-
-	child=0;
+	if(server>0)
+	{
+		stop_clients(0);
+		stop_clients(1);
+		free_my_xid();
+	}
+	
+	killpg(pid,SIGHUP);
+	if(killpg(pid,SIGTERM))
+		killpg(pid,SIGKILL);
+	if(0==kill(pid,0))	/* problem!! why should we kill it here */
+		kill(pid,SIGTERM);
+	if(child>0)
+	{
+		waitpid(child,0,0);
+		child=-1;
+	}
 	if(pamh)
 	{
 		pam_close_session(pamh,0);
 		pam_setcred(pamh, PAM_DELETE_CRED);
 	}
-	stop_clients(0);
-	stop_clients(1);
-	free_my_xid();
-	
-	killpg(pid,SIGHUP);
-	if(killpg(pid,SIGTERM))
-		killpg(pid,SIGKILL);
-
+	if(server==-1)
+	{
+		exit(0);
+	}
 }
 
 void do_reboot(void)

@@ -2,8 +2,8 @@
 
 . /etc/X11/xinit/xinitrc-common
 
-if [ -x /usr/bin/ck-xinit-session -a -z "$XDG_SESSION_COOKIE" ]; then
-    CK_XINIT_SESSION="/usr/bin/ck-xinit-session"
+if [ -x /usr/bin/ck-xinit-session -a -z "$XDG_SESSION_COOKIE" -a -z "$CK_XINIT_SESSION" ]; then
+    CK_XINIT_SESSION="/usr/bin/ck-launch-session"
 fi
 
 XCLIENTS_D=/etc/X11/xinit/Xclients.d
