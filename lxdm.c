@@ -155,7 +155,7 @@ int auth_user(char *user,char *pass,struct passwd **ppw)
 void switch_user(struct passwd *pw,char *run,char **env)
 {
 	if(!pw || initgroups(pw->pw_name, pw->pw_gid) ||
-		setgid(pw->pw_gid) || setuid(pw->pw_uid))
+		setgid(pw->pw_gid) || setuid(pw->pw_uid) || setpgrp())
 	{
 		exit(EXIT_FAILURE);
 	}
@@ -244,20 +244,28 @@ void startx(void)
 	g_strfreev(args);
 }
 
+void stop_pid(int pid)
+{
+	if(pid<=0) return;
+	if(killpg(pid,SIGTERM)<0)
+		killpg(pid,SIGKILL);
+	if(kill(pid,0)==0)
+	{
+		if(kill(pid,SIGTERM))
+			kill(pid,SIGKILL);
+		while(1)
+		{
+			int wpid,status;
+			wpid=wait(&status);
+			if(pid==wpid) break;
+		}
+	}
+	while(waitpid(-1,0,WNOHANG)>0);
+}
+
 void stopx(void)
 {
-	if(server<=0)
-		return;
-	if(killpg(server, SIGTERM)<0)
-	{
-		if(errno==EPERM)
-			_exit(-1);
-		if(errno==ESRCH)
-			;
-	}
-	if(0==kill(server,0))
-		kill(server,SIGTERM);
-	waitpid(server,0,0);
+	stop_pid(server);
 	server=-1;
 }
 
@@ -265,12 +273,9 @@ void exit_cb(void)
 {
 	if(child>0)
 	{
-		if(0==killpg(child,SIGHUP))
-		{
-			if(killpg(child,SIGTERM))
-				killpg(child,SIGKILL);
-			waitpid(child,0,0);
-		}
+		killpg(child,SIGHUP);
+		stop_pid(child);
+		child=-1;
 	}
 	if(pamh) pam_end(pamh,PAM_SUCCESS);
 	stopx();
@@ -399,7 +404,7 @@ void do_login(struct passwd *pw,char *session)
 		if(!session) session=g_strdup("startlxde");
 
 		switch_user(pw,session,env);
-		reason=3;
+		reason=4;
 		exit(EXIT_FAILURE);
 	}
 	while(1)
@@ -407,7 +412,7 @@ void do_login(struct passwd *pw,char *session)
 		int wpid = wait(&status);
 		if(wpid==server)
 		{
-			server=-1;
+			stopx();
 			break;
 		}
 		else if(wpid==child)
@@ -422,17 +427,10 @@ void do_login(struct passwd *pw,char *session)
 		stop_clients(1);
 		free_my_xid();
 	}
-	
+
 	killpg(pid,SIGHUP);
-	if(killpg(pid,SIGTERM))
-		killpg(pid,SIGKILL);
-	if(0==kill(pid,0))	/* problem!! why should we kill it here */
-		kill(pid,SIGTERM);
-	if(child>0)
-	{
-		waitpid(child,0,0);
-		child=-1;
-	}
+	stop_pid(pid);
+	child=-1;
 	if(pamh)
 	{
 		pam_close_session(pamh,0);
@@ -585,3 +583,4 @@ int main(int arc,char *arg[])
 
 	return 0;
 }
+
