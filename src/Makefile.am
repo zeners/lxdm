@@ -4,6 +4,7 @@ bin_PROGRAMS = lxdm
 
 lxdm_CFLAGS = \
 	$(GTK_CFLAGS) \
+	-DCONFIG_DIR=\"$(sysconfdir)/lxdm\" \
 	$(NULL)
 
 lxdm_LDFLAGS = \

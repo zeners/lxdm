@@ -44,5 +44,6 @@ AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
 	po/Makefile.in
+    data/Xsession
 ])
 AC_OUTPUT

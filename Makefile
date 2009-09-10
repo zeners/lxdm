@@ -14,6 +14,7 @@
 
 
 
+
 pkgdatadir = $(datadir)/lxdm
 pkglibdir = $(libdir)/lxdm
 pkgincludedir = $(includedir)/lxdm
@@ -32,8 +33,9 @@ POST_UNINSTALL = :
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	compile depcomp install-sh ltmain.sh missing
+	$(top_srcdir)/configure $(top_srcdir)/data/Xsession.in AUTHORS \
+	COPYING ChangeLog INSTALL NEWS compile depcomp install-sh \
+	ltmain.sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -42,7 +44,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = data/Xsession
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -52,6 +54,15 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	install-pdf-recursive install-ps-recursive install-recursive \
 	installcheck-recursive installdirs-recursive pdf-recursive \
 	ps-recursive uninstall-recursive
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+am__installdirs = "$(DESTDIR)$(lxdm_confdir)"
+lxdm_confDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(lxdm_conf_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 ETAGS = etags
@@ -169,7 +180,18 @@ target_alias =
 top_build_prefix = 
 top_builddir = .
 top_srcdir = .
-SUBDIRS = src po
+NULL = 
+SUBDIRS = \
+	src \
+	po \
+	$(NULL)
+
+lxdm_confdir = $(sysconfdir)/lxdm
+lxdm_conf_DATA = \
+	data/Xsession \
+	data/lxdm.conf \
+	$(NULL)
+
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -224,6 +246,25 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+data/Xsession: $(top_builddir)/config.status $(top_srcdir)/data/Xsession.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+install-lxdm_confDATA: $(lxdm_conf_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(lxdm_confdir)" || $(MKDIR_P) "$(DESTDIR)$(lxdm_confdir)"
+	@list='$(lxdm_conf_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(lxdm_confDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(lxdm_confdir)/$$f'"; \
+	  $(lxdm_confDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(lxdm_confdir)/$$f"; \
+	done
+
+uninstall-lxdm_confDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lxdm_conf_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(lxdm_confdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(lxdm_confdir)/$$f"; \
+	done
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -505,9 +546,12 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-recursive
-all-am: Makefile config.h
+all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
+	for dir in "$(DESTDIR)$(lxdm_confdir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
@@ -551,7 +595,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am:
+install-data-am: install-lxdm_confDATA
 
 install-dvi: install-dvi-recursive
 
@@ -587,7 +631,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-lxdm_confDATA
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) install-am \
 	install-strip
@@ -601,11 +645,12 @@ uninstall-am:
 	info-am install install-am install-data install-data-am \
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-html install-html-am install-info install-info-am \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
+	install-lxdm_confDATA install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs installdirs-am maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
-	pdf-am ps ps-am tags tags-recursive uninstall uninstall-am
+	pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
+	uninstall-lxdm_confDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,4 +1,9 @@
 #define _GNU_SOURCE
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -160,7 +165,7 @@ void switch_user(struct passwd *pw,char *run,char **env)
 		exit(EXIT_FAILURE);
 	}
 	chdir(pw->pw_dir);
-	execle("/etc/lxdm/Xsession","/etc/lxdm/Xsession",run,NULL,env);
+	execle(CONFIG_DIR "/Xsession",CONFIG_DIR "/Xsession",run,NULL,env);
 	exit(EXIT_FAILURE);
 }
 
@@ -556,7 +561,7 @@ int main(int arc,char *arg[])
 	self=arg[0];
 
 	config=g_key_file_new();
-	g_key_file_load_from_file(config,"/etc/lxdm/lxdm.conf",G_KEY_FILE_NONE,NULL);
+	g_key_file_load_from_file(config, CONFIG_DIR "/lxdm.conf",G_KEY_FILE_NONE,NULL);
 
 	get_lock();
 	atexit(exit_cb);
