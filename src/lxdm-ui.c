@@ -47,6 +47,9 @@ static gboolean get_passwd = FALSE;
 static char* user = NULL;
 static char* pass = NULL;
 
+static GdkPixbuf *bg_img = NULL;
+static GdkColor bg_color = {0};
+
 static void handle_input()
 {
     int ret;
@@ -182,6 +185,35 @@ static void load_exit()
     g_signal_connect(exit, "clicked", G_CALLBACK(on_exit_clicked), NULL);
 }
 
+static gboolean on_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_data)
+{
+	cairo_t *cr;
+
+	if(!GTK_WIDGET_REALIZED(widget))
+        return FALSE;
+    cr = gdk_cairo_create(widget->window);
+    if(bg_img)
+    {
+        cairo_matrix_t matrix;
+        double x=-0.5,y=-0.5,sx,sy;
+        cairo_get_matrix(cr,&matrix);
+        sx=(double)gdk_screen_width()/(double)gdk_pixbuf_get_width(bg_img);
+        sy=(double)gdk_screen_height()/(double)gdk_pixbuf_get_height(bg_img);
+        cairo_scale(cr,sx,sy);
+        gdk_cairo_set_source_pixbuf(cr,bg_img,x,y);
+        cairo_paint(cr);
+        cairo_set_matrix(cr,&matrix);
+    }
+    else
+    {
+        gdk_cairo_set_source_color(cr, &bg_color);
+        cairo_rectangle(cr,0,0,gdk_screen_width(),gdk_screen_height());
+        cairo_fill(cr);
+    }
+    cairo_destroy(cr);
+    return FALSE;
+}
+
 static void create_win()
 {
     GtkBuilder* builder;
@@ -189,6 +221,9 @@ static void create_win()
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, CONFIG_DIR "/lxdm.glade", NULL);
     win = (GtkWidget*)gtk_builder_get_object(builder, "lxdm");
+    GTK_WIDGET_SET_FLAGS(win, GTK_APP_PAINTABLE);
+    g_signal_connect(win, "expose-event", G_CALLBACK(on_expose), NULL);
+
     scr = gtk_widget_get_screen(win);
     g_signal_connect(scr, "size-changed", G_CALLBACK(on_screen_size_changed), win);
 
@@ -213,8 +248,49 @@ static void create_win()
     gtk_window_present(win);
 }
 
+int ui_set_bg(void)
+{
+	char *bg;
+	char *style;
+	GdkWindow* root = gdk_get_default_root_window();
+
+	bg=g_key_file_get_string(config,"display","bg",0);
+	if(!bg)
+        bg=g_strdup("#222E45");
+	style=g_key_file_get_string(config,"display","bg_style",0);
+	if(bg && bg[0]!='#')
+	{
+		GdkPixbuf *pb=gdk_pixbuf_new_from_file(bg,0);
+		if(!pb)
+		{
+			g_free(bg);
+			bg=g_strdup("#222E45");
+		}
+		else
+		{
+			bg_img=pb;
+		}
+	}
+	if(bg && bg[0]=='#')
+	{
+		gdk_color_parse(bg,&bg_color);
+		//gdk_window_set_background(win,&screen);
+	}
+	g_free(bg);
+	g_free(style);
+	return 0;
+}
+
 int gtk_ui_main()
 {
+    char* gtk_theme = g_key_file_get_string(config, "display", "gtk_theme", NULL);
+    if(gtk_theme)
+    {
+        GtkSettings* settings = gtk_settings_get_default();
+        g_object_set(settings, "gtk-theme-name", gtk_theme, NULL);
+        g_free(gtk_theme);
+    }
+
     create_win();
     gtk_main();
 	return 0;

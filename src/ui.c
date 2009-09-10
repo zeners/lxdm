@@ -368,6 +368,7 @@ int ui_reset(void)
 	return 0;
 }
 
+#if 0
 int ui_set_bg(void)
 {
 	char *bg;
@@ -399,4 +400,4 @@ int ui_set_bg(void)
 	g_free(style);
 	return 0;
 }
-
+#endif
