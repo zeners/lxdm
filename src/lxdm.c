@@ -56,59 +56,6 @@ void log_print(char *fmt,...)
 	fflush(log);
 }
 
-GSList *do_scan_xsessions(void)
-{
-	GSList *l=NULL;
-	GDir *d;
-	LXSESSION *sess;
-	char *name;
-	
-	d=g_dir_open("/usr/share/xsessions",0,NULL);
-	if(!d) return NULL;
-	while((name=(char*)g_dir_read_name(d))!=NULL)
-	{
-		GKeyFile *f=g_key_file_new();
-		char *tmp=g_strdup_printf("/usr/share/xsessions/%s",name);
-		gboolean ret=g_key_file_load_from_file(f,tmp,G_KEY_FILE_NONE,NULL);
-		while(ret==TRUE)
-		{
-			char *name=g_key_file_get_string(f,"Desktop Entry","Name",0);
-			if(!name) break;
-			char *exec=g_key_file_get_string(f,"Desktop Entry","Exec",0);
-			if(!exec)
-			{
-				g_free(name);
-				break;
-			}
-			sess=g_malloc(sizeof(LXSESSION));
-			sess->name=name;
-			sess->exec=exec;
-			if(!strcmp(name,"LXDE"))
-				l=g_slist_prepend(l,sess);
-			else
-				l=g_slist_append(l,sess);
-			break;
-		}
-		g_key_file_free(f);
-	}
-	g_dir_close(d);
-	return l;
-}
-
-void free_xsessions(GSList *l)
-{
-	GSList *p;
-	LXSESSION *sess;
-	
-	for(p=l;p;p=p->next)
-	{
-		sess=p->data;
-		g_free(sess->name);
-		g_free(sess->exec);
-		g_free(sess);
-	}
-	g_slist_free(l);
-}
 
 int auth_user(char *user,char *pass,struct passwd **ppw)
 {
@@ -570,21 +517,11 @@ int main(int arc,char *arg[])
 
 	startx();
 
-	for(tmp=0;tmp<200;tmp++)
-	{
-		if(gdk_init_check(0,0))
-			break;
-		usleep(50*1000);
-	}
-	if(tmp==100)
-		exit(EXIT_FAILURE);
-		
 	init_pam();
 
 	ui_set_bg();
 	do_auto_login();
 
-	// ui_main();
 	gtk_init(&arc, &arg);
     gtk_ui_main();
 

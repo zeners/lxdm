@@ -178,9 +178,13 @@ static void load_exit()
     GtkWidget* item;
     exit_menu = gtk_menu_new();
     item = gtk_image_menu_item_new_with_mnemonic(_("_Reboot"));
+    g_signal_connect(item, "activate", G_CALLBACK(do_reboot), NULL);
     gtk_menu_shell_append(exit_menu, item);
+
     item = gtk_image_menu_item_new_with_mnemonic(_("_Shutdown"));
+    g_signal_connect(item, "activate", G_CALLBACK(do_shutdown), NULL);
     gtk_menu_shell_append(exit_menu, item);
+
     gtk_widget_show_all(exit_menu);
     g_signal_connect(exit, "clicked", G_CALLBACK(on_exit_clicked), NULL);
 }

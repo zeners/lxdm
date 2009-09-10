@@ -20,17 +20,6 @@ void do_shutdown(void);
 
 int gtk_ui_main(void);
 
-int ui_main(void);
-int ui_reset(void);
-int ui_show(int b);
 int ui_set_bg(void);
-
-typedef struct{
-	char *name;
-	char *exec;
-}LXSESSION;
-
-GSList *do_scan_xsessions(void);
-void free_xsessions(GSList *);
 
 #endif/*_LXDM_H_*/

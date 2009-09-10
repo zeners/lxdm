@@ -1,3 +1,5 @@
+/* This file is not used in GTK+-based UI. Only left for reference. */
+
 #define XLIB_ILLEGAL_ACCESS
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
