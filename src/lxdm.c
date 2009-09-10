@@ -584,7 +584,9 @@ int main(int arc,char *arg[])
 	ui_set_bg();
 	do_auto_login();
 
-	ui_main();
+	// ui_main();
+	gtk_init(&arc, &arg);
+    gtk_ui_main();
 
 	return 0;
 }

@@ -13,5 +13,6 @@ lxdm_LDFLAGS = \
 
 lxdm_SOURCES = \
 	lxdm.c lxdm.h \
+	lxdm-ui.c \
 	ui.c ui.h \
 	$(NULL)

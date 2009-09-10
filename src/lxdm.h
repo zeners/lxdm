@@ -18,6 +18,8 @@ void do_shutdown(void);
 #define AUTH_PRIV	3
 #define AUTH_ERROR	4
 
+int gtk_ui_main(void);
+
 int ui_main(void);
 int ui_reset(void);
 int ui_show(int b);
