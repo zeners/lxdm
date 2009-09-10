@@ -112,7 +112,8 @@ void switch_user(struct passwd *pw,char *run,char **env)
 		exit(EXIT_FAILURE);
 	}
 	chdir(pw->pw_dir);
-	execle(CONFIG_DIR "/Xsession",CONFIG_DIR "/Xsession",run,NULL,env);
+    /* FIXME: this script is quite distro specific and need to be fixed. */
+	execle(LXDM_DATA_DIR "/Xsession", LXDM_DATA_DIR "/Xsession",run,NULL,env);
 	exit(EXIT_FAILURE);
 }
 
@@ -327,7 +328,7 @@ void do_login(struct passwd *pw,char *session)
 			//printf("%s\n",pam_strerror(pamh,err));
 		}
 	}
-	
+
 	get_my_xid();
 
 	child = pid = fork();
@@ -339,7 +340,7 @@ void do_login(struct passwd *pw,char *session)
 		
 		if(pamh)
 			pam_end(pamh,PAM_SUCCESS);
-		
+
 		env[i++]=g_strdup_printf("TERM=%s",getenv("TERM"));
 		env[i++]=g_strdup_printf("HOME=%s", pw->pw_dir);
 		env[i++]=g_strdup_printf("SHELL=%s", pw->pw_shell);
@@ -354,11 +355,11 @@ void do_login(struct passwd *pw,char *session)
 		if(!session)
 			session=g_key_file_get_string(config,"base","session",0);
 		if(!session) session=g_strdup("startlxde");
-
 		switch_user(pw,session,env);
 		reason=4;
 		exit(EXIT_FAILURE);
 	}
+
 	while(1)
 	{
 		int wpid = wait(&status);
@@ -519,12 +520,12 @@ int main(int arc,char *arg[])
 
 	init_pam();
 
+	gtk_init(&arc, &arg);
+
 	ui_set_bg();
 	do_auto_login();
 
-	gtk_init(&arc, &arg);
-    gtk_ui_main();
+	gtk_ui_main();
 
 	return 0;
 }
-

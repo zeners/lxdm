@@ -42,15 +42,15 @@ static GtkWidget* exit;
 
 static GtkWidget* exit_menu;
 
-static gboolean get_passwd = FALSE;
-
 static char* user = NULL;
 static char* pass = NULL;
+static char* session_exec = NULL;
+static struct passwd *login_pw = NULL;
 
 static GdkPixbuf *bg_img = NULL;
 static GdkColor bg_color = {0};
 
-static void handle_input()
+static gboolean check_input()
 {
     int ret;
     struct passwd *pw;
@@ -58,12 +58,15 @@ static void handle_input()
     if(!strcmp(user,"reboot"))
     {
         do_reboot();
+        return TRUE;
     }
     else if(!strcmp(user,"shutdown"))
     {
         do_shutdown();
+        return TRUE;
     }
-    ret=auth_user(user,pass,&pw);
+    ret = auth_user(user,pass, &pw);
+
     if(AUTH_SUCCESS==ret && pw!=NULL)
     {
         char *exec;
@@ -71,16 +74,20 @@ static void handle_input()
         if(gtk_combo_box_get_active_iter(sessions, &it))
         {
             GtkTreeModel* model = gtk_combo_box_get_model(sessions);
-            gtk_tree_model_get(model, &it, 1, &exec, -1);
-            if(!exec) /* FIXME: is this appropriate? */
-                exec = g_strdup("/usr/bin/startlxde");
-            do_login(pw,exec);
-            g_free(exec);
-            gtk_widget_destroy(win);
-            gtk_main_quit();
-            /* FIXME: is this correct? */
+            gtk_tree_model_get(model, &it, 1, &session_exec, -1);
+            if(!session_exec) /* FIXME: is this appropriate? */
+                session_exec = g_strdup("startlxde");
+            login_pw = pw;
+            return TRUE;
+        }
+        else
+        {
+            login_pw = NULL;
         }
     }
+    else
+        login_pw = NULL;
+    return FALSE;
 }
 
 static void on_screen_size_changed(GdkScreen* scr, GtkWindow* win)
@@ -90,32 +97,40 @@ static void on_screen_size_changed(GdkScreen* scr, GtkWindow* win)
 
 static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 {
-    if(!get_passwd)
+    if(!user)
     {
         user = g_strdup( gtk_entry_get_text(entry) );
         gtk_label_set_text(prompt, _("Password:"));
         gtk_entry_set_text(entry, "");
 
         gtk_entry_set_visibility(entry, FALSE);
-        get_passwd = TRUE;
     }
     else
     {
         pass = g_strdup( gtk_entry_get_text(entry));
-        /* FIXME: check password */
-        /* login currently selectied session if the passwd is valid. */
-        handle_input();
+
+        /* check password */
+        if( check_input() )
+        {
+            g_free(user);
+            user = NULL;
+            g_free(pass);
+            pass = NULL;
+            gtk_widget_destroy(win);
+            gtk_main_quit();
+
+            return;
+        }
 
         /* password check failed */
+        g_free(user);
+        user = NULL;
         g_free(pass);
         pass = NULL;
 
         gtk_label_set_text(prompt, _("User:"));
         gtk_entry_set_text(entry, "");
         gtk_entry_set_visibility(entry, TRUE);
-        get_passwd = FALSE;
-        g_free(user);
-        user = NULL;
     }
 }
 
@@ -223,7 +238,7 @@ static void create_win()
     GtkBuilder* builder;
     GdkScreen* scr;
     builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, CONFIG_DIR "/lxdm.glade", NULL);
+    gtk_builder_add_from_file(builder, LXDM_DATA_DIR "/lxdm.glade", NULL);
     win = (GtkWidget*)gtk_builder_get_object(builder, "lxdm");
     GTK_WIDGET_SET_FLAGS(win, GTK_APP_PAINTABLE);
     g_signal_connect(win, "expose-event", G_CALLBACK(on_expose), NULL);
@@ -257,6 +272,9 @@ int ui_set_bg(void)
 	char *bg;
 	char *style;
 	GdkWindow* root = gdk_get_default_root_window();
+    GdkCursor* cursor = gdk_cursor_new(GDK_LEFT_PTR);
+
+    gdk_window_set_cursor(root, cursor);
 
 	bg=g_key_file_get_string(config,"display","bg",0);
 	if(!bg)
@@ -287,16 +305,34 @@ int ui_set_bg(void)
 
 int gtk_ui_main()
 {
-    char* gtk_theme = g_key_file_get_string(config, "display", "gtk_theme", NULL);
-    if(gtk_theme)
+    while( TRUE ) /* FIXME: is this ok? */
     {
-        GtkSettings* settings = gtk_settings_get_default();
-        g_object_set(settings, "gtk-theme-name", gtk_theme, NULL);
-        g_free(gtk_theme);
+        /* set gtk+ theme */
+        char* gtk_theme = g_key_file_get_string(config, "display", "gtk_theme", NULL);
+        if(gtk_theme)
+        {
+            GtkSettings* settings = gtk_settings_get_default();
+            g_object_set(settings, "gtk-theme-name", gtk_theme, NULL);
+            g_free(gtk_theme);
+        }
+
+        /* create the login window */
+        create_win();
+
+        gtk_main();
+
+        if( login_pw )
+        {
+            if( session_exec )
+            {
+                do_login(login_pw, session_exec);
+                g_free(session_exec);
+                session_exec = NULL;
+            }
+            login_pw = NULL;
+        }
     }
 
-    create_win();
-    gtk_main();
 	return 0;
 }
 
