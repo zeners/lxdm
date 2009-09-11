@@ -45,6 +45,7 @@ static GtkWidget* exit_menu;
 static char* user = NULL;
 static char* pass = NULL;
 static char* session_exec = NULL;
+static char* session_desktop_file = NULL;
 static struct passwd *login_pw = NULL;
 
 static GdkPixbuf *bg_img = NULL;
@@ -74,9 +75,7 @@ static gboolean check_input()
         if(gtk_combo_box_get_active_iter(sessions, &it))
         {
             GtkTreeModel* model = gtk_combo_box_get_model(sessions);
-            gtk_tree_model_get(model, &it, 1, &session_exec, -1);
-            if(!session_exec) /* FIXME: is this appropriate? */
-                session_exec = g_strdup("startlxde");
+            gtk_tree_model_get(model, &it, 1, &session_exec, 2, &session_desktop_file, -1);
             login_pw = pw;
             return TRUE;
         }
@@ -137,7 +136,8 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 static void load_sessions()
 {
     GtkListStore* list;
-    GtkTreeIter it;
+    GtkTreeIter it, active_it = {0};
+    char* last;
     char *path, *file_name, *name, *exec;
     GKeyFile* kf;
     GtkCellRendererText* render;
@@ -145,7 +145,9 @@ static void load_sessions()
     if(!dir)
         return;
 
-    list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+    last = g_key_file_get_string(config, "base", "last_session", NULL);
+
+    list = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
     kf = g_key_file_new();
     while(file_name = g_dir_read_name(dir))
     {
@@ -155,7 +157,11 @@ static void load_sessions()
             name = g_key_file_get_locale_string(kf, "Desktop Entry", "Name", NULL, NULL);
             exec = g_key_file_get_string(kf, "Desktop Entry", "Exec", NULL);
             gtk_list_store_append(list, &it);
-            gtk_list_store_set(list, &it, 0, name, 1, exec, -1);
+            gtk_list_store_set(list, &it, 0, name, 1, exec, 2, file_name, -1);
+
+            if(last && strcmp(file_name, last)==0)
+                active_it = it;
+
             g_free(name);
             g_free(exec);
         }
@@ -165,14 +171,18 @@ static void load_sessions()
     g_key_file_free(kf);
 
     gtk_list_store_append(list, &it);
-    gtk_list_store_set(list, &it, 0, _("Default"), 1, "xterm", -1);
+    gtk_list_store_set(list, &it, 0, _("Fallback"), 1, "xterm", -1);
+    g_free(last);
+
+    if(active_it.stamp == 0)
+        active_it = it;
 
     render = gtk_cell_renderer_text_new();
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(sessions), render, TRUE);
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(sessions), render, "text", 0, NULL);
 
     gtk_combo_box_set_model(sessions, list);
-    gtk_combo_box_set_active_iter(sessions, &it);
+    gtk_combo_box_set_active_iter(sessions, &active_it);
 
     g_object_unref(list);
 }
@@ -265,6 +275,8 @@ static void create_win()
 
     gtk_window_set_default_size(win, gdk_screen_get_width(scr), gdk_screen_get_height(scr));
     gtk_window_present(win);
+
+    gtk_widget_grab_focus(login_entry);
 }
 
 int ui_set_bg(void)
@@ -325,9 +337,27 @@ int gtk_ui_main()
         {
             if( session_exec )
             {
+                char* data;
+                gsize len;
                 do_login(login_pw, session_exec);
                 g_free(session_exec);
                 session_exec = NULL;
+
+                if(session_desktop_file)
+                    g_key_file_set_string(config, "base", "last_session", session_desktop_file);
+                else
+                    g_key_file_remove_key(config, "base", "last_session", NULL);
+
+                g_free(session_desktop_file);
+                session_desktop_file = NULL;
+
+                /* write the config file to disk */
+                data = g_key_file_to_data(config, &len, NULL);
+                if(data)
+                {
+                    g_file_set_contents(CONFIG_DIR "/lxdm.conf", data, len, NULL);
+                    g_free(data);
+                }
             }
             login_pw = NULL;
         }

@@ -509,7 +509,7 @@ int main(int arc,char *arg[])
 	self=arg[0];
 
 	config=g_key_file_new();
-	g_key_file_load_from_file(config, CONFIG_DIR "/lxdm.conf",G_KEY_FILE_NONE,NULL);
+	g_key_file_load_from_file(config, CONFIG_DIR "/lxdm.conf",G_KEY_FILE_KEEP_COMMENTS, NULL);
 
 	get_lock();
 	atexit(exit_cb);
