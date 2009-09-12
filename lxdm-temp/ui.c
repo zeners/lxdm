@@ -324,8 +324,10 @@ void ui_set_bg(void)
 		g_free(p);
 		gdk_pixbuf_render_pixmap_and_mask(bg_img,&pix,NULL,0);
 		g_object_unref(bg_img);
-		bg_img=0;
-		gdk_window_set_back_pixmap(root,pix,FALSE);
+		/* call x directly, because gdk will ref the pixmap */
+		//gdk_window_set_back_pixmap(root,pix,FALSE);
+		XSetWindowBackgroundPixmap(GDK_WINDOW_XDISPLAY(root),
+				GDK_WINDOW_XID(root), GDK_PIXMAP_XID(pix));
 		g_object_unref(pix);
 	}
 	gdk_window_clear(root);
