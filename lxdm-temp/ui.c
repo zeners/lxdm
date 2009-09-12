@@ -271,11 +271,12 @@ void ui_drop(void)
 	}
 }
 
+#if 1
 void ui_set_bg(void)
 {
 	char *p;
 	GdkWindow *root=gdk_get_default_root_window();
-	static GdkColor screen;
+	GdkColor screen;
 	GdkPixbuf *bg_img;
 
 	/* get background */
@@ -329,6 +330,49 @@ void ui_set_bg(void)
 	}
 	gdk_window_clear(root);
 }
+#else
+void ui_set_bg(void)
+{
+	char *p;
+	GdkWindow *root=gdk_get_default_root_window();
+	GdkColor screen;
+
+	p=g_key_file_get_string(config,"display","bg",0);
+	if(!p) p=g_strdup("#222E45");
+	if(p && p[0]!='#')
+	{
+		char *style=g_key_file_get_string(config,"display","bg_style",0);
+		GdkPixbuf *pb;
+		GdkPixmap *pix=NULL;
+		if(!p || !strcmp(p,"stretch"))
+		{
+			pb=gdk_pixbuf_new_from_file_at_scale(p,
+					gdk_screen_width(),gdk_screen_height(),TRUE,NULL);
+		}
+		else
+		{
+			pb=gdk_pixbuf_new_from_file(p,0);
+		}
+		g_free(style);
+		if(pb)
+		{
+			gdk_pixbuf_render_pixmap_and_mask(pb,&pix,NULL,0);
+			g_object_unref(pb);
+			gdk_window_set_back_pixmap(root,pix,FALSE);
+			g_object_unref(pix);
+		}
+	}
+	if(p && p[0]=='#')
+	{
+		GdkColormap *map = gdk_window_get_colormap(root);
+		gdk_color_parse(p,&screen);
+		gdk_color_alloc(map, &screen);
+		gdk_window_set_background(root,&screen);
+	}
+	g_free(p);
+	gdk_window_clear(root);
+}
+#endif
 
 static void greeter_setup(gpointer user_data)
 {

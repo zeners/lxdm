@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <time.h>
 #include <sys/wait.h>
+#include <glib.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
