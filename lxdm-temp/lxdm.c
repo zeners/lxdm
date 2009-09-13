@@ -375,7 +375,9 @@ void stop_clients(int top)
 
 static void on_session_stop(GPid pid,gint status,gpointer data)
 {
-	//printf("session %d stop\n",pid);
+	int code=WEXITSTATUS(status);/* 0: reboot,shutdown 10: logout */
+
+	//log_print("session %d stop status %d\n",pid,code);
 	if(server>0)
 	{
 		stop_clients(0);
@@ -390,6 +392,8 @@ static void on_session_stop(GPid pid,gint status,gpointer data)
 		pam_close_session(pamh,0);
 		pam_setcred(pamh, PAM_DELETE_CRED);
 	}
+	if(code==0)
+		lxdm_quit_self();
 	
 	ui_prepare();
 }
@@ -490,6 +494,7 @@ int lxdm_do_auto_login(void)
 
 void sig_handler(int sig)
 {
+	log_print("catch signal %d\n",sig);
 	switch(sig){
 	case SIGTERM:
 	case SIGINT:

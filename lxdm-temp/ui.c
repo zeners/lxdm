@@ -483,17 +483,20 @@ void ui_prepare(void)
 		ret=g_spawn_async_with_pipes(NULL,arg,NULL,
 				0,greeter_setup,0,
 				&greeter,greeter_pipe+0,greeter_pipe+1,NULL,NULL);
-		g_free(p);
 		if(ret==TRUE)
 		{
-			guint id;
+			g_free(p);
 			greeter_io=g_io_channel_unix_new(greeter_pipe[1]);
-			id=g_io_add_watch(greeter_io,G_IO_IN|G_IO_HUP|G_IO_ERR,
+			g_io_add_watch(greeter_io,G_IO_IN|G_IO_HUP|G_IO_ERR,
 					greeter_input,NULL);
+
 			return;
 		}
 	}
 	g_free(p);
+
+	/* set root window bg */
+	ui_set_bg();
 
 	/* init something */
 	if(sessions)
@@ -583,7 +586,6 @@ void ui_add_cursor(void)
 int ui_main(void)
 {
 	GMainLoop *loop=g_main_loop_new(NULL,0);
-	ui_set_bg();
 	ui_add_cursor();
 	ui_prepare();
 	gdk_event_handler_set(ui_event_cb,0,0);
