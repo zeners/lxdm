@@ -6,19 +6,23 @@ LDFLAGS=
 LIBS=`pkg-config --libs gdk-2.0` -lcrypt -lXmu -lpam
 OBJS=lxdm.o ui.o
 
-all: lxdm
+all: lxdm lxdm-greeter
 
 lxdm: $(OBJS)
 	$(CC) -o $@ $^ $(LIBS)
 
-clean:
-	@rm -rf lxdm $(OBJS)
+lxdm-greeter: greeter.c
+	$(CC) -Wall -g `pkg-config --cflags gtk+-2.0` -o $@ $^ `pkg-config --libs gtk+-2.0`
 
-install: lxdm
+clean:
+	@rm -rf lxdm lxdm-greeter $(OBJS)
+
+install: lxdm lxdm-greeter
 	install -m 700 lxdm $(DESTDIR)$(PREFIX)/bin/lxdm
 	test -e $(DESTDIR)/etc/lxdm || mkdir $(DESTDIR)/etc/lxdm
 	install -m 755 Xsession $(DESTDIR)/etc/lxdm/Xsession
-	test -e $(DESTDIR)/etc/lxdm/lxdm.conf || install -m 300 lxdm.conf $(DESTDIR)/etc/lxdm/lxdm.conf
+	install -m 755 lxdm-greeter $(DESTDIR)/usr/libexec/lxdm-greeter
+	test -e $(DESTDIR)/etc/lxdm/lxdm.conf || install -m 755 lxdm.conf $(DESTDIR)/etc/lxdm/lxdm.conf
 
 uninstall:
 	@rm -rf $(PREFIX)/bin/lxdm
