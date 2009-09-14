@@ -56,11 +56,13 @@ static GdkColor bg_color = {0};
 static void do_reboot(void)
 {
 	printf("reboot\n");
+	fflush(stdout);
 }
 
 static void do_shutdown(void)
 {
 	printf("shutdown\n");
+	fflush(stdout);
 }
 
 static void on_screen_size_changed(GdkScreen* scr, GtkWindow* win)
@@ -96,6 +98,7 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 
         printf("login user=%s pass=%s session=%s\n",
         	user,pass,session_exec);
+	fflush(stdout);
 
         /* password check failed */
         g_free(user);
