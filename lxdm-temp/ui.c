@@ -32,6 +32,7 @@ static char *message;
 static pid_t greeter=-1;
 static int greeter_pipe[2];
 static GIOChannel *greeter_io;
+static guint io_id;
 
 static int get_text_layout(char *s,int *w,int *h)
 {
@@ -263,6 +264,8 @@ void ui_drop(void)
 	if(greeter>0)
 	{
 		write(greeter_pipe[0],"exit\n",5);
+		g_source_remove(io_id);
+		io_id=0;
 		g_io_channel_unref(greeter_io);
 		greeter_io=NULL;
 		close(greeter_pipe[1]);
@@ -420,7 +423,7 @@ static gboolean greeter_input(GIOChannel *source,GIOCondition condition,gpointer
 		return FALSE;
 	ret=g_io_channel_read_line(source,&str,NULL,NULL,NULL);
 	if(ret!=G_IO_STATUS_NORMAL)
-		return TRUE;
+		return FALSE;
 
 	if(!strncmp(str,"reboot",6))
 	{
@@ -487,9 +490,8 @@ void ui_prepare(void)
 		{
 			g_free(p);
 			greeter_io=g_io_channel_unix_new(greeter_pipe[1]);
-			g_io_add_watch(greeter_io,G_IO_IN|G_IO_HUP|G_IO_ERR,
+			io_id=g_io_add_watch(greeter_io,G_IO_IN|G_IO_HUP|G_IO_ERR,
 					greeter_input,NULL);
-
 			return;
 		}
 	}
