@@ -93,7 +93,7 @@
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Kayboard Layout:</property>
+                <property name="label" translatable="yes">Keyboard Layout:</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -101,7 +101,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBox" id="kayboard">
+              <object class="GtkComboBox" id="keyboard">
                 <property name="visible">True</property>
               </object>
               <packing>
