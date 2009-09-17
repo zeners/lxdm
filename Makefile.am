@@ -4,16 +4,16 @@ SUBDIRS= \
 	po \
 	$(NULL)
 
-lxdm_confdir = $(sysconfdir)/lxdm
+lxdm_confdir = /etc/lxdm
 lxdm_conf_DATA = \
 	data/lxdm.conf \
+	data/Xsession
 	$(NULL)
 
 lxdmdir = $(datadir)/lxdm
 lxdm_DATA = \
-	data/Xsession \
 	data/lxdm.glade \
 	$(NULL)
 
 install-data-hook:
-	chmod +x $(DESTDIR)$(lxdmdir)/Xsession
+	chmod +x $(DESTDIR)/etc/lxdm/Xsession

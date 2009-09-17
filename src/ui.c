@@ -1,33 +1,38 @@
-/* This file is not used in GTK+-based UI. Only left for reference. */
-
 #define XLIB_ILLEGAL_ACCESS
-#include <gtk/gtk.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <X11/Xlib.h>
 
 #include <string.h>
 #include <poll.h>
+#include <grp.h>
+#include <unistd.h>
+#include <ctype.h>
 
 #include "lxdm.h"
 
 #define MAX_INPUT_CHARS		32
 #define MAX_VISIBLE_CHARS	14
 
-static GdkWindow *win;
+static Display *dpy;
+static GdkWindow *root,*win;
 static PangoLayout *layout;
 static char user[MAX_INPUT_CHARS];
 static char pass[MAX_INPUT_CHARS];
 static int stage;
 static GdkRectangle rc;
 static GdkColor bg,border,hint,text,msg;
-static GdkColor screen;
-static GdkPixbuf *bg_img;
 
 static GSList *sessions;
 static int session_select=-1;
 
 static char *message;
+
+static pid_t greeter=-1;
+static int greeter_pipe[2];
+static GIOChannel *greeter_io;
+static guint io_id;
 
 static int get_text_layout(char *s,int *w,int *h)
 {
@@ -44,47 +49,20 @@ static void draw_text(cairo_t *cr,double x,double y,char *text,GdkColor *color)
 	pango_cairo_show_layout(cr,layout);
 }
 
-static void on_expose(int e)
+static void on_expose(void)
 {
 	cairo_t *cr=gdk_cairo_create(win);
 	char *p=(stage==0)?user:pass;
 	int len=strlen(p);
 	GdkColor *color;
 	
-	if(e)
-	{
-		if(bg_img)
-		{
-			cairo_matrix_t matrix;
-			double x=-0.5,y=-0.5,sx,sy;
-			cairo_get_matrix(cr,&matrix);
-			sx=(double)gdk_screen_width()/(double)gdk_pixbuf_get_width(bg_img);
-			sy=(double)gdk_screen_height()/(double)gdk_pixbuf_get_height(bg_img);
-			cairo_scale(cr,sx,sy);
-			gdk_cairo_set_source_pixbuf(cr,bg_img,x,y);
-			cairo_paint(cr);
-			cairo_set_matrix(cr,&matrix);
-		}
-		else
-		{
-			gdk_cairo_set_source_color(cr,&screen);
-			cairo_rectangle(cr,0,0,gdk_screen_width(),gdk_screen_height());
-			cairo_fill(cr);
-		}
-	}
-	if(stage==2)
-	{
-		cairo_destroy(cr);
-		return;
-	}
-
 	gdk_cairo_set_source_color(cr,&bg);
-	cairo_rectangle(cr,rc.x,rc.y,rc.width,rc.height);
+	cairo_rectangle(cr,0,0,rc.width,rc.height);
 	cairo_fill(cr);
 	gdk_cairo_set_source_color(cr,&border);
 	cairo_set_line_width(cr,1.0);
 	cairo_stroke(cr);
-	cairo_rectangle(cr,rc.x,rc.y,rc.width,rc.height);
+	cairo_rectangle(cr,0,0,rc.width,rc.height);
 	
 	if(message)
 	{
@@ -125,21 +103,20 @@ static void on_expose(int e)
 			color=&hint;
 		}
 	}
-	draw_text(cr,rc.x+3,rc.y+3,p,color);
+	draw_text(cr,3,3,p,color);
 	cairo_destroy(cr);
 }
 
-static void on_key(XEvent *event)
+static void on_key(GdkEventKey *event)
 {
 	char *p;
 	int len;
-	KeySym key;
-	char ascii;
+	int key;
 
 	if(stage!=0 && stage!=1)
 		return;
 	message=0;
-	XLookupString(&event->xkey, &ascii, 1, &key, 0);
+	key=event->keyval;
 	p=(stage==0)?user:pass;
 	len=strlen(p);
 	if(key==GDK_Escape)
@@ -194,25 +171,340 @@ static void on_key(XEvent *event)
 			p[len]=0;
 		}
 	}
-	on_expose(stage==2);
+	on_expose();
+	if(stage==2)
+	{
+		ui_do_login();
+		if(stage!=2)
+		{
+			on_expose();
+		}
+	}
 }
 
-int ui_main_one(void)
+int ui_do_login(void)
+{
+	struct passwd *pw;
+	int ret;
+			
+	if(stage!=2)
+		return -1;
+	
+	if(!strcmp(user,"reboot"))
+	{
+		lxdm_do_reboot();
+	}
+	else if(!strcmp(user,"shutdown"))
+	{
+		lxdm_do_shutdown();
+	}
+	ret=lxdm_auth_user(user,pass,&pw);
+	if(AUTH_SUCCESS==ret && pw!=NULL)
+	{
+		char *exec=0;
+		if(sessions && session_select>0)
+		{
+			LXSESSION *sess;
+			sess=g_slist_nth_data(sessions,session_select);
+			exec=g_strdup(sess->exec);
+			free_xsessions(sessions);
+		}
+		sessions=0;session_select=-1;
+		ui_drop();
+		lxdm_do_login(pw,exec);
+		g_free(exec);
+		if(lxdm_cur_session()<=0)
+		{
+			ui_prepare();
+		}
+	}
+	else
+	{
+		user[0]=pass[0]=0;
+		stage=0;
+	}
+	return 0;
+}
+
+void ui_event_cb(GdkEvent *event,gpointer data)
+{
+	if(stage==2)
+		return;
+	if(event->type==GDK_KEY_PRESS)
+	{
+		on_key((GdkEventKey*)event);
+	}
+	else if(event->type==GDK_EXPOSE)
+	{
+		on_expose(); 
+	}
+}
+
+void ui_drop(void)
+{
+	/* drop connect event */
+	if(dpy)
+	{
+		if(win)
+		{
+			gdk_window_destroy(win);
+			win=NULL;
+			XUngrabKeyboard(dpy,CurrentTime);
+		}
+	}
+
+	/* destroy the font */
+	if(layout)
+	{
+		g_object_unref(layout);
+		layout=NULL;
+	}
+	
+	/* if greeter, do quit */
+	if(greeter>0)
+	{
+		write(greeter_pipe[0],"exit\n",5);
+		g_source_remove(io_id);
+		io_id=0;
+		g_io_channel_unref(greeter_io);
+		greeter_io=NULL;
+		close(greeter_pipe[1]);
+		close(greeter_pipe[0]);
+		kill(greeter,SIGTERM);
+	}
+}
+
+#if 1
+void ui_set_bg(void)
+{
+	char *p;
+	GdkWindow *root=gdk_get_default_root_window();
+	GdkColor screen;
+	GdkPixbuf *bg_img;
+
+	/* get background */
+	p=g_key_file_get_string(config,"display","bg",0);
+	if(!p) p=g_strdup("#222E45");
+	if(p && p[0]!='#')
+	{
+		GdkPixbuf *pb=gdk_pixbuf_new_from_file(p,0);
+		if(!pb)
+		{
+			g_free(p);
+			p=g_strdup("#222E45");
+		}
+		else
+		{
+			bg_img=pb;
+		}
+	}
+	if(p && p[0]=='#')
+	{
+		gdk_color_parse(p,&screen);
+	}
+	g_free(p);
+
+	/* set background */
+	if(!bg_img)
+	{
+		GdkColormap *map = gdk_window_get_colormap(win);
+		gdk_color_alloc(map, &screen);
+		gdk_window_set_background(root,&screen);
+	}
+	else
+	{
+		GdkPixmap *pix=NULL;
+		p=g_key_file_get_string(config,"display","bg_style",0);
+		if(!p || !strcmp(p,"stretch"))
+		{
+			GdkPixbuf *pb=gdk_pixbuf_scale_simple(bg_img,
+					gdk_screen_width(),
+					gdk_screen_height(),
+					GDK_INTERP_HYPER);
+			g_object_unref(bg_img);
+			bg_img=pb;
+		}
+		g_free(p);
+		gdk_pixbuf_render_pixmap_and_mask(bg_img,&pix,NULL,0);
+		g_object_unref(bg_img);
+		/* call x directly, because gdk will ref the pixmap */
+		//gdk_window_set_back_pixmap(root,pix,FALSE);
+		XSetWindowBackgroundPixmap(GDK_WINDOW_XDISPLAY(root),
+				GDK_WINDOW_XID(root), GDK_PIXMAP_XID(pix));
+		g_object_unref(pix);
+	}
+	gdk_window_clear(root);
+}
+#else
+void ui_set_bg(void)
+{
+	char *p;
+	GdkWindow *root=gdk_get_default_root_window();
+	GdkColor screen;
+
+	p=g_key_file_get_string(config,"display","bg",0);
+	if(!p) p=g_strdup("#222E45");
+	if(p && p[0]!='#')
+	{
+		char *style=g_key_file_get_string(config,"display","bg_style",0);
+		GdkPixbuf *pb;
+		GdkPixmap *pix=NULL;
+		if(!p || !strcmp(p,"stretch"))
+		{
+			pb=gdk_pixbuf_new_from_file_at_scale(p,
+					gdk_screen_width(),gdk_screen_height(),TRUE,NULL);
+		}
+		else
+		{
+			pb=gdk_pixbuf_new_from_file(p,0);
+		}
+		g_free(style);
+		if(pb)
+		{
+			gdk_pixbuf_render_pixmap_and_mask(pb,&pix,NULL,0);
+			g_object_unref(pb);
+			gdk_window_set_back_pixmap(root,pix,FALSE);
+			g_object_unref(pix);
+		}
+	}
+	if(p && p[0]=='#')
+	{
+		GdkColormap *map = gdk_window_get_colormap(root);
+		gdk_color_parse(p,&screen);
+		gdk_color_alloc(map, &screen);
+		gdk_window_set_background(root,&screen);
+	}
+	g_free(p);
+	gdk_window_clear(root);
+}
+#endif
+
+static void greeter_setup(gpointer user_data)
+{
+	struct passwd *pw;
+	if(AUTH_SUCCESS==lxdm_auth_user("lxdm",NULL,&pw))
+	{
+		initgroups(pw->pw_name, pw->pw_gid);
+		setgid(pw->pw_gid);
+		setuid(pw->pw_uid);
+	}
+}
+
+static gchar *greeter_param(char *str,char *name)
+{
+	char *temp,*p;
+	char ret[128];
+	int i;
+	temp=g_strdup_printf(" %s=",name);
+	p=strstr(str,temp);
+	if(!p)
+	{
+		g_free(temp);
+		return NULL;
+	}
+	p+=strlen(temp);
+	g_free(temp);
+	for(i=0;i<127;i++)
+	{
+		if(!p[i] || isspace(p[i]))
+			break;
+		ret[i]=p[i];
+	}
+	ret[i]=0;
+	return g_strdup(ret);
+}
+
+static gboolean greeter_input(GIOChannel *source,GIOCondition condition,gpointer data)
+{
+	GIOStatus ret;
+	char *str;
+
+	if(!(G_IO_IN&condition))
+		return FALSE;
+	ret=g_io_channel_read_line(source,&str,NULL,NULL,NULL);
+	if(ret!=G_IO_STATUS_NORMAL)
+		return FALSE;
+
+	if(!strncmp(str,"reboot",6))
+	{
+		lxdm_do_reboot();
+	}
+	else if(!strncmp(str,"shutdown",6))
+	{
+		lxdm_do_reboot();
+	}
+	else if(!strncmp(str,"log ",4))
+	{
+		log_print(str+4);
+	}
+	else if(!strncmp(str,"login ",6))
+	{
+		char *user=greeter_param(str,"user");
+		char *pass=greeter_param(str,"pass");
+		char *session=greeter_param(str,"session");
+		if(user && pass)
+		{
+			struct passwd *pw;
+			int ret=lxdm_auth_user(user,pass,&pw);
+			if(AUTH_SUCCESS==ret && pw!=NULL)
+			{
+				ui_drop();
+				lxdm_do_login(pw,session);
+				if(lxdm_cur_session()<=0)
+				{
+					ui_prepare();
+				}
+			}
+		}
+		g_free(user);g_free(pass);g_free(session);
+	}
+	g_free(str);
+	return TRUE;
+}
+
+void ui_prepare(void)
 {
 	cairo_t *cr;
 	PangoFontDescription *desc;
 	char *p;
 	int w,h;
-	int res=0;
-	Display *Dpy=gdk_x11_get_default_xdisplay();
 	
+	/* get current display */
+	dpy=gdk_x11_get_default_xdisplay();
+	root=gdk_get_default_root_window();
+	
+	/* if session is running */
+	if(lxdm_cur_session()>0)
+		return;
+		
+	/* if find greeter, run it */
+	p=g_key_file_get_string(config,"base","greeter",NULL);
+	if(p && p[0])
+	{
+		char *arg[]={p,NULL};
+		gboolean ret;
+		ret=g_spawn_async_with_pipes(NULL,arg,NULL,
+				0,greeter_setup,0,
+				&greeter,greeter_pipe+0,greeter_pipe+1,NULL,NULL);
+		if(ret==TRUE)
+		{
+			g_free(p);
+			greeter_io=g_io_channel_unix_new(greeter_pipe[1]);
+			io_id=g_io_add_watch(greeter_io,G_IO_IN|G_IO_HUP|G_IO_ERR,
+					greeter_input,NULL);
+			return;
+		}
+	}
+	g_free(p);
+
+	/* set root window bg */
+	ui_set_bg();
+
 	/* init something */
 	if(sessions)
 		free_xsessions(sessions);
 	sessions=0;session_select=0;
-	user[0]=0;
-	pass[0]=0;
-	stage=0;
+	user[0]=0;pass[0]=0;stage=0;
 	p=g_key_file_get_string(config,"input","border",0);
 	if(!p) p=g_strdup("#CBCAE6");
 	gdk_color_parse(p,&border);
@@ -235,13 +527,22 @@ int ui_main_one(void)
 	g_free(p);
 
 	/* create the window */
-	win=gdk_get_default_root_window();
+	if(!win)
+	{
+		GdkWindowAttr attr;
+		int mask=0;
+		memset(&attr,0,sizeof(attr));
+		attr.window_type=GDK_WINDOW_CHILD;
+		attr.event_mask=GDK_EXPOSURE_MASK|GDK_KEY_PRESS_MASK;
+		attr.wclass=GDK_INPUT_OUTPUT;
+		win=gdk_window_new(0,&attr,mask);
+	}
 	
 	/* create the font */
 	if(layout)
 	{
 		g_object_unref(layout);
-		layout=0;
+		layout=NULL;
 	}
 	cr=gdk_cairo_create(win);
 	layout=pango_cairo_create_layout(cr);
@@ -263,143 +564,34 @@ int ui_main_one(void)
 		rc.width=w+6;rc.height=h+6;
 		rc.x=(gdk_screen_width()-rc.width)/2;
 		rc.y=(gdk_screen_height()-rc.height)/2;
+		gdk_window_move_resize(win,rc.x,rc.y,rc.width,rc.height);
 	}
-	
-	/* connect key event */
-	XSelectInput(Dpy, GDK_WINDOW_XWINDOW(win), ExposureMask | KeyPressMask);
-	XGrabKeyboard(Dpy, GDK_WINDOW_XWINDOW(win), False, GrabModeAsync, GrabModeAsync, CurrentTime);
-	XMapWindow(Dpy, GDK_WINDOW_XWINDOW(win));
 
-	on_expose(1);
+	/* connect event */
+	gdk_window_set_events(win,GDK_EXPOSURE_MASK|GDK_KEY_PRESS_MASK);
+	XGrabKeyboard(dpy, GDK_WINDOW_XWINDOW(win), False, GrabModeAsync, GrabModeAsync, CurrentTime);
 
-	/* main loop */
-	while(stage!=2 || XPending(Dpy))
-	{
-		XEvent event;
-#if 0
-		int ret;
-		if(!XPending(Dpy))
-		{
-			struct pollfd pf={.fd=Dpy->fd,.events=POLLIN};
-			ret=poll(&pf,1,-1);
-			if(ret!=1 || pf.revents!=POLLIN)
-			{
-				res=-1;
-				break;
-			}
-		}
-#endif
-		XNextEvent(Dpy,&event);
-		switch(event.type){
-		case KeyPress:
-			on_key(&event);
-			break;
-		case Expose:
-			on_expose(1);
-			break;
-		default:
-			break;
-		}
-	}
-	if(res!=-1)
-	{
-		XUngrabKeyboard(Dpy,CurrentTime);
-		XSelectInput(Dpy,GDK_WINDOW_XWINDOW(win),0);
-		XSync(Dpy,0);
-	}
-	if(layout)
-	{
-		g_object_unref(layout);
-		layout=0;
-	}
-	message=0;
-	return res;
+	/* draw the first time */
+	gdk_window_show(win);
+	gdk_window_focus(win,0);
+}
+
+void ui_add_cursor(void)
+{
+	GdkCursor *cur;
+	if(!root) return;
+	cur=gdk_cursor_new(GDK_LEFT_PTR);
+	gdk_window_set_cursor(root,cur);
+	gdk_cursor_unref(cur);
 }
 
 int ui_main(void)
 {
-	while(1)
-	{
-		int ret=ui_main_one();
-		if(ret==0 && stage==2)
-		{
-			struct passwd *pw;
-			int ret;
-			if(!strcmp(user,"reboot"))
-			{
-				do_reboot();
-			}
-			else if(!strcmp(user,"shutdown"))
-			{
-				do_shutdown();
-			}
-			ret=auth_user(user,pass,&pw);
-			if(AUTH_SUCCESS==ret && pw!=NULL)
-			{
-				char *exec=0;
-				if(sessions && session_select>0)
-				{
-					LXSESSION *sess;
-					sess=g_slist_nth_data(sessions,session_select);
-					exec=g_strdup(sess->exec);
-					free_xsessions(sessions);
-				}
-				sessions=0;session_select=-1;
-				do_login(pw,exec);
-				g_free(exec);
-			}
-		}
-		else
-		{
-			break;
-		}
-	}
+	GMainLoop *loop=g_main_loop_new(NULL,0);
+	ui_add_cursor();
+	ui_prepare();
+	gdk_event_handler_set(ui_event_cb,0,0);
+	g_main_loop_run(loop);
 	return 0;
 }
 
-int ui_show(int b)
-{
-	return 0;
-}
-
-int ui_reset(void)
-{
-	user[0]=0;
-	pass[0]=0;
-	stage=0;
-	return 0;
-}
-
-#if 0
-int ui_set_bg(void)
-{
-	char *bg;
-	char *style;
-	
-	win=gdk_get_default_root_window();
-	bg=g_key_file_get_string(config,"display","bg",0);
-	if(!bg) bg=g_strdup("#222E45");
-	style=g_key_file_get_string(config,"display","bg_style",0);
-	if(bg && bg[0]!='#')
-	{
-		GdkPixbuf *pb=gdk_pixbuf_new_from_file(bg,0);
-		if(!pb)
-		{
-			g_free(bg);
-			bg=g_strdup("#222E45");
-		}
-		else
-		{
-			bg_img=pb;
-		}
-	}
-	if(bg && bg[0]=='#')
-	{
-		gdk_color_parse(bg,&screen);
-		//gdk_window_set_background(win,&screen);
-	}
-	g_free(bg);
-	g_free(style);
-	return 0;
-}
-#endif

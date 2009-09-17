@@ -1,9 +1,4 @@
 #define _GNU_SOURCE
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,7 +11,8 @@
 #include <signal.h>
 #include <time.h>
 #include <sys/wait.h>
-#include <gtk/gtk.h>
+#include <glib.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 #include <X11/Xmu/WinUtil.h>
@@ -32,6 +28,18 @@ static unsigned int my_xid_n;
 static char *self;
 static pid_t child;
 static int reason;
+
+void lxdm_restart_self(void)
+{
+	reason=0;
+	exit(0);
+}
+
+void lxdm_quit_self(void)
+{
+	reason=1;
+	exit(0);
+}
 
 void log_print(char *fmt,...)
 {
@@ -56,8 +64,61 @@ void log_print(char *fmt,...)
 	fflush(log);
 }
 
+GSList *do_scan_xsessions(void)
+{
+	GSList *l=NULL;
+	GDir *d;
+	LXSESSION *sess;
+	char *name;
+	
+	d=g_dir_open("/usr/share/xsessions",0,NULL);
+	if(!d) return NULL;
+	while((name=(char*)g_dir_read_name(d))!=NULL)
+	{
+		GKeyFile *f=g_key_file_new();
+		char *tmp=g_strdup_printf("/usr/share/xsessions/%s",name);
+		gboolean ret=g_key_file_load_from_file(f,tmp,G_KEY_FILE_NONE,NULL);
+		while(ret==TRUE)
+		{
+			char *name=g_key_file_get_string(f,"Desktop Entry","Name",0);
+			if(!name) break;
+			char *exec=g_key_file_get_string(f,"Desktop Entry","Exec",0);
+			if(!exec)
+			{
+				g_free(name);
+				break;
+			}
+			sess=g_malloc(sizeof(LXSESSION));
+			sess->name=name;
+			sess->exec=exec;
+			if(!strcmp(name,"LXDE"))
+				l=g_slist_prepend(l,sess);
+			else
+				l=g_slist_append(l,sess);
+			break;
+		}
+		g_key_file_free(f);
+	}
+	g_dir_close(d);
+	return l;
+}
 
-int auth_user(char *user,char *pass,struct passwd **ppw)
+void free_xsessions(GSList *l)
+{
+	GSList *p;
+	LXSESSION *sess;
+	
+	for(p=l;p;p=p->next)
+	{
+		sess=p->data;
+		g_free(sess->name);
+		g_free(sess->exec);
+		g_free(sess);
+	}
+	g_slist_free(l);
+}
+
+int lxdm_auth_user(char *user,char *pass,struct passwd **ppw)
 {
 	struct passwd *pw;
 	struct spwd *sp;
@@ -112,8 +173,7 @@ void switch_user(struct passwd *pw,char *run,char **env)
 		exit(EXIT_FAILURE);
 	}
 	chdir(pw->pw_dir);
-    /* FIXME: this script is quite distro specific and need to be fixed. */
-	execle(LXDM_DATA_DIR "/Xsession", LXDM_DATA_DIR "/Xsession",run,NULL,env);
+	execle("/etc/lxdm/Xsession","/etc/lxdm/Xsession",run,NULL,env);
 	exit(EXIT_FAILURE);
 }
 
@@ -168,35 +228,6 @@ void put_lock(void)
 	g_free(lockfile);
 }
 
-void startx(void)
-{
-	char *arg;
-	char **args;
-	
-	if(!getenv("DISPLAY"))
-		putenv("DISPLAY=:0");
-	
-	server=vfork();
-	
-	arg=g_key_file_get_string(config,"server","arg",0);
-	if(!arg) arg=g_strdup("X");
-	args=g_strsplit(arg," ",-1);
-	g_free(arg);
-	
-	switch(server){
-	case 0:
-		setpgid(0,getpid());
-		execvp(args[0], args);
-		break;
-	case -1:
-		exit(EXIT_FAILURE);
-		break;
-	default:
-		break;
-	}
-	g_strfreev(args);
-}
-
 void stop_pid(int pid)
 {
 	if(pid<=0) return;
@@ -216,10 +247,41 @@ void stop_pid(int pid)
 	while(waitpid(-1,0,WNOHANG)>0);
 }
 
-void stopx(void)
+static void on_xserver_stop(GPid pid,gint status,gpointer data)
 {
 	stop_pid(server);
 	server=-1;
+	lxdm_restart_self();
+}
+
+void startx(void)
+{
+	char *arg;
+	char **args;
+	
+	if(!getenv("DISPLAY"))
+		putenv("DISPLAY=:0");
+		
+	arg=g_key_file_get_string(config,"server","arg",0);
+	if(!arg) arg=g_strdup("/usr/bin/X");
+	args=g_strsplit(arg," ",-1);
+	g_free(arg);
+	
+	server=vfork();
+	
+	switch(server){
+	case 0:
+		setpgid(0,getpid());
+		execvp(args[0], args);
+		break;
+	case -1:
+		exit(EXIT_FAILURE);
+		break;
+	default:
+		break;
+	}
+	g_strfreev(args);
+	g_child_watch_add(server,on_xserver_stop,0);
 }
 
 void exit_cb(void)
@@ -231,7 +293,11 @@ void exit_cb(void)
 		child=-1;
 	}
 	if(pamh) pam_end(pamh,PAM_SUCCESS);
-	stopx();
+	if(server>0)
+	{
+		stop_pid(server);
+		server=-1;
+	}
 	put_lock();
 	if(reason==0)
 	{
@@ -307,10 +373,39 @@ void stop_clients(int top)
 	XSetErrorHandler(NULL);
 }
 
-void do_login(struct passwd *pw,char *session)
+static void on_session_stop(GPid pid,gint status,gpointer data)
+{
+	int code=WEXITSTATUS(status);/* 0: reboot,shutdown 10: logout */
+
+	//log_print("session %d stop status %d\n",pid,code);
+	if(server>0)
+	{
+		stop_clients(0);
+		stop_clients(1);
+		free_my_xid();
+	}
+	killpg(pid,SIGHUP);
+	stop_pid(pid);
+	child=-1;
+	if(pamh)
+	{
+		pam_close_session(pamh,0);
+		pam_setcred(pamh, PAM_DELETE_CRED);
+	}
+	if(code==0)
+	{
+		/* xterm will quit use this, but we shul not quit here */
+		/* so wait someone to kill me may better */
+		//lxdm_quit_self();
+		sleep(3);
+	}
+	
+	ui_prepare();
+}
+
+void lxdm_do_login(struct passwd *pw,char *session)
 {
 	int pid;
-	int status;
 	
 	if (pw->pw_shell[0] == '\0')
 	{
@@ -328,9 +423,7 @@ void do_login(struct passwd *pw,char *session)
 			//printf("%s\n",pam_strerror(pamh,err));
 		}
 	}
-
 	get_my_xid();
-
 	child = pid = fork();
 	if(child==0)
 	{
@@ -340,7 +433,7 @@ void do_login(struct passwd *pw,char *session)
 		
 		if(pamh)
 			pam_end(pamh,PAM_SUCCESS);
-
+		
 		env[i++]=g_strdup_printf("TERM=%s",getenv("TERM"));
 		env[i++]=g_strdup_printf("HOME=%s", pw->pw_dir);
 		env[i++]=g_strdup_printf("SHELL=%s", pw->pw_shell);
@@ -355,69 +448,42 @@ void do_login(struct passwd *pw,char *session)
 		if(!session)
 			session=g_key_file_get_string(config,"base","session",0);
 		if(!session) session=g_strdup("startlxde");
+
 		switch_user(pw,session,env);
 		reason=4;
 		exit(EXIT_FAILURE);
 	}
-
-	while(1)
-	{
-		int wpid = wait(&status);
-		if(wpid==server)
-		{
-			stopx();
-			break;
-		}
-		else if(wpid==child)
-		{
-			child=-1;
-			break;
-		}
-	}
-	if(server>0)
-	{
-		stop_clients(0);
-		stop_clients(1);
-		free_my_xid();
-	}
-
-	killpg(pid,SIGHUP);
-	stop_pid(pid);
-	child=-1;
-	if(pamh)
-	{
-		pam_close_session(pamh,0);
-		pam_setcred(pamh, PAM_DELETE_CRED);
-	}
-	if(server==-1)
-	{
-		exit(0);
-	}
+	g_child_watch_add(pid,on_session_stop,0);
 }
 
-void do_reboot(void)
+void lxdm_do_reboot(void)
 {
 	char *cmd;	
 	cmd=g_key_file_get_string(config,"cmd","reboot",0);
 	if(!cmd) cmd=g_strdup("reboot");
-	reason=2;
+	reason=1;
 	system(cmd);
 	g_free(cmd);
-	exit(0);
+	lxdm_quit_self();
 }
 
-void do_shutdown(void)
+void lxdm_do_shutdown(void)
 {
 	char *cmd;	
 	cmd=g_key_file_get_string(config,"cmd","shutdown",0);
 	if(!cmd) cmd=g_strdup("shutdown -h now");
-	reason=3;
+	reason=1;
 	system(cmd);
 	g_free(cmd);
-	exit(0);
+	lxdm_quit_self();
 }
 
-int do_auto_login(void)
+int lxdm_cur_session(void)
+{
+	return child;
+}
+
+int lxdm_do_auto_login(void)
 {
 	struct passwd *pw;
 	char *user;
@@ -425,20 +491,19 @@ int do_auto_login(void)
 	user=g_key_file_get_string(config,"base","autologin",0);
 	if(!user)
 		return 0;
-	if(AUTH_SUCCESS!=auth_user(user,0,&pw))
+	if(AUTH_SUCCESS!=lxdm_auth_user(user,0,&pw))
 		return 0;
-	do_login(pw,0);
+	lxdm_do_login(pw,0);
 	return 1;
 }
 
 void sig_handler(int sig)
 {
+	log_print("catch signal %d\n",sig);
 	switch(sig){
 	case SIGTERM:
 	case SIGINT:
-	case SIGPIPE:
-		reason=1;
-		exit(0);
+		lxdm_quit_self();
 		break;
 	default:
 		break;
@@ -509,7 +574,7 @@ int main(int arc,char *arg[])
 	self=arg[0];
 
 	config=g_key_file_new();
-	g_key_file_load_from_file(config, CONFIG_DIR "/lxdm.conf",G_KEY_FILE_KEEP_COMMENTS, NULL);
+	g_key_file_load_from_file(config,"/etc/lxdm/lxdm.conf",G_KEY_FILE_NONE,NULL);
 
 	get_lock();
 	atexit(exit_cb);
@@ -518,14 +583,22 @@ int main(int arc,char *arg[])
 
 	startx();
 
+	for(tmp=0;tmp<200;tmp++)
+	{
+		if(gdk_init_check(0,0))
+			break;
+		usleep(50*1000);
+	}
+	if(tmp>=200)
+		exit(EXIT_FAILURE);
+		
 	init_pam();
 
-	gtk_init(&arc, &arg);
+	lxdm_do_auto_login();
 
-	ui_set_bg();
-	do_auto_login();
+	ui_main();
 
-	gtk_ui_main();
+	lxdm_restart_self();
 
 	return 0;
 }

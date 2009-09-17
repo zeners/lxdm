@@ -1,4 +1,3 @@
 LXDM - GUI login manager for LXDE
 A lightweight dropped-in replacement for GDM or KDM.
 
-To build the program, please specify --sysconfdir=/etc when running configure.

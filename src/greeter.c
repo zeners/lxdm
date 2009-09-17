@@ -23,13 +23,16 @@
 #include <config.h>
 #endif
 
-#include "lxdm.h"
-
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
 #define XSESSION_DIR    "/usr/share/xsessions"
 
+#ifndef LXDM_DATA_DIR
+#define LXDM_DATA_DIR	"/usr/share/lxdm"
+#endif
+
+static GKeyFile *config;
 static GtkWidget* win;
 static GtkWidget* prompt;
 static GtkWidget* login_entry;
@@ -46,47 +49,20 @@ static char* user = NULL;
 static char* pass = NULL;
 static char* session_exec = NULL;
 static char* session_desktop_file = NULL;
-static struct passwd *login_pw = NULL;
 
 static GdkPixbuf *bg_img = NULL;
 static GdkColor bg_color = {0};
 
-static gboolean check_input()
+static void do_reboot(void)
 {
-    int ret;
-    struct passwd *pw;
+	printf("reboot\n");
+	fflush(stdout);
+}
 
-    if(!strcmp(user,"reboot"))
-    {
-        do_reboot();
-        return TRUE;
-    }
-    else if(!strcmp(user,"shutdown"))
-    {
-        do_shutdown();
-        return TRUE;
-    }
-    ret = auth_user(user,pass, &pw);
-
-    if(AUTH_SUCCESS==ret && pw!=NULL)
-    {
-        char *exec;
-        GtkTreeIter it;
-        if(gtk_combo_box_get_active_iter(sessions, &it))
-        {
-            GtkTreeModel* model = gtk_combo_box_get_model(sessions);
-            gtk_tree_model_get(model, &it, 1, &session_exec, 2, &session_desktop_file, -1);
-            login_pw = pw;
-            return TRUE;
-        }
-        else
-        {
-            login_pw = NULL;
-        }
-    }
-    else
-        login_pw = NULL;
-    return FALSE;
+static void do_shutdown(void)
+{
+	printf("shutdown\n");
+	fflush(stdout);
 }
 
 static void on_screen_size_changed(GdkScreen* scr, GtkWindow* win)
@@ -98,28 +74,31 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 {
     if(!user)
     {
-        user = g_strdup( gtk_entry_get_text(entry) );
-        gtk_label_set_text(prompt, _("Password:"));
-        gtk_entry_set_text(entry, "");
+        user = g_strdup( gtk_entry_get_text(GTK_ENTRY(entry)));
+        gtk_label_set_text(GTK_LABEL(prompt), _("Password:"));
+        gtk_entry_set_text(GTK_ENTRY(entry), "");
 
         gtk_entry_set_visibility(entry, FALSE);
     }
     else
     {
+		GtkTreeIter it;
+		
+		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(sessions), &it))
+		{
+			GtkTreeModel* model = gtk_combo_box_get_model(GTK_COMBO_BOX(sessions));
+			gtk_tree_model_get(model, &it, 1, &session_exec, 2, &session_desktop_file, -1);
+		}
+		else
+		{
+			/* FIXME: fatal error */
+		}
+		
         pass = g_strdup( gtk_entry_get_text(entry));
 
-        /* check password */
-        if( check_input() )
-        {
-            g_free(user);
-            user = NULL;
-            g_free(pass);
-            pass = NULL;
-            gtk_widget_destroy(win);
-            gtk_main_quit();
-
-            return;
-        }
+        printf("login user=%s pass=%s session=%s\n",
+        	user,pass,session_exec);
+	fflush(stdout);
 
         /* password check failed */
         g_free(user);
@@ -127,9 +106,9 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
         g_free(pass);
         pass = NULL;
 
-        gtk_label_set_text(prompt, _("User:"));
-        gtk_entry_set_text(entry, "");
-        gtk_entry_set_visibility(entry, TRUE);
+        gtk_label_set_text(GTK_LABEL(prompt), _("User:"));
+        gtk_entry_set_text(GTK_ENTRY(entry), "");
+        gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
     }
 }
 
@@ -149,7 +128,7 @@ static void load_sessions()
 
     list = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
     kf = g_key_file_new();
-    while(file_name = g_dir_read_name(dir))
+    while((file_name = (char*)g_dir_read_name(dir))!=NULL)
     {
         path = g_build_filename(XSESSION_DIR, file_name, NULL);
         if(g_key_file_load_from_file(kf, path, 0, NULL))
@@ -177,24 +156,23 @@ static void load_sessions()
     if(active_it.stamp == 0)
         active_it = it;
 
-    render = gtk_cell_renderer_text_new();
-    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(sessions), render, TRUE);
-    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(sessions), render, "text", 0, NULL);
+    render = (GtkCellRendererText*)gtk_cell_renderer_text_new();
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(sessions), GTK_CELL_RENDERER(render), TRUE);
+    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(sessions), GTK_CELL_RENDERER(render), "text", 0, NULL);
 
-    gtk_combo_box_set_model(sessions, list);
-    gtk_combo_box_set_active_iter(sessions, &active_it);
+    gtk_combo_box_set_model(GTK_COMBO_BOX(sessions), GTK_TREE_MODEL(list));
+    gtk_combo_box_set_active_iter(GTK_COMBO_BOX(sessions), &active_it);
 
     g_object_unref(list);
 }
 
 static void load_langs()
-{
-    
+{    
 }
 
 static void on_exit_clicked(GtkButton* exit_btn, gpointer user_data)
 {
-    gtk_menu_popup(exit_menu, NULL, NULL, NULL, NULL,
+    gtk_menu_popup(GTK_MENU(exit_menu), NULL, NULL, NULL, NULL,
                    0, gtk_get_current_event_time());
 }
 
@@ -204,11 +182,11 @@ static void load_exit()
     exit_menu = gtk_menu_new();
     item = gtk_image_menu_item_new_with_mnemonic(_("_Reboot"));
     g_signal_connect(item, "activate", G_CALLBACK(do_reboot), NULL);
-    gtk_menu_shell_append(exit_menu, item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(exit_menu), item);
 
     item = gtk_image_menu_item_new_with_mnemonic(_("_Shutdown"));
     g_signal_connect(item, "activate", G_CALLBACK(do_shutdown), NULL);
-    gtk_menu_shell_append(exit_menu, item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(exit_menu), item);
 
     gtk_widget_show_all(exit_menu);
     g_signal_connect(exit, "clicked", G_CALLBACK(on_exit_clicked), NULL);
@@ -273,8 +251,8 @@ static void create_win()
 
     g_object_unref(builder);
 
-    gtk_window_set_default_size(win, gdk_screen_get_width(scr), gdk_screen_get_height(scr));
-    gtk_window_present(win);
+    gtk_window_set_default_size(GTK_WINDOW(win), gdk_screen_get_width(scr), gdk_screen_get_height(scr));
+    gtk_window_present(GTK_WINDOW(win));
 
     gtk_widget_grab_focus(login_entry);
 }
@@ -315,54 +293,32 @@ int ui_set_bg(void)
 	return 0;
 }
 
-int gtk_ui_main()
+int gtk_ui_main(void)
 {
-    while( TRUE ) /* FIXME: is this ok? */
-    {
-        /* set gtk+ theme */
-        char* gtk_theme = g_key_file_get_string(config, "display", "gtk_theme", NULL);
-        if(gtk_theme)
-        {
-            GtkSettings* settings = gtk_settings_get_default();
-            g_object_set(settings, "gtk-theme-name", gtk_theme, NULL);
-            g_free(gtk_theme);
-        }
+	/* set gtk+ theme */
+	char* gtk_theme = g_key_file_get_string(config, "display", "gtk_theme", NULL);
+	if(gtk_theme)
+	{
+		GtkSettings* settings = gtk_settings_get_default();
+		g_object_set(settings, "gtk-theme-name", gtk_theme, NULL);
+		g_free(gtk_theme);
+	}
 
-        /* create the login window */
-        create_win();
+	/* create the login window */
+	create_win();
 
-        gtk_main();
-
-        if( login_pw )
-        {
-            if( session_exec )
-            {
-                char* data;
-                gsize len;
-                do_login(login_pw, session_exec);
-                g_free(session_exec);
-                session_exec = NULL;
-
-                if(session_desktop_file)
-                    g_key_file_set_string(config, "base", "last_session", session_desktop_file);
-                else
-                    g_key_file_remove_key(config, "base", "last_session", NULL);
-
-                g_free(session_desktop_file);
-                session_desktop_file = NULL;
-
-                /* write the config file to disk */
-                data = g_key_file_to_data(config, &len, NULL);
-                if(data)
-                {
-                    g_file_set_contents(CONFIG_DIR "/lxdm.conf", data, len, NULL);
-                    g_free(data);
-                }
-            }
-            login_pw = NULL;
-        }
-    }
+	gtk_main();
 
 	return 0;
 }
 
+int main(int arc,char *arg[])
+{
+	config=g_key_file_new();
+	g_key_file_load_from_file(config,"/etc/lxdm/lxdm.conf",0,0);
+	gtk_init(&arc,&arg);
+	ui_set_bg();
+	/* FIXME: watch the stdin to get signal from lxdm */
+	gtk_ui_main();
+	return 0;
+}
