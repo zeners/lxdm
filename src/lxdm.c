@@ -403,7 +403,7 @@ static void on_session_stop(GPid pid,gint status,gpointer data)
 	ui_prepare();
 }
 
-void lxdm_do_login(struct passwd *pw,char *session)
+void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 {
 	int pid;
 	
@@ -443,6 +443,8 @@ void lxdm_do_login(struct passwd *pw,char *session)
 		path=g_key_file_get_string(config,"base","path",0);
 		if(path) env[i++]=path;
 		g_free(path);
+		if(lang && lang[0])
+			env[i++]=g_strdup_printf("LANG=%s",lang);
 		env[i++]=0;
 		if(session) session=g_strdup(session);
 		if(!session)
@@ -493,7 +495,7 @@ int lxdm_do_auto_login(void)
 		return 0;
 	if(AUTH_SUCCESS!=lxdm_auth_user(user,0,&pw))
 		return 0;
-	lxdm_do_login(pw,0);
+	lxdm_do_login(pw,0,0);
 	return 1;
 }
 

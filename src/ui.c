@@ -211,7 +211,7 @@ int ui_do_login(void)
 		}
 		sessions=0;session_select=-1;
 		ui_drop();
-		lxdm_do_login(pw,exec);
+		lxdm_do_login(pw,exec,0);
 		g_free(exec);
 		if(lxdm_cur_session()<=0)
 		{
@@ -307,7 +307,7 @@ void ui_set_bg(void)
 	/* set background */
 	if(!bg_img)
 	{
-		GdkColormap *map = gdk_window_get_colormap(win);
+		GdkColormap *map = gdk_window_get_colormap(root);
 		gdk_color_alloc(map, &screen);
 		gdk_window_set_background(root,&screen);
 	}
@@ -442,6 +442,7 @@ static gboolean greeter_input(GIOChannel *source,GIOCondition condition,gpointer
 		char *user=greeter_param(str,"user");
 		char *pass=greeter_param(str,"pass");
 		char *session=greeter_param(str,"session");
+		char *lang=greeter_param(str,"lang");
 		if(user && pass)
 		{
 			struct passwd *pw;
@@ -449,14 +450,18 @@ static gboolean greeter_input(GIOChannel *source,GIOCondition condition,gpointer
 			if(AUTH_SUCCESS==ret && pw!=NULL)
 			{
 				ui_drop();
-				lxdm_do_login(pw,session);
+				lxdm_do_login(pw,session,lang);
 				if(lxdm_cur_session()<=0)
 				{
 					ui_prepare();
 				}
 			}
+			else
+			{
+				write(greeter_pipe[0],"reset\n",6);
+			}
 		}
-		g_free(user);g_free(pass);g_free(session);
+		g_free(user);g_free(pass);g_free(session);g_free(lang);
 	}
 	g_free(str);
 	return TRUE;

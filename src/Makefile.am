@@ -29,5 +29,6 @@ lxdm_greeter_gtk_LDFLAGS = \
 
 lxdm_greeter_gtk_SOURCES = \
 	greeter.c \
+	lang.c lang.h \
 	$(NULL)
 
