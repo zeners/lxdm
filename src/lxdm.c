@@ -380,8 +380,9 @@ static void on_session_stop(GPid pid,gint status,gpointer data)
 	//log_print("session %d stop status %d\n",pid,code);
 	if(server>0)
 	{
-		stop_clients(0);
-		stop_clients(1);
+		/* FIXME just work around lxde bug of focus can't set */
+		//stop_clients(0);
+		//stop_clients(1);
 		free_my_xid();
 	}
 	killpg(pid,SIGHUP);
