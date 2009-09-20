@@ -431,7 +431,7 @@ static gboolean greeter_input(GIOChannel *source,GIOCondition condition,gpointer
 	}
 	else if(!strncmp(str,"shutdown",6))
 	{
-		lxdm_do_reboot();
+		lxdm_do_shutdown();
 	}
 	else if(!strncmp(str,"log ",4))
 	{
