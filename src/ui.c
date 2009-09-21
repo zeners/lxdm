@@ -280,7 +280,7 @@ void ui_set_bg(void)
 	char *p;
 	GdkWindow *root=gdk_get_default_root_window();
 	GdkColor screen;
-	GdkPixbuf *bg_img;
+	GdkPixbuf *bg_img=NULL;
 
 	/* get background */
 	p=g_key_file_get_string(config,"display","bg",0);

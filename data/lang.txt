@@ -1,0 +1,9 @@
+en_US.UTF-8
+US English
+
+zh_CN.UTF-8
+Simpllified Chinese
+
+zh_TW.UTF-8
+Traditional Chinese
+
