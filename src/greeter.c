@@ -180,14 +180,10 @@ static void load_sessions()
     g_dir_close(dir);
     g_key_file_free(kf);
     
-    exec=g_key_file_get_string(config,"base","session",0);
-    if(exec)
-    {
-		gtk_list_store_prepend(list, &it);
-		gtk_list_store_set(list, &it, 0, _("Default"), 1, exec, 2, "__default__", -1);
-		if(last && strcmp(file_name, last)==0)
-			active_it = it;
-	}
+	gtk_list_store_prepend(list, &it);
+	gtk_list_store_set(list, &it, 0, _("Default"), 1, "", 2, "__default__", -1);
+	if(last && strcmp(file_name, last)==0)
+		active_it = it;
     
     g_free(last);
 

@@ -447,10 +447,28 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		if(lang && lang[0])
 			env[i++]=g_strdup_printf("LANG=%s",lang);
 		env[i++]=0;
-		if(session) session=g_strdup(session);
+		if(session && session[0])
+			session=g_strdup(session);
+		else
+			session=0;
 		if(!session)
 			session=g_key_file_get_string(config,"base","session",0);
-		if(!session) session=g_strdup("startlxde");
+		if(!session && getenv("PREFERRED"))
+			session=g_strdup(getenv("PREFERRED"));
+		if(!session && getenv("DESKTOP"))
+		{
+			char *p=getenv("DESKTOP");
+			if(!strcmp(p,"LXDE"))
+				session=g_strdup("/usr/bin/startlxde");
+			else if(!strcmp(p,"GNOME"))
+				session=g_strdup("/usr/bin/gnome-session");
+			else if(!strcmp(p,"KDE"))
+				session=g_strdup("/usr/bin/startkde");
+			else if(!strcmp(p,"XFCE"))
+				session=g_strdup("startxfce4");
+		}
+		if(!session)
+			session=g_strdup("/usr/bin/startlxde");
 
 		switch_user(pw,session,env);
 		reason=4;
