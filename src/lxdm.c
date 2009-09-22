@@ -1,4 +1,15 @@
 #define _GNU_SOURCE
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+#ifndef HAVE_LIBPAM
+#define HAVE_LIBPAM 1
+#endif
+#ifndef HAVE_LIBXMU
+#define HAVE_LIBXMU	1
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,19 +26,28 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
+
+#if HAVE_LIBXMU
 #include <X11/Xmu/WinUtil.h>
+#endif
+
+#if HAVE_LIBPAM
 #include <security/pam_appl.h>
+#endif
 
 #include "lxdm.h"
 
 GKeyFile *config;
 static pid_t server;
+#if HAVE_LIBPAM
 static pam_handle_t *pamh;
+#endif
 static Window *my_xid;
 static unsigned int my_xid_n;
 static char *self;
 static pid_t child;
 static int reason;
+static char mcookie[33];
 
 void lxdm_restart_self(void)
 {
@@ -118,6 +138,57 @@ void free_xsessions(GSList *l)
 	g_slist_free(l);
 }
 
+void create_server_auth(void)
+{
+	GRand *h;
+	const char *digits = "0123456789abcdef";
+	int i,r,hex=0;
+	char *authfile;
+	char *tmp;
+	
+	h=g_rand_new();
+	for(i=0;i<31;i++)
+	{
+		r=g_rand_int(h)%16;
+		mcookie[i] = digits[r];
+		if (r>9)
+			hex++;
+	}
+	if ((hex%2) == 0)
+		r = g_rand_int(h)%10;
+	else
+		r = g_rand_int(h)%5+10;
+	mcookie[31] = digits[r];
+	mcookie[32]=0;
+	g_rand_free(h);
+	
+	authfile=g_key_file_get_string(config,"base","authfile",0);
+	if(!authfile)
+		authfile=g_strdup("/var/run/lxdm.auth");
+	tmp=g_strdup_printf("XAUTHORITY=%s",authfile);
+	putenv(tmp);
+	g_free(tmp);
+	remove(authfile);
+	tmp=g_strdup_printf("xauth -q -f %s add %s .%s",
+			authfile,getenv("DISPLAY"),mcookie);
+	system(tmp);
+	g_free(tmp);
+	g_free(authfile);
+}
+
+void create_client_auth(void)
+{
+	char *tmp;
+	
+	tmp=g_strdup_printf("%s/.Xauthority",getenv("HOME"));
+	remove(tmp);
+	g_free(tmp);
+	tmp=g_strdup_printf("xauth -q add %s .%s",
+			getenv("DISPLAY"),mcookie);
+	system(tmp);
+	g_free(tmp);
+}
+
 int lxdm_auth_user(char *user,char *pass,struct passwd **ppw)
 {
 	struct passwd *pw;
@@ -173,6 +244,7 @@ void switch_user(struct passwd *pw,char *run,char **env)
 		exit(EXIT_FAILURE);
 	}
 	chdir(pw->pw_dir);
+	create_client_auth();
 	execle("/etc/lxdm/Xsession","/etc/lxdm/Xsession",run,NULL,env);
 	exit(EXIT_FAILURE);
 }
@@ -262,6 +334,8 @@ void startx(void)
 	if(!getenv("DISPLAY"))
 		putenv("DISPLAY=:0");
 		
+	create_server_auth();
+		
 	arg=g_key_file_get_string(config,"server","arg",0);
 	if(!arg) arg=g_strdup("/usr/bin/X");
 	args=g_strsplit(arg," ",-1);
@@ -292,7 +366,9 @@ void exit_cb(void)
 		stop_pid(child);
 		child=-1;
 	}
+#if HAVE_LIBPAM
 	if(pamh) pam_end(pamh,PAM_SUCCESS);
+#endif
 	if(server>0)
 	{
 		stop_pid(server);
@@ -354,7 +430,11 @@ void stop_clients(int top)
 		for(i=0; i<nchildren; i++)
 		{
 			if(XGetWindowAttributes(Dpy, children[i], &attr) && (attr.map_state == IsViewable))
+#if HAVE_LIBXMU
 				children[i] = XmuClientWindow(Dpy, children[i]);
+#else
+				children[i]=children[i];
+#endif
 			else
  				children[i] = 0;
 		}
@@ -388,11 +468,13 @@ static void on_session_stop(GPid pid,gint status,gpointer data)
 	killpg(pid,SIGHUP);
 	stop_pid(pid);
 	child=-1;
+#if HAVE_LIBPAM
 	if(pamh)
 	{
 		pam_close_session(pamh,0);
 		pam_setcred(pamh, PAM_DELETE_CRED);
 	}
+#endif
 	if(code==0)
 	{
 		/* xterm will quit use this, but we shul not quit here */
@@ -414,6 +496,7 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		strcpy(pw->pw_shell, getusershell());
 		endusershell();
 	}
+#if HAVE_LIBPAM
 	if(pamh)
 	{
 		int err;
@@ -424,6 +507,7 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 			//printf("%s\n",pam_strerror(pamh,err));
 		}
 	}
+#endif
 	get_my_xid();
 	child = pid = fork();
 	if(child==0)
@@ -431,10 +515,12 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		char *env[10];
 		char *path;
 		int i=0;
-		
+
+#if HAVE_LIBPAM
 		if(pamh)
 			pam_end(pamh,PAM_SUCCESS);
-		
+#endif
+
 		env[i++]=g_strdup_printf("TERM=%s",getenv("TERM"));
 		env[i++]=g_strdup_printf("HOME=%s", pw->pw_dir);
 		env[i++]=g_strdup_printf("SHELL=%s", pw->pw_shell);
@@ -544,6 +630,7 @@ void set_signal(void)
 	signal(SIGALRM, sig_handler);
 }
 
+#if HAVE_LIBPAM
 int conv_cb(int num_msg, const struct pam_message **msg,
          struct pam_response **resp, void *appdata_ptr)
 {
@@ -563,6 +650,7 @@ void init_pam(void)
 	pam_set_item(pamh,PAM_RHOST,"localhost");
 	pam_set_item(pamh,PAM_RUSER,"root");
 }
+#endif
 
 int main(int arc,char *arg[])
 {
@@ -613,8 +701,10 @@ int main(int arc,char *arg[])
 	}
 	if(tmp>=200)
 		exit(EXIT_FAILURE);
-		
+
+#if HAVE_LIBPAM		
 	init_pam();
+#endif
 
 	lxdm_do_auto_login();
 
