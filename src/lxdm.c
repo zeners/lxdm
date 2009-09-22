@@ -169,23 +169,24 @@ void create_server_auth(void)
 	putenv(tmp);
 	g_free(tmp);
 	remove(authfile);
-	tmp=g_strdup_printf("xauth -q -f %s add %s .%s",
+	tmp=g_strdup_printf("xauth -q -f %s add %s . %s",
 			authfile,getenv("DISPLAY"),mcookie);
 	system(tmp);
 	g_free(tmp);
 	g_free(authfile);
 }
 
-void create_client_auth(void)
+void create_client_auth(char *home)
 {
 	char *tmp;
+	char *authfile;
 	
-	tmp=g_strdup_printf("%s/.Xauthority",getenv("HOME"));
-	remove(tmp);
-	g_free(tmp);
-	tmp=g_strdup_printf("xauth -q add %s .%s",
-			getenv("DISPLAY"),mcookie);
+	authfile=g_strdup_printf("%s/.Xauthority",home);
+	remove(authfile);
+	tmp=g_strdup_printf("xauth -q -f %s add %s . %s",
+			authfile,getenv("DISPLAY"),mcookie);
 	system(tmp);
+	g_free(authfile);
 	g_free(tmp);
 }
 
@@ -244,7 +245,7 @@ void switch_user(struct passwd *pw,char *run,char **env)
 		exit(EXIT_FAILURE);
 	}
 	chdir(pw->pw_dir);
-	create_client_auth();
+	create_client_auth(pw->pw_dir);
 	execle("/etc/lxdm/Xsession","/etc/lxdm/Xsession",run,NULL,env);
 	exit(EXIT_FAILURE);
 }

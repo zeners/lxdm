@@ -53,11 +53,14 @@ else
 		done
 	fi
 
-	if [ -e /etc/X11/xinit.d ]; then
+	if [ -e /etc/mandriva-release -a -e /etc/X11/xinit.d ]; then
 		for file in /etc/X11/xinit.d/* ; do
 			if [ -x $file ]; then
-				. $file
-				echo $file
+				if grep -q "# to be sourced" $file; then
+					. $file $LXSESSION
+				else
+					$file $LXSESSION
+				fi
 			fi
 		done
 	fi
