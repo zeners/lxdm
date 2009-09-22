@@ -42,6 +42,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
 
 AC_CONFIG_FILES([
 	Makefile
+	lxdm.spec
 	src/Makefile
 	po/Makefile.in
 ])
