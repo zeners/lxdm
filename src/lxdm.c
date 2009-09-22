@@ -447,6 +447,7 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		if(lang && lang[0])
 			env[i++]=g_strdup_printf("LANG=%s",lang);
 		env[i++]=0;
+
 		if(session && session[0])
 			session=g_strdup(session);
 		else
