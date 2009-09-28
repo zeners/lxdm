@@ -140,6 +140,7 @@ void free_xsessions(GSList *l)
 
 void create_server_auth(void)
 {
+#if 0
 	GRand *h;
 	const char *digits = "0123456789abcdef";
 	int i,r,hex=0;
@@ -174,10 +175,12 @@ void create_server_auth(void)
 	system(tmp);
 	g_free(tmp);
 	g_free(authfile);
+#endif
 }
 
 void create_client_auth(char *home)
 {
+#if 0
 	char *tmp;
 	char *authfile;
 	
@@ -189,6 +192,7 @@ void create_client_auth(char *home)
 	system(tmp);
 	g_free(authfile);
 	g_free(tmp);
+#endif
 }
 
 int lxdm_auth_user(char *user,char *pass,struct passwd **ppw)
@@ -503,7 +507,7 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 	{
 		int err;
 		pam_setcred(pamh, PAM_ESTABLISH_CRED);
-		err=pam_open_session(pamh,0);
+		err=pam_open_session(pamh,0); /* FIXME pam session failed */
 		if(err!=PAM_SUCCESS)
 		{
 			//printf("%s\n",pam_strerror(pamh,err));

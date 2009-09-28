@@ -492,6 +492,7 @@ void ui_prepare(void)
 		{
 			return;
 		}
+		/* FIXME this may spawn a lot of greeter, why ? */
 		ret=g_spawn_async_with_pipes(NULL,arg,NULL,
 				0,greeter_setup,0,
 				&greeter,greeter_pipe+0,greeter_pipe+1,NULL,NULL);
