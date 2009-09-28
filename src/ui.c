@@ -488,6 +488,10 @@ void ui_prepare(void)
 	{
 		char *arg[]={p,NULL};
 		gboolean ret;
+		if(greeter>0 && kill(greeter,0)==0)
+		{
+			return;
+		}
 		ret=g_spawn_async_with_pipes(NULL,arg,NULL,
 				0,greeter_setup,0,
 				&greeter,greeter_pipe+0,greeter_pipe+1,NULL,NULL);

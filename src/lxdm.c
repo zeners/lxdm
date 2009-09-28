@@ -181,10 +181,11 @@ void create_client_auth(char *home)
 	char *tmp;
 	char *authfile;
 	
-	authfile=g_strdup_printf("%s/.Xauthority",home);
-	remove(authfile);
-	tmp=g_strdup_printf("xauth -q -f %s add %s . %s",
-			authfile,getenv("DISPLAY"),mcookie);
+	tmp=g_strdup_printf("%s/.Xauthority",getenv("HOME"));
+	remove(tmp);
+	g_free(tmp);
+	tmp=g_strdup_printf("xauth -q add %s . %s",
+			getenv("DISPLAY"),mcookie);
 	system(tmp);
 	g_free(authfile);
 	g_free(tmp);

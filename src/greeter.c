@@ -306,7 +306,7 @@ static void create_win()
     gtk_window_set_default_size(GTK_WINDOW(win), gdk_screen_get_width(scr), gdk_screen_get_height(scr));
     gtk_window_present(GTK_WINDOW(win));
     gtk_widget_realize(login_entry);
-    gdk_keyboard_grab(login_entry->window,FALSE,GDK_CURRENT_TIME);
+    //gdk_keyboard_grab(login_entry->window,FALSE,GDK_CURRENT_TIME);
     gtk_widget_grab_focus(login_entry);
 }
 
