@@ -35,6 +35,10 @@
 #include <security/pam_appl.h>
 #endif
 
+#if HAVE_LIBCK_CONNECTOR
+#include "ck-connector.h"
+#endif
+
 #include "lxdm.h"
 
 GKeyFile *config;
@@ -244,6 +248,9 @@ int lxdm_auth_user(char *user,char *pass,struct passwd **ppw)
 
 void switch_user(struct passwd *pw,char *run,char **env)
 {
+#if HAVE_LIBCK_CONNECTOR
+	CkConnector *ckc = NULL;
+#endif
 	if(!pw || initgroups(pw->pw_name, pw->pw_gid) ||
 		setgid(pw->pw_gid) || setuid(pw->pw_uid) || setpgrp())
 	{
@@ -251,6 +258,32 @@ void switch_user(struct passwd *pw,char *run,char **env)
 	}
 	chdir(pw->pw_dir);
 	create_client_auth(pw->pw_dir);
+#if HAVE_LIBCK_CONNECTOR
+	ckc=ck_connector_new();
+	if(ckc!=NULL)
+	{
+		DBusError error;
+		dbus_error_init (&error);
+		if(ck_connector_open_session(ckc, &error))
+		{
+			pid_t pid;
+			int i;
+			for(i=0;env[i]!=NULL;i++);
+			env[i++]=g_strdup_printf("XDG_SESSION_COOKIE=%s",ck_connector_get_cookie(ckc));
+			env[i++]=0;
+			pid=fork();
+			switch(pid){
+			case -1: break;
+			case 0: break;
+			default:waitpid(pid,&i,0);exit(i);break;
+			}
+		}
+	}
+	else
+	{
+		log_print("ck_connector_new fail\n");
+	}
+#endif
 	execle("/etc/lxdm/Xsession","/etc/lxdm/Xsession",run,NULL,env);
 	exit(EXIT_FAILURE);
 }
@@ -506,6 +539,9 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 	if(pamh)
 	{
 		int err;
+		pam_set_item(pamh, PAM_USER, pw->pw_name);
+		pam_authenticate(pamh, 0);
+		pam_acct_mgmt(pamh, PAM_SILENT);
 		pam_setcred(pamh, PAM_ESTABLISH_CRED);
 		err=pam_open_session(pamh,0); /* FIXME pam session failed */
 		if(err!=PAM_SUCCESS)

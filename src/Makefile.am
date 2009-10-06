@@ -6,10 +6,12 @@ lxdm_CFLAGS = \
 	$(GTK_CFLAGS) \
 	-DCONFIG_DIR=\"$(sysconfdir)/lxdm\" \
 	-DLXDM_DATA_DIR=\"$(datadir)/lxdm\" \
+	`pkg-config --cflags ck-connector` \
 	$(NULL)
 
 lxdm_LDFLAGS = \
 	$(GTK_LIBS) \
+	`pkg-config --libs ck-connector` \
 	$(NULL)
 
 lxdm_SOURCES = \
