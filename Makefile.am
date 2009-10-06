@@ -10,6 +10,11 @@ lxdm_conf_DATA = \
 	data/Xsession \
 	$(NULL)
 
+lxdm_pamdir = /etc/pam.d
+lxdm_pam_DATA = \
+	pam/lxdm \
+	$(NULL)
+
 lxdmdir = $(datadir)/lxdm
 lxdm_DATA = \
 	data/lxdm.glade \

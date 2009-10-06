@@ -46,6 +46,9 @@ static pid_t server;
 #if HAVE_LIBPAM
 static pam_handle_t *pamh;
 #endif
+#if HAVE_LIBCK_CONNECTOR
+static CkConnector *ckc;
+#endif
 static Window *my_xid;
 static unsigned int my_xid_n;
 static char *self;
@@ -248,9 +251,6 @@ int lxdm_auth_user(char *user,char *pass,struct passwd **ppw)
 
 void switch_user(struct passwd *pw,char *run,char **env)
 {
-#if HAVE_LIBCK_CONNECTOR
-	CkConnector *ckc = NULL;
-#endif
 	if(!pw || initgroups(pw->pw_name, pw->pw_gid) ||
 		setgid(pw->pw_gid) || setuid(pw->pw_uid) || setpgrp())
 	{
@@ -258,7 +258,7 @@ void switch_user(struct passwd *pw,char *run,char **env)
 	}
 	chdir(pw->pw_dir);
 	create_client_auth(pw->pw_dir);
-#if HAVE_LIBCK_CONNECTOR
+#if 0//HAVE_LIBCK_CONNECTOR
 	ckc=ck_connector_new();
 	if(ckc!=NULL)
 	{
@@ -514,6 +514,15 @@ static void on_session_stop(GPid pid,gint status,gpointer data)
 		pam_setcred(pamh, PAM_DELETE_CRED);
 	}
 #endif
+#if HAVE_LIBCK_CONNECTOR
+	if(ckc!=NULL)
+	{
+		DBusError error;
+		dbus_error_init (&error);
+		ck_connector_close_session(ckc, &error);
+		unsetenv("XDG_SESSION_COOKIE");
+	}
+#endif
 	if(code==0)
 	{
 		/* xterm will quit use this, but we shul not quit here */
@@ -550,6 +559,17 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		}
 	}
 #endif
+#if HAVE_LIBCK_CONNECTOR
+	if(ckc!=NULL)
+	{
+		DBusError error;
+		dbus_error_init (&error);
+		if(ck_connector_open_session_for_user(ckc, pw->pw_uid,"",getenv("DISPLAY"),&error))
+		{
+			setenv("XDG_SESSION_COOKIE",ck_connector_get_cookie(ckc),1);
+		}
+	}
+#endif
 	get_my_xid();
 	child = pid = fork();
 	if(child==0)
@@ -574,6 +594,8 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		g_free(path);
 		if(lang && lang[0])
 			env[i++]=g_strdup_printf("LANG=%s",lang);
+		if(getenv("XDG_SESSION_COOKIE"))
+			env[i++]=g_strdup_printf("XDG_SESSION_COOKIE=%s",getenv("XDG_SESSION_COOKIE"));
 		env[i++]=0;
 
 		if(session && session[0])
@@ -694,6 +716,13 @@ void init_pam(void)
 }
 #endif
 
+#if HAVE_LIBCK_CONNECTOR
+void init_ck(void)
+{
+	ckc=ck_connector_new();
+}
+#endif
+
 int main(int arc,char *arg[])
 {
 	int tmp;
@@ -746,6 +775,9 @@ int main(int arc,char *arg[])
 
 #if HAVE_LIBPAM		
 	init_pam();
+#endif
+#if HAVE_LIBCK_CONNECTOR
+	init_ck();
 #endif
 
 	lxdm_do_auto_login();
