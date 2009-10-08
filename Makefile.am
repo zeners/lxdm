@@ -2,6 +2,8 @@ NULL =
 SUBDIRS= \
 	src \
 	po \
+	pam \
+	data \
 	$(NULL)
 
 lxdm_confdir = /etc/lxdm
@@ -23,3 +25,16 @@ lxdm_DATA = \
 
 install-data-hook:
 	chmod +x $(DESTDIR)/etc/lxdm/Xsession
+
+rpm: dist @PACKAGE_NAME@.spec
+	rpmbuild -bb \
+	--define "_sourcedir `pwd`" \
+	--define "_builddir `pwd`" \
+	--define "_srcrpmdir `pwd`" \
+	--define "_rpmdir `pwd`" \
+	--define "_specdir `pwd`" \
+	@PACKAGE_NAME@.spec
+
+EXTRA_DIST= \
+	ChangeLog AUTHORS README NEWS \
+	INSTALL COPYING

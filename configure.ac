@@ -46,5 +46,7 @@ AC_CONFIG_FILES([
 	lxdm.spec
 	src/Makefile
 	po/Makefile.in
+	pam/Makefile
+	data/Makefile
 ])
 AC_OUTPUT

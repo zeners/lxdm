@@ -8,16 +8,9 @@ Version:	@PACKAGE_VERSION@
 Release:	1
 Summary:	Light weight X11 display manager
 License:	GPL
-# On SuSE that's not a valid RPM group,
-# that MAY change on different distros (not sure)
-# SuSE group is commented
-#Group:		System/GUI/Others
-
 Group:		User Interface/X
 URL:		http://lxde.sourceforge.net/
-# the source should be an archive...
-#Source0:	https://lxde.svn.sourceforge.net/svnroot/lxde/trunk/lxdm/
-Source0:	lxdm.tar.bz2
+Source0:	lxdm-%{version}.tar.gz
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}
 
@@ -30,16 +23,8 @@ Light weight X11 display manager
 %setup -q
 
 %build
-# always export $RPM_OPT_FLAGS
-
 export CFLAGS="$RPM_OPT_FLAGS"
 export CXXFLAGS="$RPM_OPT_FLAGS"
-
-# %configure macro already pass "--prefix=%_prefix"
-# where prefix is /usr, if the user needs a different
-# _prefix that should be exported on spec file like:
-# %define _prefix /new/prefix
-# %configure --prefix=/usr
 
 %configure
 
@@ -50,21 +35,7 @@ export CXXFLAGS="$RPM_OPT_FLAGS"
 %__make
 
 %install
-# Never delete $RPM_BUILD_ROOT without re-make it
-# that operation is already made by rpm itsealf
-# and manual intervention may breake the build
-# rm -rf $RPM_BUILD_ROOT
-
-# better tu use %makeinstall macro
-# make DESTDIR=${RPM_BUILD_ROOT} install
-
-%makeinstall
-
-# That's only required if translations are available
-# (.mo/.po/.gmo/ecc) files available, otherwise
-# that's not needed
-
-#%find_lang %{name}
+make DESTDIR=${RPM_BUILD_ROOT} install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -81,15 +52,15 @@ rm -rf $RPM_BUILD_ROOT
 #%files -f %{name}.lang
 %files
 %defattr (-,root,root-)
-%doc AUTHORS NEWS README COPYING INSTALL Changelog
+%doc AUTHORS NEWS README COPYING INSTALL ChangeLog
 %dir %{_datadir}/lxdm/
+%{_datadir}/lxdm/*
 %dir %{_sysconfdir}/lxdm/
 %{_bindir}/lxdm
 %{_bindir}/lxdm-greeter-gtk
 %{_sysconfdir}/lxdm/Xsession
 %config %{_sysconfdir}/lxdm/lxdm.conf
+%{_sysconfdir}/pam.d/lxdm
 
 %changelog
-* dgod <dgod.osa@gmail.com> - @VERSION@-1
-- Current version
 
