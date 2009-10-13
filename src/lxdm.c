@@ -15,6 +15,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdarg.h>
+#include <fcntl.h>
 #include <pwd.h>
 #include <grp.h>
 #include <shadow.h>
@@ -55,6 +56,43 @@ static char *self;
 static pid_t child;
 static int reason;
 static char mcookie[33];
+static int tty=7;
+
+void lxdm_get_tty(void)
+{
+	char *s=g_key_file_get_string(config,"server","arg",0);
+	int arc;
+	char **arg;
+	int len;
+	int gotvtarg=0;
+	if(!s) s=g_strdup("/usr/bin/X");
+	g_shell_parse_argv(s,&arc,&arg,0);
+	g_free(s);
+	for(len!=0;arg && arg[len];len++)
+	{
+		char *p=arg[len];
+		if(!strncmp(p,"vt",2) && isdigit(p[2]) && 
+				(!p[3] || (isdigit(p[3]) && !p[4])))
+		{
+			tty=atoi(p+2);
+			gotvtarg=1;
+			break;
+		}
+	}
+	if(!gotvtarg && g_key_file_get_integer(config,"base","active_vt",0))
+	{
+		/* get active vt dynamic, for work with plymouth, hardcode it 1 now */
+		tty=1;
+	}
+	arg=g_renew(char *,arg,len+10);
+	if(!gotvtarg)
+		arg[len++]=g_strdup_printf("vt%d",tty);
+	arg[len]=NULL;
+	s=g_strjoinv(" ",arg);
+	g_strfreev(arg);
+	g_key_file_set_string(config,"server","arg",s);
+	g_free(s);
+}
 
 void lxdm_restart_self(void)
 {
@@ -258,32 +296,6 @@ void switch_user(struct passwd *pw,char *run,char **env)
 	}
 	chdir(pw->pw_dir);
 	create_client_auth(pw->pw_dir);
-#if 0//HAVE_LIBCK_CONNECTOR
-	ckc=ck_connector_new();
-	if(ckc!=NULL)
-	{
-		DBusError error;
-		dbus_error_init (&error);
-		if(ck_connector_open_session(ckc, &error))
-		{
-			pid_t pid;
-			int i;
-			for(i=0;env[i]!=NULL;i++);
-			env[i++]=g_strdup_printf("XDG_SESSION_COOKIE=%s",ck_connector_get_cookie(ckc));
-			env[i++]=0;
-			pid=fork();
-			switch(pid){
-			case -1: break;
-			case 0: break;
-			default:waitpid(pid,&i,0);exit(i);break;
-			}
-		}
-	}
-	else
-	{
-		log_print("ck_connector_new fail\n");
-	}
-#endif
 	execle("/etc/lxdm/Xsession","/etc/lxdm/Xsession",run,NULL,env);
 	exit(EXIT_FAILURE);
 }
@@ -563,8 +575,16 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 	if(ckc!=NULL)
 	{
 		DBusError error;
+		char x[256],*d,*n;
+		sprintf(x,"/dev/tty%d",tty);
 		dbus_error_init (&error);
-		if(ck_connector_open_session_for_user(ckc, pw->pw_uid,"",getenv("DISPLAY"),&error))
+		d=x;n=getenv("DISPLAY");
+		if(ck_connector_open_session_with_parameters(ckc,&error,
+				"unix-user",&pw->pw_uid,
+				"display-device",&d,
+				"x11-display-device",&d,
+				"x11-display",&n,
+				NULL))
 		{
 			setenv("XDG_SESSION_COOKIE",ck_connector_get_cookie(ckc),1);
 		}
@@ -704,13 +724,16 @@ int conv_cb(int num_msg, const struct pam_message **msg,
 void init_pam(void)
 {
 	struct pam_conv conv;
+	char x[256];
 	conv.conv=conv_cb;
 	if(PAM_SUCCESS!=pam_start("lxdm",NULL,&conv,&pamh))
 	{
 		pamh=NULL;
 		return;
 	}
-	pam_set_item(pamh,PAM_TTY,getenv("DISPLAY"));
+	sprintf(x,"tty%d",tty);
+	pam_set_item(pamh,PAM_TTY,x);
+	pam_set_item(pamh,PAM_XDISPLAY,getenv("DISPLAY"));
 	pam_set_item(pamh,PAM_RHOST,"localhost");
 	pam_set_item(pamh,PAM_RUSER,"root");
 }
@@ -761,7 +784,7 @@ int main(int arc,char *arg[])
 	atexit(exit_cb);
 	
 	set_signal();
-
+	lxdm_get_tty();
 	startx();
 
 	for(tmp=0;tmp<200;tmp++)
