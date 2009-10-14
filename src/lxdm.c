@@ -28,6 +28,8 @@
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 
+#include <linux/vt.h>
+
 #if HAVE_LIBXMU
 #include <X11/Xmu/WinUtil.h>
 #endif
@@ -58,6 +60,30 @@ static int reason;
 static char mcookie[33];
 static int tty=7;
 
+static int get_active_vt (void)
+{
+	int console_fd;
+	struct vt_stat console_state = { 0 };
+
+	console_fd = open ("/dev/tty0", O_RDONLY | O_NOCTTY);
+
+	if (console_fd < 0) {
+		goto out;
+	}
+
+	if (ioctl (console_fd, VT_GETSTATE, &console_state) < 0) {
+		goto out;
+	}
+
+out:
+  	if (console_fd >= 0) {
+    		close (console_fd);
+	}
+
+	return console_state.v_active;
+}
+
+
 void lxdm_get_tty(void)
 {
 	char *s=g_key_file_get_string(config,"server","arg",0);
@@ -65,6 +91,7 @@ void lxdm_get_tty(void)
 	char **arg;
 	int len;
 	int gotvtarg=0;
+	int nr=0;
 	if(!s) s=g_strdup("/usr/bin/X");
 	g_shell_parse_argv(s,&arc,&arg,0);
 	g_free(s);
@@ -79,16 +106,24 @@ void lxdm_get_tty(void)
 			break;
 		}
 	}
-	if(!gotvtarg && g_key_file_get_integer(config,"base","active_vt",0))
+	if(!gotvtarg)
 	{
-		/* get active vt dynamic, for work with plymouth, hardcode it 1 now */
-		tty=1;
+		/* support plymouth */
+		nr=g_file_test("/var/spool/gdm/force-display-on-active-vt",G_FILE_TEST_EXISTS);
+		if(nr || g_key_file_get_integer(config,"base","active_vt",0))
+		{
+			/* get active vt dynamic  */
+			tty=get_active_vt();
+		}
+		if(nr) g_unlink("/var/spool/gdm/force-display-on-active-vt");
 	}
 	arg=g_renew(char *,arg,len+10);
 	if(!gotvtarg)
 		arg[len++]=g_strdup_printf("vt%d",tty);
 	arg[len++]=g_strdup("-nolisten");
 	arg[len++]=g_strdup("tcp");
+	if(nr!=0)
+		arg[len++]=g_strdup("-nr");
 	arg[len]=NULL;
 	s=g_strjoinv(" ",arg);
 	g_strfreev(arg);
