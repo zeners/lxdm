@@ -51,7 +51,7 @@ rm -rf $RPM_BUILD_ROOT
 # exactly as "%find_lang" macro
 #%files -f %{name}.lang
 %files
-%defattr (-,root,root-)
+%defattr (-,root,root,-)
 %doc AUTHORS NEWS README COPYING INSTALL ChangeLog
 %dir %{_datadir}/lxdm/
 %{_datadir}/lxdm/*

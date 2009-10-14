@@ -66,7 +66,9 @@ else
 	fi
 fi
 
-if [ -x /usr/bin/ck-launch-session -a -z "$XDG_SESSION_COOKIE" -a -z "$CK_XINIT_SESSION" ]; then
+if ! [ -z "$XDG_SESSION_COOKIE" ]; then
+CK_XINIT_SESSION=
+elif [ -x /usr/bin/ck-launch-session -a -z "$CK_XINIT_SESSION" ]; then
     CK_XINIT_SESSION="/usr/bin/ck-launch-session"
 fi
 

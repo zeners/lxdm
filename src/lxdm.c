@@ -87,6 +87,8 @@ void lxdm_get_tty(void)
 	arg=g_renew(char *,arg,len+10);
 	if(!gotvtarg)
 		arg[len++]=g_strdup_printf("vt%d",tty);
+	arg[len++]=g_strdup("-nolisten");
+	arg[len++]=g_strdup("tcp");
 	arg[len]=NULL;
 	s=g_strjoinv(" ",arg);
 	g_strfreev(arg);
