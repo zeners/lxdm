@@ -327,7 +327,7 @@ int lxdm_auth_user(char *user,char *pass,struct passwd **ppw)
 void switch_user(struct passwd *pw,char *run,char **env)
 {
 	if(!pw || initgroups(pw->pw_name, pw->pw_gid) ||
-		setgid(pw->pw_gid) || setuid(pw->pw_uid) || setpgrp())
+		setgid(pw->pw_gid) || setuid(pw->pw_uid) || setsid()==-1)
 	{
 		exit(EXIT_FAILURE);
 	}
@@ -543,19 +543,19 @@ void stop_clients(int top)
 
 static void on_session_stop(GPid pid,gint status,gpointer data)
 {
-	int code=WEXITSTATUS(status);/* 0: reboot,shutdown 10: logout */
+	int code=WEXITSTATUS(status);
 
-	//log_print("session %d stop status %d\n",pid,code);
+	killpg(pid,SIGHUP);
+	stop_pid(pid);
+	child=-1;
+
 	if(server>0)
 	{
 		/* FIXME just work around lxde bug of focus can't set */
 		//stop_clients(0);
-		//stop_clients(1);
+		stop_clients(1);
 		free_my_xid();
 	}
-	killpg(pid,SIGHUP);
-	stop_pid(pid);
-	child=-1;
 #if HAVE_LIBPAM
 	if(pamh)
 	{
@@ -577,7 +577,7 @@ static void on_session_stop(GPid pid,gint status,gpointer data)
 		/* xterm will quit use this, but we shul not quit here */
 		/* so wait someone to kill me may better */
 		//lxdm_quit_self();
-		sleep(3);
+		sleep(2);
 	}
 	
 	ui_prepare();
@@ -676,7 +676,7 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 				session=g_strdup("startxfce4");
 		}
 		if(!session)
-			session=g_strdup("/usr/bin/startlxde");
+			session=g_strdup("");
 
 		switch_user(pw,session,env);
 		reason=4;
