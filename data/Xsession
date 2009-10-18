@@ -2,9 +2,6 @@
 
 # use bash for "exec -l", howto run login shell by /bin/sh ?
 
-# why we need this?
-export PATH=$PATH
-
 if [ $# -eq 1 -a -n "$1" ]; then
 	LXSESSION=$1
 else

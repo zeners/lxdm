@@ -631,7 +631,7 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 	child = pid = fork();
 	if(child==0)
 	{
-		char *env[10];
+		char *env[12];
 		char *path;
 		int i=0;
 
@@ -647,7 +647,11 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		env[i++]=g_strdup_printf("LOGNAME=%s", pw->pw_name);
 		env[i++]=g_strdup_printf("DISPLAY=%s", getenv("DISPLAY"));
 		path=g_key_file_get_string(config,"base","path",0);
-		if(path) env[i++]=path;
+		if(!path && getenv("PATH"))
+			path=g_strdup(getenv("PATH"));
+		if(!path)
+			path=g_strdup("/bin;/usr/bin");
+		env[i++]=g_strdup_printf("PATH=%s",path);
 		g_free(path);
 		if(lang && lang[0])
 			env[i++]=g_strdup_printf("LANG=%s",lang);
