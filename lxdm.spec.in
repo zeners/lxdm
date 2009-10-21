@@ -36,6 +36,7 @@ export CXXFLAGS="$RPM_OPT_FLAGS"
 
 %install
 make DESTDIR=${RPM_BUILD_ROOT} install
+%find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -49,7 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 %postun
 
 # exactly as "%find_lang" macro
-#%files -f %{name}.lang
+%files -f %{name}.lang
 %files
 %defattr (-,root,root,-)
 %doc AUTHORS NEWS README COPYING INSTALL ChangeLog

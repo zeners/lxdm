@@ -1,3 +1,4 @@
 data/lxdm.glade
-src/lxdm-ui.c
+data/lang.txt
 src/greeter.c
+

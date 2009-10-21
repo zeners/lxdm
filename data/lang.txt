@@ -1,9 +1,9 @@
 en_US.UTF-8
-US English
+_("US English")
 
 zh_CN.UTF-8
-Simpllified Chinese
+_("Simpllified Chinese")
 
 zh_TW.UTF-8
-Traditional Chinese
+_("Traditional Chinese")
 

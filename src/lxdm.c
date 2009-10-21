@@ -110,7 +110,7 @@ void lxdm_get_tty(void)
 	{
 		/* support plymouth */
 		nr=g_file_test("/var/spool/gdm/force-display-on-active-vt",G_FILE_TEST_EXISTS);
-		if(nr || g_key_file_get_integer(config,"base","active_vt",0))
+		if(nr || g_key_file_get_integer(config,"server","active_vt",0))
 		{
 			/* get active vt dynamic  */
 			tty=get_active_vt();

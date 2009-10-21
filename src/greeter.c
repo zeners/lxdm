@@ -205,7 +205,7 @@ static void load_lang_cb(void *arg,char *lang,char *desc)
 	GtkListStore* list=(GtkListStore*)arg;
 	GtkTreeIter it;
 	gtk_list_store_append(list, &it);
-	gtk_list_store_set(list, &it, 0, desc, 1, lang, -1);	
+	gtk_list_store_set(list, &it, 0, _(desc), 1, lang, -1);	
 }
 
 static void load_langs()
@@ -459,6 +459,9 @@ void ui_set_root_bg(void)
 
 int main(int arc,char *arg[])
 {
+	gtk_set_locale();
+	bindtextdomain("lxdm","/usr/share/locale");
+	textdomain("lxdm");
 	config=g_key_file_new();
 	g_key_file_load_from_file(config,"/etc/lxdm/lxdm.conf",0,0);
 	gtk_init(&arc,&arg);

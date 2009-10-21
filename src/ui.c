@@ -379,7 +379,7 @@ void ui_set_bg(void)
 }
 #endif
 
-static void greeter_setup(gpointer user_data)
+static void greeter_setup(gpointer user)
 {
 	struct passwd *pw;
 	if(AUTH_SUCCESS==lxdm_auth_user("lxdm",NULL,&pw))
@@ -494,7 +494,7 @@ void ui_prepare(void)
 		}
 		/* FIXME this may spawn a lot of greeter, why ? */
 		ret=g_spawn_async_with_pipes(NULL,arg,NULL,
-				0,greeter_setup,0,
+				G_SPAWN_SEARCH_PATH,greeter_setup,0,
 				&greeter,greeter_pipe+0,greeter_pipe+1,NULL,NULL);
 		if(ret==TRUE)
 		{
