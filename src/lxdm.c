@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <stdarg.h>
 #include <fcntl.h>
@@ -29,6 +30,7 @@
 #include <X11/Xlib.h>
 
 #include <linux/vt.h>
+#include <sys/ioctl.h>
 
 #if HAVE_LIBXMU
 #include <X11/Xmu/WinUtil.h>
@@ -115,7 +117,7 @@ void lxdm_get_tty(void)
 			/* get active vt dynamic  */
 			tty=get_active_vt();
 		}
-		if(nr) g_unlink("/var/spool/gdm/force-display-on-active-vt");
+		if(nr) unlink("/var/spool/gdm/force-display-on-active-vt");
 	}
 	arg=g_renew(char *,arg,len+10);
 	if(!gotvtarg)
