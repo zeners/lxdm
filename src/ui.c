@@ -30,6 +30,7 @@ static int session_select=-1;
 static char *message;
 
 static pid_t greeter=-1;
+static guint greeter_id=0;
 static int greeter_pipe[2];
 static GIOChannel *greeter_io;
 static guint io_id;
@@ -467,6 +468,14 @@ static gboolean greeter_input(GIOChannel *source,GIOCondition condition,gpointer
 	return TRUE;
 }
 
+static void greeter_watch(GPid pid,gint status,gpointer data)
+{
+	if(pid!=greeter)
+		return;
+	greeter=-1;
+	g_source_remove(greeter_id);
+}
+
 void ui_prepare(void)
 {
 	cairo_t *cr;
@@ -492,6 +501,7 @@ void ui_prepare(void)
 		{
 			return;
 		}
+#if 0
 		/* FIXME this may spawn a lot of greeter, why ? */
 		ret=g_spawn_async_with_pipes(NULL,arg,NULL,
 				G_SPAWN_SEARCH_PATH,greeter_setup,0,
@@ -504,6 +514,21 @@ void ui_prepare(void)
 					greeter_input,NULL);
 			return;
 		}
+
+#else
+		ret=g_spawn_async_with_pipes(NULL,arg,NULL,
+				G_SPAWN_SEARCH_PATH|G_SPAWN_DO_NOT_REAP_CHILD,greeter_setup,0,
+				&greeter,greeter_pipe+0,greeter_pipe+1,NULL,NULL);
+		if(ret==TRUE)
+		{
+			g_free(p);
+			greeter_io=g_io_channel_unix_new(greeter_pipe[1]);
+			io_id=g_io_add_watch(greeter_io,G_IO_IN|G_IO_HUP|G_IO_ERR,
+					greeter_input,NULL);
+			greeter_id=g_child_watch_add(greeter,greeter_watch,0);
+			return;
+		}
+#endif
 	}
 	g_free(p);
 

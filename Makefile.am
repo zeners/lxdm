@@ -17,6 +17,10 @@ lxdm_pam_DATA = \
 	pam/lxdm \
 	$(NULL)
 
+lxdm_bindir = /usr/bin
+lxdm_bin_DATA = \
+	data/lxdm
+
 lxdmdir = $(datadir)/lxdm
 lxdm_DATA = \
 	data/lxdm.glade \
@@ -25,6 +29,7 @@ lxdm_DATA = \
 
 install-data-hook:
 	chmod +x $(DESTDIR)/etc/lxdm/Xsession
+	chmod +x $(DESTDIR)/usr/bin/lxdm
 
 rpm: dist @PACKAGE_NAME@.spec
 	rpmbuild -bb \

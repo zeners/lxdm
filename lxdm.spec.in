@@ -58,6 +58,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/lxdm/*
 %dir %{_sysconfdir}/lxdm/
 %{_bindir}/lxdm
+%{_bindir}/lxdm-binary
 %{_bindir}/lxdm-greeter-gtk
 %{_sysconfdir}/lxdm/Xsession
 %config %{_sysconfdir}/lxdm/lxdm.conf

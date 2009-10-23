@@ -44,6 +44,10 @@ msgstr "简体中文"
 msgid "Traditional Chinese"
 msgstr "繁体中文"
 
+#: ../data/lang.txt:11
+msgid "Italian"
+msgstr "意大利"
+
 #: ../src/greeter.c:84
 msgid "Password:"
 msgstr "密码"

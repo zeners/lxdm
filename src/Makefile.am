@@ -1,20 +1,20 @@
 NULL =
 
-bin_PROGRAMS = lxdm lxdm-greeter-gtk
+bin_PROGRAMS = lxdm-binary lxdm-greeter-gtk
 
-lxdm_CFLAGS = \
+lxdm_binary_CFLAGS = \
 	$(GTK_CFLAGS) \
 	-DCONFIG_DIR=\"$(sysconfdir)/lxdm\" \
 	-DLXDM_DATA_DIR=\"$(datadir)/lxdm\" \
 	`pkg-config --cflags ck-connector` \
 	$(NULL)
 
-lxdm_LDFLAGS = \
+lxdm_binary_LDFLAGS = \
 	$(GTK_LIBS) \
 	`pkg-config --libs ck-connector` \
 	$(NULL)
 
-lxdm_SOURCES = \
+lxdm_binary_SOURCES = \
 	lxdm.c lxdm.h \
 	ui.c \
 	$(NULL)

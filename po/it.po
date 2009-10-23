@@ -3,63 +3,65 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-23 20:27+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-10-21 23:02+0800\n"
+"PO-Revision-Date: 2009-10-21 22:59+0100\n"
+"Last-Translator: Andrea Florio <andrea@opensuse.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
-msgstr ""
+msgstr "Desktop:"
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
-msgstr ""
+msgstr "Layout Tastiera:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
-msgstr ""
+msgstr "Lingua:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:113 ../src/greeter.c:137
+#: ../data/lxdm.glade.h:4
+#: ../src/greeter.c:113
+#: ../src/greeter.c:137
 msgid "User:"
-msgstr ""
+msgstr "Utente:"
 
 #: ../data/lang.txt:2
 msgid "US English"
-msgstr ""
+msgstr "Inglese US"
 
 #: ../data/lang.txt:5
 msgid "Simpllified Chinese"
-msgstr ""
+msgstr "Cinese Semplificato"
 
 #: ../data/lang.txt:8
 msgid "Traditional Chinese"
-msgstr ""
+msgstr "Cinese Tradizionale"
 
 #: ../data/lang.txt:11
 msgid "Italian"
-msgstr ""
+msgstr "Italiano"
 
 #: ../src/greeter.c:84
 msgid "Password:"
-msgstr ""
+msgstr "Password"
 
 #: ../src/greeter.c:184
 msgid "Default"
-msgstr ""
+msgstr "Predefinito"
 
 #: ../src/greeter.c:235
 msgid "_Reboot"
-msgstr ""
+msgstr "_Riavvia"
 
 #: ../src/greeter.c:239
 msgid "_Shutdown"
-msgstr ""
+msgstr "_Spegni"
+
