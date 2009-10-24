@@ -48,9 +48,6 @@
 
 GKeyFile *config;
 static pid_t server;
-#if HAVE_LIBPAM
-static pam_handle_t *pamh;
-#endif
 #if HAVE_LIBCK_CONNECTOR
 static CkConnector *ckc;
 #endif
@@ -326,6 +323,41 @@ int lxdm_auth_user(char *user,char *pass,struct passwd **ppw)
 	return AUTH_SUCCESS;
 }
 
+#if HAVE_LIBPAM
+static pam_handle_t *pamh;
+static struct pam_conv conv;
+
+void setup_pam_session(struct passwd *pw)
+{
+	int err;
+	char x[256];
+	if(PAM_SUCCESS!=pam_start("lxdm",pw->pw_name,&conv,&pamh))
+	{
+		pamh=NULL;
+		return;
+	}
+	sprintf(x,"tty%d",tty);
+	pam_set_item(pamh,PAM_TTY,x);
+	pam_set_item(pamh,PAM_XDISPLAY,getenv("DISPLAY"));
+	err=pam_open_session(pamh,0); /* FIXME pam session failed */
+	if(err!=PAM_SUCCESS)
+	{
+		log_print("pam open session error \"%s\"\n",pam_strerror(pamh,err));
+	}
+
+}
+
+void close_pam_session(void)
+{
+	int err;
+	if(!pamh) return;
+	err=pam_close_session(pamh,0);
+	pam_end(pamh,err);
+	pamh=NULL;
+}
+
+#endif
+
 void switch_user(struct passwd *pw,char *run,char **env)
 {
 	if(!pw || initgroups(pw->pw_name, pw->pw_gid) ||
@@ -457,7 +489,7 @@ void exit_cb(void)
 		child=-1;
 	}
 #if HAVE_LIBPAM
-	if(pamh) pam_end(pamh,PAM_SUCCESS);
+	close_pam_session();
 #endif
 	if(server>0)
 	{
@@ -559,11 +591,7 @@ static void on_session_stop(GPid pid,gint status,gpointer data)
 		free_my_xid();
 	}
 #if HAVE_LIBPAM
-	if(pamh)
-	{
-		pam_close_session(pamh,0);
-		pam_setcred(pamh, PAM_DELETE_CRED);
-	}
+	close_pam_session();
 #endif
 #if HAVE_LIBCK_CONNECTOR
 	if(ckc!=NULL)
@@ -596,19 +624,7 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		endusershell();
 	}
 #if HAVE_LIBPAM
-	if(pamh)
-	{
-		int err;
-		pam_set_item(pamh, PAM_USER, pw->pw_name);
-		pam_authenticate(pamh, 0);
-		pam_acct_mgmt(pamh, PAM_SILENT);
-		pam_setcred(pamh, PAM_ESTABLISH_CRED);
-		err=pam_open_session(pamh,0); /* FIXME pam session failed */
-		if(err!=PAM_SUCCESS)
-		{
-			//printf("%s\n",pam_strerror(pamh,err));
-		}
-	}
+	setup_pam_session(pw);
 #endif
 #if HAVE_LIBCK_CONNECTOR
 	if(ckc!=NULL)
@@ -636,11 +652,6 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		char *env[12];
 		char *path;
 		int i=0;
-
-#if HAVE_LIBPAM
-		if(pamh)
-			pam_end(pamh,PAM_SUCCESS);
-#endif
 
 		env[i++]=g_strdup_printf("TERM=%s",getenv("TERM"));
 		env[i++]=g_strdup_printf("HOME=%s", pw->pw_dir);
@@ -757,31 +768,6 @@ void set_signal(void)
 	signal(SIGALRM, sig_handler);
 }
 
-#if HAVE_LIBPAM
-int conv_cb(int num_msg, const struct pam_message **msg,
-         struct pam_response **resp, void *appdata_ptr)
-{
-	return PAM_SUCCESS;
-}
-
-void init_pam(void)
-{
-	struct pam_conv conv;
-	char x[256];
-	conv.conv=conv_cb;
-	if(PAM_SUCCESS!=pam_start("lxdm",NULL,&conv,&pamh))
-	{
-		pamh=NULL;
-		return;
-	}
-	sprintf(x,"tty%d",tty);
-	pam_set_item(pamh,PAM_TTY,x);
-	pam_set_item(pamh,PAM_XDISPLAY,getenv("DISPLAY"));
-	pam_set_item(pamh,PAM_RHOST,"localhost");
-	pam_set_item(pamh,PAM_RUSER,"root");
-}
-#endif
-
 #if HAVE_LIBCK_CONNECTOR
 void init_ck(void)
 {
@@ -839,9 +825,6 @@ int main(int arc,char *arg[])
 	if(tmp>=200)
 		exit(EXIT_FAILURE);
 
-#if HAVE_LIBPAM		
-	init_pam();
-#endif
 #if HAVE_LIBCK_CONNECTOR
 	init_ck();
 #endif
