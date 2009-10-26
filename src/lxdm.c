@@ -94,7 +94,7 @@ void lxdm_get_tty(void)
 	if(!s) s=g_strdup("/usr/bin/X");
 	g_shell_parse_argv(s,&arc,&arg,0);
 	g_free(s);
-	for(len!=0;arg && arg[len];len++)
+	for(len=0;arg && arg[len];len++)
 	{
 		char *p=arg[len];
 		if(!strncmp(p,"vt",2) && isdigit(p[2]) && 
@@ -338,7 +338,9 @@ void setup_pam_session(struct passwd *pw)
 	}
 	sprintf(x,"tty%d",tty);
 	pam_set_item(pamh,PAM_TTY,x);
+#ifdef PAM_XDISPLAY
 	pam_set_item(pamh,PAM_XDISPLAY,getenv("DISPLAY"));
+#endif
 	err=pam_open_session(pamh,0); /* FIXME pam session failed */
 	if(err!=PAM_SUCCESS)
 	{

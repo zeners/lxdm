@@ -7,5 +7,8 @@ _("Simpllified Chinese")
 zh_TW.UTF-8
 _("Traditional Chinese")
 
+de_DE.UTF-8
+_("German")
+
 it.UTF-8
 _("Italian")
