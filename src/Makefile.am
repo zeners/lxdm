@@ -6,12 +6,12 @@ lxdm_binary_CFLAGS = \
 	$(GTK_CFLAGS) \
 	-DCONFIG_DIR=\"$(sysconfdir)/lxdm\" \
 	-DLXDM_DATA_DIR=\"$(datadir)/lxdm\" \
-	`pkg-config --cflags ck-connector` \
+	$(CONSOLEKIT_CFLAGS) \
 	$(NULL)
 
 lxdm_binary_LDFLAGS = \
 	$(GTK_LIBS) \
-	`pkg-config --libs ck-connector` \
+	$(CONSOLEKIT_LIBS) \
 	$(NULL)
 
 lxdm_binary_SOURCES = \
@@ -25,7 +25,7 @@ lxdm_greeter_gtk_CFLAGS = \
 	-DLXDM_DATA_DIR=\"$(datadir)/lxdm\" \
 	$(NULL)
 
-lxdm_greeter_gtk_LDFLAGS = \
+lxdm_greeter_gtk_LDADD = \
 	$(GTK_LIBS) \
 	$(NULL)
 
