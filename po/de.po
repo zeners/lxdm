@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: r2089\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-27 21:18+0800\n"
+"POT-Creation-Date: 2009-10-30 20:53+0800\n"
 "PO-Revision-Date: 2009-10-26 09:00+0100\n"
 "Last-Translator: Mark Trompell <mark@foresightlinux.org>\n"
 "Language-Team: German\n"
@@ -52,6 +52,10 @@ msgstr ""
 #: ../data/lang.txt:14
 msgid "Italian"
 msgstr "Italienisch"
+
+#: ../data/lang.txt:17
+msgid "Portuguese"
+msgstr ""
 
 #: ../src/greeter.c:84
 msgid "Password:"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-27 21:18+0800\n"
+"POT-Creation-Date: 2009-10-30 20:53+0800\n"
 "PO-Revision-Date: 2009-10-21 22:32+0800\n"
 "Last-Translator: dgod <dgod.osa@gmail.com>\n"
 "Language-Team: Chinese (traditional)\n"
@@ -51,6 +51,10 @@ msgstr "德語"
 #: ../data/lang.txt:14
 msgid "Italian"
 msgstr "意大利語"
+
+#: ../data/lang.txt:17
+msgid "Portuguese"
+msgstr "葡萄牙語"
 
 #: ../src/greeter.c:84
 msgid "Password:"

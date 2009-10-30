@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-27 21:18+0800\n"
+"POT-Creation-Date: 2009-10-30 20:53+0800\n"
 "PO-Revision-Date: 2009-10-21 22:59+0100\n"
 "Last-Translator: Andrea Florio <andrea@opensuse.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,6 +50,10 @@ msgstr ""
 #: ../data/lang.txt:14
 msgid "Italian"
 msgstr "Italiano"
+
+#: ../data/lang.txt:17
+msgid "Portuguese"
+msgstr ""
 
 #: ../src/greeter.c:84
 msgid "Password:"

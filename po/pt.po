@@ -1,73 +1,73 @@
-# Chinese translations for lxdm package
-# lxdm 软件包的简体中文翻译.
-# Copyright (C) 2009 THE lxdm'S COPYRIGHT HOLDER
+# Portuguese translation for lxdm package.
+# Copyright (C) 2009 THE lxdm COPYRIGHT HOLDER
 # This file is distributed under the same license as the lxdm package.
-# dgod <dgod.osa@gmail.com>, 2009.
-#
+#  Sérgio Marques <smarquespt@gmail.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: lxdm 0.1\n"
+"Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-10-30 20:53+0800\n"
-"PO-Revision-Date: 2009-10-21 22:30+0800\n"
-"Last-Translator: dgod <dgod.osa@gmail.com>\n"
-"Language-Team: Chinese (simplified)\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: PORTUGAL\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
-msgstr "桌面"
+msgstr "Ambiente de Trabalho:"
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
-msgstr "键盘"
+msgstr "Disposição de Teclado:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
-msgstr "语言"
+msgstr "Idioma:"
 
 #: ../data/lxdm.glade.h:4 ../src/greeter.c:113 ../src/greeter.c:137
 msgid "User:"
-msgstr "用户"
+msgstr "Utilizador:"
 
 #: ../data/lang.txt:2
 msgid "US English"
-msgstr "美国英语"
+msgstr "Inglês US"
 
 #: ../data/lang.txt:5
 msgid "Simpllified Chinese"
-msgstr "简体中文"
+msgstr "Chinês Simplificado"
 
 #: ../data/lang.txt:8
 msgid "Traditional Chinese"
-msgstr "繁体中文"
+msgstr "Chinês Tradicional"
 
 #: ../data/lang.txt:11
 msgid "German"
-msgstr "德语"
+msgstr "Alemão"
 
 #: ../data/lang.txt:14
 msgid "Italian"
-msgstr "意大利语"
+msgstr "Italiano"
 
 #: ../data/lang.txt:17
 msgid "Portuguese"
-msgstr "葡萄牙语"
+msgstr ""
 
 #: ../src/greeter.c:84
 msgid "Password:"
-msgstr "密码"
+msgstr "Palavra-passe:"
 
 #: ../src/greeter.c:184
 msgid "Default"
-msgstr "默认"
+msgstr "Omissão"
 
 #: ../src/greeter.c:235
 msgid "_Reboot"
-msgstr "重启"
+msgstr "_Reiniciar"
 
 #: ../src/greeter.c:239
 msgid "_Shutdown"
-msgstr "关机"
+msgstr "_Desligar"

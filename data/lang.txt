@@ -12,3 +12,7 @@ _("German")
 
 it.UTF-8
 _("Italian")
+
+pt.UTF-8
+_("Portuguese")
+
