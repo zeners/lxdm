@@ -9,7 +9,7 @@ lxdm_binary_CFLAGS = \
 	$(CONSOLEKIT_CFLAGS) \
 	$(NULL)
 
-lxdm_binary_LDFLAGS = \
+lxdm_binary_LDADD = \
 	$(GTK_LIBS) \
 	$(CONSOLEKIT_LIBS) \
 	$(NULL)
