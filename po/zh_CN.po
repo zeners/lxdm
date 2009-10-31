@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-30 20:53+0800\n"
+"POT-Creation-Date: 2009-10-31 07:46+0100\n"
 "PO-Revision-Date: 2009-10-21 22:30+0800\n"
 "Last-Translator: dgod <dgod.osa@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
@@ -18,19 +18,19 @@ msgstr ""
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
-msgstr "桌面"
+msgstr "桌面："
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
-msgstr "键盘"
+msgstr "键盘布局："
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
-msgstr "语言"
+msgstr "语言："
 
 #: ../data/lxdm.glade.h:4 ../src/greeter.c:113 ../src/greeter.c:137
 msgid "User:"
-msgstr "用户"
+msgstr "用户："
 
 #: ../data/lang.txt:2
 msgid "US English"
@@ -58,7 +58,7 @@ msgstr "葡萄牙语"
 
 #: ../src/greeter.c:84
 msgid "Password:"
-msgstr "密码"
+msgstr "密码："
 
 #: ../src/greeter.c:184
 msgid "Default"
@@ -66,8 +66,8 @@ msgstr "默认"
 
 #: ../src/greeter.c:235
 msgid "_Reboot"
-msgstr "重启"
+msgstr "重启(_R)"
 
 #: ../src/greeter.c:239
 msgid "_Shutdown"
-msgstr "关机"
+msgstr "关机(_S)"
