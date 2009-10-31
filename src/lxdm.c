@@ -4,10 +4,10 @@
 #include <config.h>
 #endif
 #ifndef HAVE_LIBPAM
-#define HAVE_LIBPAM 1
+#define HAVE_LIBPAM 0
 #endif
 #ifndef HAVE_LIBXMU
-#define HAVE_LIBXMU	1
+#define HAVE_LIBXMU 0
 #endif
 
 #include <stdio.h>
