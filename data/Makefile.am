@@ -1,1 +1,1 @@
-EXTRA_DIST=lang.txt lxdm.glade Xsession lxdm.conf lxdm
+EXTRA_DIST=lxdm.glade Xsession lxdm.conf lxdm

@@ -12,32 +12,21 @@
 #define LXDM_DATA_DIR	"/usr/share/lxdm"
 #endif
 
+#include "gdm/gdm-languages.h"
+
 void lxdm_load_langs(void *arg,void (*cb)(void *arg,char *lang,char *desc))
 {
-	FILE *fp;
-	cb(arg,"","Default");
-	fp=fopen(LXDM_DATA_DIR "/lang.txt","r");
-	if(!fp)
-		return;
-	while(1)
-	{
-		char lang[32],desc[128],*p;
-		int len;
-		p=fgets(lang,sizeof(lang),fp);
-		if(!p) break;
-		p=strchr(lang,'\n');if(p) *p=0;
-		if(!lang[0]) continue;
-		p=fgets(desc,sizeof(desc),fp);
-		if(!p) break;
-		p=strchr(desc,'\n');if(p) *p=0;p=desc;
-		len=strlen(p);
-		if(len>5 && !strncmp(p,"_(\"",3) && !strncmp(p+len-2,"\")",2))
-		{
-			p[len-2]=0;
-			p+=3;
-		}
-		if(!p[0]) continue;
-		cb(arg,lang,p);
-	}
-	fclose(fp);
+	char **langs, **lang;
+	cb(arg,"C","Default");
+
+    /* come up with available languages with gdm-languages */
+    langs = gdm_get_all_language_names();
+    for(lang = langs; *lang; ++lang)
+    {
+        char* normal = gdm_normalize_language_name(*lang);
+        char* readable = gdm_get_language_from_name(normal, normal);
+        cb(arg, normal, readable);
+        g_free(readable);
+        g_free(normal);
+    }
 }

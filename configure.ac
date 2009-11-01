@@ -30,6 +30,17 @@ AC_TYPE_PID_T
 AC_FUNC_FORK
 AC_CHECK_FUNCS([atexit endpwent getspnam getusershell memset putenv strstr])
 
+PKG_CONFIG=pkg-config # FIXME: is this OK?
+# Check for ISO Codes, this is taken from gdm
+AC_MSG_CHECKING([whether iso-codes has iso-639 domain])
+if $PKG_CONFIG --variable=domains iso-codes | grep 639 >/dev/null ; then
+	AC_MSG_RESULT([yes])
+else
+	AC_MSG_RESULT([no])
+fi
+AC_DEFINE_UNQUOTED([ISO_CODES_PREFIX],["`$PKG_CONFIG --variable=prefix iso-codes`"],[ISO codes prefix])
+ISO_CODES=iso-codes
+
 IT_PROG_INTLTOOL([0.40.0])
 
 pkg_modules="gtk+-2.0 >= 2.12.0"

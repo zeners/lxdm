@@ -24,7 +24,6 @@ lxdm_bin_DATA = \
 lxdmdir = $(datadir)/lxdm
 lxdm_DATA = \
 	data/lxdm.glade \
-	data/lang.txt \
 	$(NULL)
 
 install-data-hook:
