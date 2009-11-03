@@ -72,7 +72,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label2">
+              <object class="GtkLabel" id="label_lang">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Language:</property>
               </object>

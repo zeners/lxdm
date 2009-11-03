@@ -495,7 +495,8 @@ void ui_prepare(void)
 	p=g_key_file_get_string(config,"base","greeter",NULL);
 	if(p && p[0])
 	{
-		char *arg[]={p,NULL};
+		//char *arg[]={p,NULL};
+		char **arg=g_strsplit(p," ",9);
 		gboolean ret;
 		if(greeter>0 && kill(greeter,0)==0)
 		{
@@ -519,6 +520,7 @@ void ui_prepare(void)
 		ret=g_spawn_async_with_pipes(NULL,arg,NULL,
 				G_SPAWN_SEARCH_PATH|G_SPAWN_DO_NOT_REAP_CHILD,greeter_setup,0,
 				&greeter,greeter_pipe+0,greeter_pipe+1,NULL,NULL);
+		g_strfreev(arg);
 		if(ret==TRUE)
 		{
 			g_free(p);

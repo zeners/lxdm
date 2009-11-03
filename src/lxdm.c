@@ -777,6 +777,62 @@ void init_ck(void)
 }
 #endif
 
+static void apply_theme(void)
+{
+        GKeyFile *tmp;
+        gchar **grps;
+	char *p;
+	gsize len;
+	FILE *fp;
+
+	config=g_key_file_new();
+        g_key_file_load_from_file(config,"/etc/lxdm/lxdm.conf",G_KEY_FILE_KEEP_COMMENTS,NULL);
+
+	p=g_key_file_get_string(config,"display","theme",0);
+	if(!p || !p[0])
+	{
+		g_free(p);
+		g_key_file_free(config);
+		return;
+	}
+
+        tmp=g_key_file_new();
+	g_key_file_load_from_file(config,p,G_KEY_FILE_NONE,NULL);
+	g_free(p);
+        grps=g_key_file_get_groups(tmp,NULL);
+        if(grps)
+        {
+                int i,j;
+                char **keys,*val;
+                for(i=0;grps[i];i++)
+                {
+                        keys=g_key_file_get_keys(tmp,grps[i],NULL,NULL);
+                        if(!keys) continue;
+                        for(j=0;keys[j];j++)
+                        {
+                                val=g_key_file_get_string(tmp,grps[i],keys[j],NULL);
+                                if(!val) continue;
+                                g_key_file_set_string(config,grps[i],keys[j],val);
+                                g_free(val);
+                        }
+                        g_strfreev(keys);
+                }
+        }
+        g_strfreev(grps);
+        g_key_file_free(tmp);
+
+	p=g_key_file_to_data(config,&len,NULL);
+	fp=fopen("/etc/lxdm/lxdm.conf","w");
+	if(fp)
+	{
+		fwrite(p,1,len,fp);
+		fclose(fp);
+	}
+	g_free(p);
+	g_key_file_free(config);
+}
+
+
 int main(int arc,char *arg[])
 {
 	int tmp;
@@ -793,6 +849,10 @@ int main(int arc,char *arg[])
 		switch(tmp){
 		case 'd':
 			daemonmode=1;
+			break;
+		case 'a': /* apply theme default settings */
+			apply_theme();
+			exit(EXIT_SUCCESS);
 			break;
 		case 'h':
 			printf("usage:  lxdm [options ...]\n");

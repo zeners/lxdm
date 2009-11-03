@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-30 20:53+0800\n"
+"POT-Creation-Date: 2009-11-02 01:18+0800\n"
 "PO-Revision-Date: 2009-11-01 00:45+0100\n"
 "Last-Translator: Christoph Wickert <cwickert@fedoraproject.org>\n"
 "Language-Team: German\n"
@@ -30,9 +30,7 @@ msgstr "Tastaturbelegung:"
 msgid "Language:"
 msgstr "Sprache:"
 
-#: ../data/lxdm.glade.h:4
-#: ../src/greeter.c:113
-#: ../src/greeter.c:137
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:113 ../src/greeter.c:137
 msgid "User:"
 msgstr "Benutzer:"
 
@@ -75,4 +73,3 @@ msgstr "_Neustarten"
 #: ../src/greeter.c:239
 msgid "_Shutdown"
 msgstr "_Beenden"
-

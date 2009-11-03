@@ -93,7 +93,7 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 	else
 	{
 		GtkTreeIter it;
-		char *session_lang=0;
+		char *session_lang="";
 		
 		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(sessions), &it))
 		{
@@ -115,7 +115,7 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 			gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
 			return;		
 		}
-		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(lang), &it))
+		if(lang && gtk_combo_box_get_active_iter(GTK_COMBO_BOX(lang), &it))
 		{
 			GtkTreeModel* model = gtk_combo_box_get_model(GTK_COMBO_BOX(lang));
 			gtk_tree_model_get(model, &it, 1, &session_lang, -1);	
@@ -295,8 +295,20 @@ static void create_win()
     sessions = (GtkWidget*)gtk_builder_get_object(builder, "sessions");
     load_sessions();
 
-    lang = (GtkWidget*)gtk_builder_get_object(builder, "lang");
-    load_langs();
+    if(g_key_file_get_integer(config,"display","lang",0)==0)
+    {
+        GtkWidget *w;
+        w=(GtkWidget*)gtk_builder_get_object(builder, "lang");
+        if(w) gtk_widget_hide(w);
+        w=(GtkWidget*)gtk_builder_get_object(builder, "label_lang");
+        if(w) gtk_widget_hide(w);
+    }
+    else
+    {        
+        lang = (GtkWidget*)gtk_builder_get_object(builder, "lang");
+        load_langs();
+    }
+
 
     exit = (GtkWidget*)gtk_builder_get_object(builder, "exit");
     load_exit();
