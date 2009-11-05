@@ -82,6 +82,18 @@ out:
 	return console_state.v_active;
 }
 
+static void set_active_vt(void)
+{
+        int fd;
+
+        fd = open("/dev/console", O_RDWR);
+        if (fd < 0) {
+                fd = 0;
+        }
+        ioctl(fd, VT_ACTIVATE, tty);
+        if (fd != 0)
+                close(fd);
+}
 
 void lxdm_get_tty(void)
 {
@@ -128,6 +140,7 @@ void lxdm_get_tty(void)
 	g_strfreev(arg);
 	g_key_file_set_string(config,"server","arg",s);
 	g_free(s);
+	set_active_vt();
 }
 
 void lxdm_restart_self(void)
