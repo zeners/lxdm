@@ -1,0 +1,75 @@
+# Dutch translations for PACKAGE package
+# Dutch messages for PACKAGE.
+# Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Vincent Van Houtte <vvh@synergylaw.be>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lxdm r2100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-02 01:18+0800\n"
+"PO-Revision-Date: 2009-11-05 15:45+0100\n"
+"Last-Translator: Vincent Van Houtte <vvh@synergylaw.be>\n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../data/lxdm.glade.h:1
+msgid "Desktop:"
+msgstr "Bureaublad:"
+
+#: ../data/lxdm.glade.h:2
+msgid "Keyboard Layout:"
+msgstr "Toetsenbord layout:"
+
+#: ../data/lxdm.glade.h:3
+msgid "Language:"
+msgstr "Taal:"
+
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:113 ../src/greeter.c:137
+msgid "User:"
+msgstr "Gebruiker:"
+
+#: ../data/lang.txt:2
+msgid "US English"
+msgstr "Engels (US)"
+
+#: ../data/lang.txt:5
+msgid "Simpllified Chinese"
+msgstr "Vereenvoudigd Chinees"
+
+#: ../data/lang.txt:8
+msgid "Traditional Chinese"
+msgstr "Traditioneel Chinees"
+
+#: ../data/lang.txt:11
+msgid "German"
+msgstr "Duits"
+
+#: ../data/lang.txt:14
+msgid "Italian"
+msgstr "Italiaans"
+
+#: ../data/lang.txt:17
+msgid "Portuguese"
+msgstr "Portugees"
+
+#: ../src/greeter.c:84
+msgid "Password:"
+msgstr "Paswoord:"
+
+#: ../src/greeter.c:184
+msgid "Default"
+msgstr "Standaard"
+
+#: ../src/greeter.c:235
+msgid "_Reboot"
+msgstr "_Herstarten"
+
+#: ../src/greeter.c:239
+msgid "_Shutdown"
+msgstr "_Afsluiten"
+
+ 	  	 
