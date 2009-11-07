@@ -30,11 +30,13 @@
 #include "lang.h"
 
 #define XSESSION_DIR    "/usr/share/xsessions"
+#define CONFIG_FILE     "/etc/lxdm/lxdm.conf"
 
 #ifndef LXDM_DATA_DIR
 #define LXDM_DATA_DIR	"/usr/share/lxdm"
 #endif
 
+static gboolean config_changed = FALSE;
 static GKeyFile *config;
 static GtkWidget* win;
 static GtkWidget* prompt;
@@ -77,6 +79,7 @@ static void on_screen_size_changed(GdkScreen* scr, GtkWindow* win)
 
 static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 {
+    char* tmp;
 	if(!user)
 	{
 		user = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
@@ -104,7 +107,7 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 		{
 			/* FIXME: fatal error */
 		}
-		
+
 		pass = g_strdup( gtk_entry_get_text(entry));
 		if(strchr(pass,' '))
 		{
@@ -115,11 +118,36 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 			gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
 			return;		
 		}
+
 		if(lang && gtk_combo_box_get_active_iter(GTK_COMBO_BOX(lang), &it))
 		{
 			GtkTreeModel* model = gtk_combo_box_get_model(GTK_COMBO_BOX(lang));
 			gtk_tree_model_get(model, &it, 1, &session_lang, -1);	
 		}
+
+        tmp = g_key_file_get_string(config, "base", "last_session", NULL);
+        if(g_strcmp0(tmp, session_desktop_file))
+        {
+            g_key_file_set_string(config, "base", "last_session", session_desktop_file);
+            config_changed = TRUE;
+        }
+        g_free(tmp);
+
+        tmp = g_key_file_get_string(config, "base", "last_lang", NULL);
+        if(g_strcmp0(tmp, session_lang))
+        {
+            g_key_file_set_string(config, "base", "last_lang", session_lang);
+            config_changed = TRUE;
+        }
+        g_free(tmp);
+
+        if(config_changed)
+        {
+            gsize len;
+            char* data=g_key_file_to_data(config, &len, NULL);
+            g_file_set_contents(CONFIG_FILE, data, len, NULL);
+            g_free(data);
+        }
 
 		printf("login user=%s pass=%s session=%s lang=%s\n",
 			user,pass,session_exec,session_lang);
@@ -147,7 +175,6 @@ static void load_sessions()
     char* last;
     char *path, *file_name, *name, *exec;
     GKeyFile* kf;
-    GtkCellRendererText* render;
     GDir* dir = g_dir_open(XSESSION_DIR, 0, NULL);
     if(!dir)
         return;
@@ -169,7 +196,7 @@ static void load_sessions()
             	gtk_list_store_append(list, &it);
             gtk_list_store_set(list, &it, 0, name, 1, exec, 2, file_name, -1);
 
-            if(last && strcmp(file_name, last)==0)
+            if(last && g_strcmp0(file_name, last)==0)
                 active_it = it;
 
             g_free(name);
@@ -182,14 +209,10 @@ static void load_sessions()
     
 	gtk_list_store_prepend(list, &it);
 	gtk_list_store_set(list, &it, 0, _("Default"), 1, "", 2, "__default__", -1);
-	if(last && strcmp(file_name, last)==0)
+	if(last && g_strcmp0(file_name, last)==0)
 		active_it = it;
     
     g_free(last);
-
-    render = (GtkCellRendererText*)gtk_cell_renderer_text_new();
-    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(sessions), GTK_CELL_RENDERER(render), TRUE);
-    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(sessions), GTK_CELL_RENDERER(render), "text", 0, NULL);
 
     gtk_combo_box_set_model(GTK_COMBO_BOX(sessions), GTK_TREE_MODEL(list));
     if(active_it.stamp)
@@ -211,14 +234,15 @@ static void load_lang_cb(void *arg,char *lang,char *desc)
 static void load_langs()
 {
 	GtkListStore* list;
-	GtkCellRendererText* render;
+	char* lang_str;
+    int active = 0;
+
 	list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
-	lxdm_load_langs(list,load_lang_cb);
-	render = (GtkCellRendererText*)gtk_cell_renderer_text_new();
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(lang), GTK_CELL_RENDERER(render), TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(lang), GTK_CELL_RENDERER(render), "text", 0, NULL);
+    lang_str = g_key_file_get_string(config, "base", "last_lang", NULL);
+	active = lxdm_load_langs(list,load_lang_cb, lang_str);
+    g_free(lang_str);
 	gtk_combo_box_set_model(GTK_COMBO_BOX(lang), GTK_TREE_MODEL(list));
-	gtk_combo_box_set_active(GTK_COMBO_BOX(lang),0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(lang), active < 0 ? 0 : active);
 	g_object_unref(list);
 }
 
@@ -273,6 +297,25 @@ static gboolean on_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_
     return FALSE;
 }
 
+static gboolean on_combobox_entry_button_release(GtkWidget* w, GdkEventButton* evt, GtkComboBox* combo)
+{
+    gboolean shown;
+    g_object_get(combo, "popup-shown", &shown, NULL);
+    if(shown)
+        gtk_combo_box_popdown(combo);
+    else
+        gtk_combo_box_popup(combo);
+    return FALSE;
+}
+
+static void fix_combobox_entry(GtkWidget* combo)
+{
+    GtkWidget* edit = gtk_bin_get_child(combo);
+    gtk_editable_set_editable((GtkEditable*)edit, FALSE);
+    GTK_WIDGET_UNSET_FLAGS(edit, GTK_CAN_FOCUS);
+    g_signal_connect(edit, "button-release-event", G_CALLBACK(on_combobox_entry_button_release), combo);
+}
+
 static void create_win()
 {
     GtkBuilder* builder;
@@ -293,7 +336,16 @@ static void create_win()
 
 
     sessions = (GtkWidget*)gtk_builder_get_object(builder, "sessions");
+    gtk_widget_set_name(sessions, "sessions");
+    fix_combobox_entry(sessions);
     load_sessions();
+
+    if(g_key_file_get_integer(config,"display","bottom_pane",0)==0)
+    {
+        GtkWidget *w;
+        w=(GtkWidget*)gtk_builder_get_object(builder, "bottom_pane");
+        gtk_event_box_set_visible_window(w, FALSE);
+    }
 
     if(g_key_file_get_integer(config,"display","lang",0)==0)
     {
@@ -304,11 +356,12 @@ static void create_win()
         if(w) gtk_widget_hide(w);
     }
     else
-    {        
+    {
         lang = (GtkWidget*)gtk_builder_get_object(builder, "lang");
+        gtk_widget_set_name(lang, "lang");
+        fix_combobox_entry(lang);
         load_langs();
     }
-
 
     exit = (GtkWidget*)gtk_builder_get_object(builder, "exit");
     load_exit();
@@ -389,25 +442,6 @@ void listen_stdin(void)
 	g_io_add_watch(greeter_io,G_IO_IN,greeter_input,NULL);
 }
 
-int gtk_ui_main(void)
-{
-	/* set gtk+ theme */
-	char* gtk_theme = g_key_file_get_string(config, "display", "gtk_theme", NULL);
-	if(gtk_theme)
-	{
-		GtkSettings* settings = gtk_settings_get_default();
-		g_object_set(settings, "gtk-theme-name", gtk_theme, NULL);
-		g_free(gtk_theme);
-	}
-
-	/* create the login window */
-	create_win();
-	listen_stdin();
-	gtk_main();
-
-	return 0;
-}
-
 void ui_set_root_bg(void)
 {
 	char *p;
@@ -475,10 +509,33 @@ int main(int arc,char *arg[])
 	bindtextdomain("lxdm","/usr/share/locale");
 	textdomain("lxdm");
 	config=g_key_file_new();
-	g_key_file_load_from_file(config,"/etc/lxdm/lxdm.conf",0,0);
+	g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_KEEP_COMMENTS|G_KEY_FILE_KEEP_TRANSLATIONS, NULL);
 	gtk_init(&arc,&arg);
 	ui_set_bg();
 	ui_set_root_bg();
-	gtk_ui_main();
+
+	/* set gtk+ theme */
+	char* gtk_theme = g_key_file_get_string(config, "display", "gtk_theme", NULL);
+	if(gtk_theme)
+	{
+		GtkSettings* settings = gtk_settings_get_default();
+		g_object_set(settings, "gtk-theme-name", gtk_theme, NULL);
+		g_free(gtk_theme);
+	}
+
+	/* create the login window */
+	create_win();
+	listen_stdin();
+	gtk_main();
+
+    if(config_changed)
+    {
+        gsize len;
+        char* data=g_key_file_to_data(config, &len, NULL);
+        g_file_set_contents(CONFIG_FILE, data, len, NULL);
+        g_free(data);
+    }
+    g_key_file_free(config);
+
 	return 0;
 }

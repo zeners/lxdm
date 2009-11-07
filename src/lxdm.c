@@ -687,10 +687,7 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 			env[i++]=g_strdup_printf("XDG_SESSION_COOKIE=%s",getenv("XDG_SESSION_COOKIE"));
 		env[i++]=0;
 
-		if(session && session[0])
-			session=g_strdup(session);
-		else
-			session=0;
+        session=g_strdup(session);
 		if(!session)
 			session=g_key_file_get_string(config,"base","session",0);
 		if(!session && getenv("PREFERRED"))
@@ -754,7 +751,7 @@ int lxdm_do_auto_login(void)
 		return 0;
 	if(AUTH_SUCCESS!=lxdm_auth_user(user,0,&pw))
 		return 0;
-	lxdm_do_login(pw,0,0);
+	lxdm_do_login(pw,NULL,NULL);
 	return 1;
 }
 

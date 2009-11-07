@@ -14,10 +14,17 @@
 
 #include "gdm/gdm-languages.h"
 
-void lxdm_load_langs(void *arg,void (*cb)(void *arg,char *lang,char *desc))
+int lxdm_load_langs(void *arg,void (*cb)(void *arg,char *lang,char *desc), const char* last_lang)
 {
+    int ret = -1;
 	char **langs, **lang;
+    char* normal_last_lang;
+
 	cb(arg,"C","Default");
+    normal_last_lang = last_lang ? gdm_normalize_language_name(last_lang) : NULL;
+
+    if(g_strcmp0(normal_last_lang, "C") == 0)
+        ret = 0;
 
     /* come up with available languages with gdm-languages */
     langs = gdm_get_all_language_names();
@@ -26,7 +33,11 @@ void lxdm_load_langs(void *arg,void (*cb)(void *arg,char *lang,char *desc))
         char* normal = gdm_normalize_language_name(*lang);
         char* readable = gdm_get_language_from_name(normal, normal);
         cb(arg, normal, readable);
+        if(ret < 0 && g_strcmp0(normal_last_lang, normal) == 0)
+            ret = (lang - langs) + 1;
         g_free(readable);
         g_free(normal);
     }
+    g_free(normal_last_lang);
+    return ret;
 }
