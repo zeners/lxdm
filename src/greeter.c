@@ -213,8 +213,8 @@ static void load_sessions()
 		active_it = it;
     
     g_free(last);
-
     gtk_combo_box_set_model(GTK_COMBO_BOX(sessions), GTK_TREE_MODEL(list));
+    gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX(sessions), 0);
     if(active_it.stamp)
     	gtk_combo_box_set_active_iter(GTK_COMBO_BOX(sessions), &active_it);
     else
@@ -242,6 +242,7 @@ static void load_langs()
 	active = lxdm_load_langs(list,load_lang_cb, lang_str);
     g_free(lang_str);
 	gtk_combo_box_set_model(GTK_COMBO_BOX(lang), GTK_TREE_MODEL(list));
+    gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX(lang), 0);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(lang), active < 0 ? 0 : active);
 	g_object_unref(list);
 }
