@@ -20,10 +20,11 @@ int lxdm_load_langs(void *arg,void (*cb)(void *arg,char *lang,char *desc), const
 	char **langs, **lang;
     char* normal_last_lang;
 
-	cb(arg,"C","Default");
+	//cb(arg,"C","Default");
+	cb(arg,"","Default"); /* default is to use the system wide settings ,not use the "C" */
     normal_last_lang = last_lang ? gdm_normalize_language_name(last_lang) : NULL;
 
-    if(g_strcmp0(normal_last_lang, "C") == 0)
+    if(!normal_last_lang || !normal_last_lang[0])
         ret = 0;
 
     /* come up with available languages with gdm-languages */
