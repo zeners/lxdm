@@ -682,7 +682,11 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		env[i++]=g_strdup_printf("PATH=%s",path);
 		g_free(path);
 		if(lang && lang[0])
+        {
 			env[i++]=g_strdup_printf("LANG=%s",lang);
+			env[i++]=g_strdup_printf("LANGUAGE=%s",lang);
+			env[i++]=g_strdup_printf("LC_ALL=%s",lang);
+        }
 		if(getenv("XDG_SESSION_COOKIE"))
 			env[i++]=g_strdup_printf("XDG_SESSION_COOKIE=%s",getenv("XDG_SESSION_COOKIE"));
 		env[i++]=0;
