@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lxdm\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-02 01:18+0800\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Michal Várady <miko.vaji@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+"X-Poedit-Language: Czech\n"
+"X-Poedit-Country: CZECH REPUBLIC\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: ../data/lxdm.glade.h:1
+msgid "Desktop:"
+msgstr "Pracovní plocha:"
+
+#: ../data/lxdm.glade.h:2
+msgid "Keyboard Layout:"
+msgstr "Rozvržení klávesnice:"
+
+#: ../data/lxdm.glade.h:3
+msgid "Language:"
+msgstr "Jazyk:"
+
+#: ../data/lxdm.glade.h:4
+#: ../src/greeter.c:113
+#: ../src/greeter.c:137
+msgid "User:"
+msgstr "Uživatel:"
+
+#: ../data/lang.txt:2
+msgid "US English"
+msgstr "Angličtina (USA)"
+
+#: ../data/lang.txt:5
+msgid "Simpllified Chinese"
+msgstr "Zjednodušená čínština"
+
+#: ../data/lang.txt:8
+msgid "Traditional Chinese"
+msgstr "Tradiční čínština"
+
+#: ../data/lang.txt:11
+msgid "German"
+msgstr "Němčina"
+
+#: ../data/lang.txt:14
+msgid "Italian"
+msgstr "Italština"
+
+#: ../data/lang.txt:17
+msgid "Portuguese"
+msgstr "Portugalština"
+
+#: ../src/greeter.c:84
+msgid "Password:"
+msgstr "Heslo:"
+
+#: ../src/greeter.c:184
+msgid "Default"
+msgstr "Výchozí"
+
+#: ../src/greeter.c:235
+msgid "_Reboot"
+msgstr "_Restartovat"
+
+#: ../src/greeter.c:239
+msgid "_Shutdown"
+msgstr "_Vypnout"
+
