@@ -1,3 +1,24 @@
+/*
+ *      lxdm.c - main entry of lxdm
+ *
+ *      Copyright 2009 dgod <dgod.osa@gmail.com>
+ *
+ *      This program is free software; you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation; either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program; if not, write to the Free Software
+ *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ *      MA 02110-1301, USA.
+ */
+
 #define _GNU_SOURCE
 
 #ifdef HAVE_CONFIG_H
@@ -234,7 +255,6 @@ void free_xsessions(GSList *l)
 
 void create_server_auth(void)
 {
-#if 0
 	GRand *h;
 	const char *digits = "0123456789abcdef";
 	int i,r,hex=0;
@@ -269,24 +289,23 @@ void create_server_auth(void)
 	system(tmp);
 	g_free(tmp);
 	g_free(authfile);
-#endif
 }
 
 void create_client_auth(char *home)
 {
-#if 0
 	char *tmp;
 	char *authfile;
+
+	if(getuid()==0)	/* root don't need it */
+		return;
 	
-	tmp=g_strdup_printf("%s/.Xauthority",getenv("HOME"));
-	remove(tmp);
-	g_free(tmp);
-	tmp=g_strdup_printf("xauth -q add %s . %s",
-			getenv("DISPLAY"),mcookie);
+	authfile=g_strdup_printf("%s/.Xauthority",home);
+	remove(authfile);
+	tmp=g_strdup_printf("xauth -q -f %s add %s . %s",
+			authfile,getenv("DISPLAY"),mcookie);
 	system(tmp);
 	g_free(authfile);
 	g_free(tmp);
-#endif
 }
 
 int lxdm_auth_user(char *user,char *pass,struct passwd **ppw)
