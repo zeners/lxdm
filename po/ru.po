@@ -1,0 +1,73 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lxdm\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-02 01:18+0800\n"
+"PO-Revision-Date: \n"
+"Last-Translator: HsH <hsh@runtu.org>\n"
+"Language-Team:  <hsh@runtu.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: ../data/lxdm.glade.h:1
+msgid "Desktop:"
+msgstr "Сеанс:"
+
+#: ../data/lxdm.glade.h:2
+msgid "Keyboard Layout:"
+msgstr "Клавиатура:"
+
+#: ../data/lxdm.glade.h:3
+msgid "Language:"
+msgstr "Язык:"
+
+#: ../data/lxdm.glade.h:4
+#: ../src/greeter.c:113
+#: ../src/greeter.c:137
+msgid "User:"
+msgstr "Пользователь:"
+
+#: ../data/lang.txt:2
+msgid "US English"
+msgstr "Английский"
+
+#: ../data/lang.txt:5
+msgid "Simpllified Chinese"
+msgstr "Упрощенный китайский "
+
+#: ../data/lang.txt:8
+msgid "Traditional Chinese"
+msgstr "Традиционный китайский"
+
+#: ../data/lang.txt:11
+msgid "German"
+msgstr "Немецкий"
+
+#: ../data/lang.txt:14
+msgid "Italian"
+msgstr "Итальянский"
+
+#: ../data/lang.txt:17
+msgid "Portuguese"
+msgstr "Португальский"
+
+#: ../src/greeter.c:84
+msgid "Password:"
+msgstr "Пароль:"
+
+#: ../src/greeter.c:184
+msgid "Default"
+msgstr "По умолчанию"
+
+#: ../src/greeter.c:235
+msgid "_Reboot"
+msgstr "_Перезагрузка"
+
+#: ../src/greeter.c:239
+msgid "_Shutdown"
+msgstr "_Выключение"
+
