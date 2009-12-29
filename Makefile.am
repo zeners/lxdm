@@ -41,4 +41,4 @@ rpm: dist @PACKAGE_NAME@.spec
 
 EXTRA_DIST= \
 	ChangeLog AUTHORS README NEWS \
-	INSTALL COPYING
+	INSTALL COPYING gpl-2.0.txt lgpl-2.1.txt
