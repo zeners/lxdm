@@ -2,7 +2,7 @@
 
 [ -f /etc/sysconfig/i18n ] && . /etc/sysconfig/i18n
 
-if [ -z "$LANG" -a -e /etc/sysconfig/language]; then
+if [ -z "$LANG" -a -e /etc/sysconfig/language ]; then
 	. /etc/sysconfig/language
 	if [ -n "$RC_LANG"]; then
 		LANG=$RC_LANG
