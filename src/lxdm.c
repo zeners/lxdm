@@ -697,7 +697,7 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		if(!path && getenv("PATH"))
 			path=g_strdup(getenv("PATH"));
 		if(!path)
-			path=g_strdup("/bin;/usr/bin");
+			path=g_strdup("/bin:/usr/bin");
 		env[i++]=g_strdup_printf("PATH=%s",path);
 		g_free(path);
 		if(lang && lang[0])
