@@ -701,16 +701,15 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		env[i++]=g_strdup_printf("PATH=%s",path);
 		g_free(path);
 		if(lang && lang[0])
-        {
+		{
 			env[i++]=g_strdup_printf("LANG=%s",lang);
 			env[i++]=g_strdup_printf("LANGUAGE=%s",lang);
-        }
+		}
 		if(getenv("XDG_SESSION_COOKIE"))
 			env[i++]=g_strdup_printf("XDG_SESSION_COOKIE=%s",getenv("XDG_SESSION_COOKIE"));
 		env[i++]=0;
 
-        session=g_strdup(session);
-		if(!session)
+		if(!session || !session[i])	/* this means use default session */
 			session=g_key_file_get_string(config,"base","session",0);
 		if(!session && getenv("PREFERRED"))
 			session=g_strdup(getenv("PREFERRED"));
@@ -725,6 +724,8 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 				session=g_strdup("/usr/bin/startkde");
 			else if(!strcmp(p,"XFCE"))
 				session=g_strdup("startxfce4");
+			else
+				session=g_strdup(p);
 		}
 		if(!session)
 			session=g_strdup("");

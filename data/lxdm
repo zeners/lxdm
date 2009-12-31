@@ -13,4 +13,19 @@ if [ -n "$LANG" ]; then
 	export LANG
 fi
 
+[ -f /etc/sysconfig/desktop ] && . /etc/sysconfig/desktop
+[ -f /etc/sysconfig/windowmanager ] && . /etc/sysconfig/windowmanager
+
+if [ -n "$DEFAULT_WM" ]; then
+	PREFERRED=$DEFAULT_WM
+fi
+
+if [ -n "$DESKTOP" ]; then
+	export DESKTOP
+fi
+
+if [ -n "$PREFERRED" ]; then
+	export PREFERRED
+fi
+
 exec /usr/bin/lxdm-binary
