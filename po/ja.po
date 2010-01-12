@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-07 22:35+0900\n"
+"POT-Creation-Date: 2010-01-12 01:46+0100\n"
 "PO-Revision-Date: 2009-10-24 14:42+0900\n"
 "Last-Translator: Hironao Komatsu <hironao@users.sourceforge.net>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
@@ -29,34 +29,35 @@ msgstr "キーボードレイアウト:"
 msgid "Language:"
 msgstr "言語:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:113 ../src/greeter.c:137
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:116 ../src/greeter.c:165
 msgid "User:"
 msgstr "ユーザ:"
 
-#: ../data/lang.txt:2
-msgid "US English"
-msgstr "英語(US)"
+#: ../src/gdm/gdm-languages.c:609
+msgid "Unspecified"
+msgstr ""
 
-#: ../data/lang.txt:5
-msgid "Simpllified Chinese"
-msgstr "簡体字中国語"
-
-#: ../data/lang.txt:8
-msgid "Traditional Chinese"
-msgstr "繁体字中国語"
-
-#: ../src/greeter.c:84
+#: ../src/greeter.c:87
 msgid "Password:"
 msgstr "パスワード:"
 
-#: ../src/greeter.c:184
+#: ../src/greeter.c:211
 msgid "Default"
 msgstr "デフォルト"
 
-#: ../src/greeter.c:235
+#: ../src/greeter.c:260
 msgid "_Reboot"
 msgstr "再起動(_R)"
 
-#: ../src/greeter.c:239
+#: ../src/greeter.c:264
 msgid "_Shutdown"
 msgstr "シャットダウン(_S)"
+
+#~ msgid "US English"
+#~ msgstr "英語(US)"
+
+#~ msgid "Simpllified Chinese"
+#~ msgstr "簡体字中国語"
+
+#~ msgid "Traditional Chinese"
+#~ msgstr "繁体字中国語"

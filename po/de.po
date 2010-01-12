@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-02 01:18+0800\n"
+"POT-Creation-Date: 2010-01-12 01:46+0100\n"
 "PO-Revision-Date: 2009-11-01 00:45+0100\n"
 "Last-Translator: Christoph Wickert <cwickert@fedoraproject.org>\n"
 "Language-Team: German\n"
@@ -30,46 +30,44 @@ msgstr "Tastaturbelegung:"
 msgid "Language:"
 msgstr "Sprache:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:113 ../src/greeter.c:137
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:116 ../src/greeter.c:165
 msgid "User:"
 msgstr "Benutzer:"
 
-#: ../data/lang.txt:2
-msgid "US English"
-msgstr "Englisch (USA)"
+#: ../src/gdm/gdm-languages.c:609
+msgid "Unspecified"
+msgstr ""
 
-#: ../data/lang.txt:5
-msgid "Simpllified Chinese"
-msgstr "Chinesisch (vereinfacht)"
-
-#: ../data/lang.txt:8
-msgid "Traditional Chinese"
-msgstr "Chinesisch (traditionell)"
-
-#: ../data/lang.txt:11
-msgid "German"
-msgstr "Deutsch"
-
-#: ../data/lang.txt:14
-msgid "Italian"
-msgstr "Italienisch"
-
-#: ../data/lang.txt:17
-msgid "Portuguese"
-msgstr "Portugiesisch"
-
-#: ../src/greeter.c:84
+#: ../src/greeter.c:87
 msgid "Password:"
 msgstr "Passwort:"
 
-#: ../src/greeter.c:184
+#: ../src/greeter.c:211
 msgid "Default"
 msgstr "Standard"
 
-#: ../src/greeter.c:235
+#: ../src/greeter.c:260
 msgid "_Reboot"
 msgstr "_Neustarten"
 
-#: ../src/greeter.c:239
+#: ../src/greeter.c:264
 msgid "_Shutdown"
 msgstr "_Beenden"
+
+#~ msgid "US English"
+#~ msgstr "Englisch (USA)"
+
+#~ msgid "Simpllified Chinese"
+#~ msgstr "Chinesisch (vereinfacht)"
+
+#~ msgid "Traditional Chinese"
+#~ msgstr "Chinesisch (traditionell)"
+
+#~ msgid "German"
+#~ msgstr "Deutsch"
+
+#~ msgid "Italian"
+#~ msgstr "Italienisch"
+
+#~ msgid "Portuguese"
+#~ msgstr "Portugiesisch"

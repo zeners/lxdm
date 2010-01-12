@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-02 01:18+0800\n"
+"POT-Creation-Date: 2010-01-12 01:46+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
@@ -28,46 +28,41 @@ msgstr "Disposição de Teclado:"
 msgid "Language:"
 msgstr "Idioma:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:113 ../src/greeter.c:137
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:116 ../src/greeter.c:165
 msgid "User:"
 msgstr "Utilizador:"
 
-#: ../data/lang.txt:2
-msgid "US English"
-msgstr "Inglês US"
-
-#: ../data/lang.txt:5
-msgid "Simpllified Chinese"
-msgstr "Chinês Simplificado"
-
-#: ../data/lang.txt:8
-msgid "Traditional Chinese"
-msgstr "Chinês Tradicional"
-
-#: ../data/lang.txt:11
-msgid "German"
-msgstr "Alemão"
-
-#: ../data/lang.txt:14
-msgid "Italian"
-msgstr "Italiano"
-
-#: ../data/lang.txt:17
-msgid "Portuguese"
+#: ../src/gdm/gdm-languages.c:609
+msgid "Unspecified"
 msgstr ""
 
-#: ../src/greeter.c:84
+#: ../src/greeter.c:87
 msgid "Password:"
 msgstr "Palavra-passe:"
 
-#: ../src/greeter.c:184
+#: ../src/greeter.c:211
 msgid "Default"
 msgstr "Omissão"
 
-#: ../src/greeter.c:235
+#: ../src/greeter.c:260
 msgid "_Reboot"
 msgstr "_Reiniciar"
 
-#: ../src/greeter.c:239
+#: ../src/greeter.c:264
 msgid "_Shutdown"
 msgstr "_Desligar"
+
+#~ msgid "US English"
+#~ msgstr "Inglês US"
+
+#~ msgid "Simpllified Chinese"
+#~ msgstr "Chinês Simplificado"
+
+#~ msgid "Traditional Chinese"
+#~ msgstr "Chinês Tradicional"
+
+#~ msgid "German"
+#~ msgstr "Alemão"
+
+#~ msgid "Italian"
+#~ msgstr "Italiano"

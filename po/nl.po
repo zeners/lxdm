@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-02 01:18+0800\n"
+"POT-Creation-Date: 2010-01-12 01:46+0100\n"
 "PO-Revision-Date: 2009-11-05 15:45+0100\n"
 "Last-Translator: Vincent Van Houtte <vvh@synergylaw.be>\n"
 "Language-Team: Dutch\n"
@@ -28,48 +28,44 @@ msgstr "Toetsenbord layout:"
 msgid "Language:"
 msgstr "Taal:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:113 ../src/greeter.c:137
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:116 ../src/greeter.c:165
 msgid "User:"
 msgstr "Gebruiker:"
 
-#: ../data/lang.txt:2
-msgid "US English"
-msgstr "Engels (US)"
+#: ../src/gdm/gdm-languages.c:609
+msgid "Unspecified"
+msgstr ""
 
-#: ../data/lang.txt:5
-msgid "Simpllified Chinese"
-msgstr "Vereenvoudigd Chinees"
-
-#: ../data/lang.txt:8
-msgid "Traditional Chinese"
-msgstr "Traditioneel Chinees"
-
-#: ../data/lang.txt:11
-msgid "German"
-msgstr "Duits"
-
-#: ../data/lang.txt:14
-msgid "Italian"
-msgstr "Italiaans"
-
-#: ../data/lang.txt:17
-msgid "Portuguese"
-msgstr "Portugees"
-
-#: ../src/greeter.c:84
+#: ../src/greeter.c:87
 msgid "Password:"
 msgstr "Paswoord:"
 
-#: ../src/greeter.c:184
+#: ../src/greeter.c:211
 msgid "Default"
 msgstr "Standaard"
 
-#: ../src/greeter.c:235
+#: ../src/greeter.c:260
 msgid "_Reboot"
 msgstr "_Herstarten"
 
-#: ../src/greeter.c:239
+#: ../src/greeter.c:264
 msgid "_Shutdown"
 msgstr "_Afsluiten"
 
- 	  	 
+#~ msgid "US English"
+#~ msgstr "Engels (US)"
+
+#~ msgid "Simpllified Chinese"
+#~ msgstr "Vereenvoudigd Chinees"
+
+#~ msgid "Traditional Chinese"
+#~ msgstr "Traditioneel Chinees"
+
+#~ msgid "German"
+#~ msgstr "Duits"
+
+#~ msgid "Italian"
+#~ msgstr "Italiaans"
+
+#~ msgid "Portuguese"
+#~ msgstr "Portugees"

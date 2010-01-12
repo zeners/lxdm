@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-02 01:18+0800\n"
+"POT-Creation-Date: 2010-01-12 01:46+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Michal Várady <miko.vaji@gmail.com>\n"
 "Language-Team: \n"
@@ -26,49 +26,44 @@ msgstr "Rozvržení klávesnice:"
 msgid "Language:"
 msgstr "Jazyk:"
 
-#: ../data/lxdm.glade.h:4
-#: ../src/greeter.c:113
-#: ../src/greeter.c:137
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:116 ../src/greeter.c:165
 msgid "User:"
 msgstr "Uživatel:"
 
-#: ../data/lang.txt:2
-msgid "US English"
-msgstr "Angličtina (USA)"
+#: ../src/gdm/gdm-languages.c:609
+msgid "Unspecified"
+msgstr ""
 
-#: ../data/lang.txt:5
-msgid "Simpllified Chinese"
-msgstr "Zjednodušená čínština"
-
-#: ../data/lang.txt:8
-msgid "Traditional Chinese"
-msgstr "Tradiční čínština"
-
-#: ../data/lang.txt:11
-msgid "German"
-msgstr "Němčina"
-
-#: ../data/lang.txt:14
-msgid "Italian"
-msgstr "Italština"
-
-#: ../data/lang.txt:17
-msgid "Portuguese"
-msgstr "Portugalština"
-
-#: ../src/greeter.c:84
+#: ../src/greeter.c:87
 msgid "Password:"
 msgstr "Heslo:"
 
-#: ../src/greeter.c:184
+#: ../src/greeter.c:211
 msgid "Default"
 msgstr "Výchozí"
 
-#: ../src/greeter.c:235
+#: ../src/greeter.c:260
 msgid "_Reboot"
 msgstr "_Restartovat"
 
-#: ../src/greeter.c:239
+#: ../src/greeter.c:264
 msgid "_Shutdown"
 msgstr "_Vypnout"
 
+#~ msgid "US English"
+#~ msgstr "Angličtina (USA)"
+
+#~ msgid "Simpllified Chinese"
+#~ msgstr "Zjednodušená čínština"
+
+#~ msgid "Traditional Chinese"
+#~ msgstr "Tradiční čínština"
+
+#~ msgid "German"
+#~ msgstr "Němčina"
+
+#~ msgid "Italian"
+#~ msgstr "Italština"
+
+#~ msgid "Portuguese"
+#~ msgstr "Portugalština"

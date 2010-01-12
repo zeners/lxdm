@@ -1,4 +1,4 @@
 data/lxdm.glade
-data/lang.txt
+src/gdm/gdm-languages.c
 src/greeter.c
 

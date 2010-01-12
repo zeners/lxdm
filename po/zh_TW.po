@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-02 01:18+0800\n"
+"POT-Creation-Date: 2010-01-12 01:46+0100\n"
 "PO-Revision-Date: 2009-11-07 19:32+0800\n"
 "Last-Translator: Hong Jen Yee (PCMan) <pcman.tw@gmail.com>\n"
 "Language-Team: Chinese (traditional)\n"
@@ -28,49 +28,44 @@ msgstr "鍵盤："
 msgid "Language:"
 msgstr "語言："
 
-#: ../data/lxdm.glade.h:4
-#: ../src/greeter.c:113
-#: ../src/greeter.c:137
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:116 ../src/greeter.c:165
 msgid "User:"
 msgstr "使用者:"
 
-#: ../data/lang.txt:2
-msgid "US English"
-msgstr "美國英語"
+#: ../src/gdm/gdm-languages.c:609
+msgid "Unspecified"
+msgstr ""
 
-#: ../data/lang.txt:5
-msgid "Simpllified Chinese"
-msgstr "簡體中文"
-
-#: ../data/lang.txt:8
-msgid "Traditional Chinese"
-msgstr "正體中文"
-
-#: ../data/lang.txt:11
-msgid "German"
-msgstr "德語"
-
-#: ../data/lang.txt:14
-msgid "Italian"
-msgstr "意大利語"
-
-#: ../data/lang.txt:17
-msgid "Portuguese"
-msgstr "葡萄牙語"
-
-#: ../src/greeter.c:84
+#: ../src/greeter.c:87
 msgid "Password:"
 msgstr "密碼："
 
-#: ../src/greeter.c:184
+#: ../src/greeter.c:211
 msgid "Default"
 msgstr "預設"
 
-#: ../src/greeter.c:235
+#: ../src/greeter.c:260
 msgid "_Reboot"
 msgstr "重新開機 (_R)"
 
-#: ../src/greeter.c:239
+#: ../src/greeter.c:264
 msgid "_Shutdown"
 msgstr "關機 (_S)"
 
+#~ msgid "US English"
+#~ msgstr "美國英語"
+
+#~ msgid "Simpllified Chinese"
+#~ msgstr "簡體中文"
+
+#~ msgid "Traditional Chinese"
+#~ msgstr "正體中文"
+
+#~ msgid "German"
+#~ msgstr "德語"
+
+#~ msgid "Italian"
+#~ msgstr "意大利語"
+
+#~ msgid "Portuguese"
+#~ msgstr "葡萄牙語"
