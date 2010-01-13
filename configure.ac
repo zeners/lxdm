@@ -17,7 +17,6 @@ AM_PROG_CC_C_O
 AC_CHECK_LIB([Xmu], [XmuClientWindow])
 AC_CHECK_LIB([crypt], [crypt])
 AC_CHECK_LIB([pam], [pam_open_session])
-AC_CHECK_LIB([ck-connector],[ck_connector_open_session])
 
 # Checks for header files.
 AC_PATH_X
@@ -48,9 +47,11 @@ PKG_CHECK_MODULES(GTK, [$pkg_modules])
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
-PKG_CHECK_MODULES(CONSOLEKIT, "ck-connector")
-AC_SUBST(CONSOLEKIT_CFLAGS)
-AC_SUBST(CONSOLEKIT_LIBS)
+PKG_CHECK_MODULES(CONSOLEKIT, "ck-connector",[
+	AC_SUBST(CONSOLEKIT_CFLAGS)
+	AC_SUBST(CONSOLEKIT_LIBS)],[
+	echo "ConsoleKit-devel not found"
+	])
 
 GETTEXT_PACKAGE=lxdm
 AC_SUBST(GETTEXT_PACKAGE)
