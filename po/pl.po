@@ -9,14 +9,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-12 01:46+0100\n"
-"PO-Revision-Date: 2009-12-24 19:46+0100\n"
-"Last-Translator: Grzegorz Gibas <amigib@gmail.com>\n"
+"PO-Revision-Date: 2010-01-13 22:56+0200\n"
+"Last-Translator: Artur Kruszewski <mazdac@gmail.com>\n"
 "Language-Team: Polish\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Pootle 2.0.0\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
@@ -36,7 +38,7 @@ msgstr "Użytkownik:"
 
 #: ../src/gdm/gdm-languages.c:609
 msgid "Unspecified"
-msgstr ""
+msgstr "Niezdefiniowany"
 
 #: ../src/greeter.c:87
 msgid "Password:"
