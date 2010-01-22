@@ -135,7 +135,6 @@ void lxdm_get_tty(void)
 		{
 			tty=atoi(p+2);
 			gotvtarg=1;
-			break;
 		}
 	}
 	if(!gotvtarg)
@@ -694,10 +693,13 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang)
 		env[i++]=g_strdup_printf("LOGNAME=%s", pw->pw_name);
 		env[i++]=g_strdup_printf("DISPLAY=%s", getenv("DISPLAY"));
 		path=g_key_file_get_string(config,"base","path",0);
+#if 0
 		if(!path && getenv("PATH"))
 			path=g_strdup(getenv("PATH"));
+#endif
 		if(!path)
-			path=g_strdup("/bin:/usr/bin");
+			path=g_strdup("/usr/local/bin:/bin:/usr/bin");
+		printf("here %s\n",path);
 		env[i++]=g_strdup_printf("PATH=%s",path);
 		g_free(path);
 		if(lang && lang[0])
