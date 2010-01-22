@@ -22,7 +22,10 @@
 #ifndef _LXDM_H_
 #define _LXDM_H_
 
+#include <glib.h>
 #include <pwd.h>
+
+G_BEGIN_DECLS
 
 extern GKeyFile *config;
 
@@ -33,11 +36,14 @@ void lxdm_do_reboot(void);
 void lxdm_do_shutdown(void);
 int lxdm_cur_session(void);
 
-#define AUTH_SUCCESS	0
-#define AUTH_BAD_USER	1
-#define AUTH_FAIL	2
-#define AUTH_PRIV	3
-#define AUTH_ERROR	4
+enum AuthResult
+{
+    AUTH_SUCCESS,
+    AUTH_BAD_USER,
+    AUTH_FAIL,
+    AUTH_PRIV,
+    AUTH_ERROR
+};
 
 void ui_drop(void);
 int ui_main(void);
@@ -47,9 +53,12 @@ int ui_do_login(void);
 typedef struct{
 	char *name;
 	char *exec;
-}LXSESSION;
+    char* desktop_file;
+}Session;
 
 GSList *do_scan_xsessions(void);
 void free_xsessions(GSList *);
+
+G_END_DECLS
 
 #endif/*_LXDM_H_*/
