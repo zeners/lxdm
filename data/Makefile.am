@@ -5,6 +5,7 @@ EXTRA_DIST= \
 	Xsession \
 	lxdm.conf \
 	lxdm \
+	themes
 	$(NULL)
 
 themedir=$(datadir)/lxdm/themes/Industrial

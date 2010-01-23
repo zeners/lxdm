@@ -701,12 +701,11 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 
         /* override $PATH if needed */
         path = g_key_file_get_string(config, "base", "path", 0);
-        if( G_UNLIKELY(path) )
-        {
-            if(path[0])
-                replace_env(env, "PATH=", path);
-            g_free(path);
-        }
+        if( G_UNLIKELY(path) && path[0] )
+        	replace_env(env, "PATH=", path);
+	else
+		replace_env(env, "PATH=","/usr/local/bin:/bin:/usr/bin");
+        g_free(path);
         /* optionally override $LANG and $LANGUAGE */
         if( lang && lang[0] )
         {

@@ -77,7 +77,7 @@ static void on_ui_expose(void)
     cairo_t *cr = gdk_cairo_create(win);
     char *p = (stage == 0) ? user : pass;
     int len = strlen(p);
-    GdkColor *color;
+    GdkColor *color=&text;
 
     gdk_cairo_set_source_color(cr, &bg);
     cairo_rectangle(cr, 0, 0, rc.width, rc.height);
@@ -98,7 +98,6 @@ static void on_ui_expose(void)
             p = user;
         else
             p = user + len - MAX_VISIBLE_CHARS;
-        color = &text;
         if( len == 0 )
         {
             p = "Username";
@@ -119,7 +118,6 @@ static void on_ui_expose(void)
             memset(spy, '*', MAX_VISIBLE_CHARS);
             p[MAX_VISIBLE_CHARS] = 0;
         }
-        color = &text;
         if( len == 0 )
         {
             p = "Password";
@@ -512,7 +510,7 @@ void ui_prepare(void)
         free_xsessions(sessions);
     sessions = 0;
     session_select = 0;
-    user[0] = pass[0] = NULL;
+    user[0] = pass[0] = 0;
     stage = 0;
 
     p = g_key_file_get_string(config, "input", "border", 0);
