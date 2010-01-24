@@ -50,7 +50,7 @@
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 
-#include <linux/vt.h>
+#include <sys/vt.h>
 #include <sys/ioctl.h>
 
 #if HAVE_LIBXMU
