@@ -80,7 +80,7 @@ static char *self;
 static pid_t child;
 static int reason;
 static char mcookie[33];
-static int tty = 7;
+static int old_tty=1,tty = 7;
 
 static int get_active_vt(void)
 {
@@ -102,14 +102,14 @@ out:
     return console_state.v_active;
 }
 
-static void set_active_vt(void)
+static void set_active_vt(int vt)
 {
     int fd;
 
     fd = open("/dev/console", O_RDWR);
     if( fd < 0 )
         fd = 0;
-    ioctl(fd, VT_ACTIVATE, tty);
+    ioctl(fd, VT_ACTIVATE, vt);
     if( fd != 0 )
         close(fd);
 }
@@ -122,6 +122,8 @@ void lxdm_get_tty(void)
     int len;
     int gotvtarg = 0;
     int nr = 0;
+
+    old_tty=get_active_vt();
     if( !s ) s = g_strdup("/usr/bin/X");
     g_shell_parse_argv(s, &arc, &arg, 0);
     g_free(s);
@@ -140,8 +142,8 @@ void lxdm_get_tty(void)
         /* support plymouth */
         nr = g_file_test("/var/spool/gdm/force-display-on-active-vt", G_FILE_TEST_EXISTS);
         if( nr || g_key_file_get_integer(config, "server", "active_vt", 0) )
-            /* get active vt dynamic  */
-            tty = get_active_vt();
+            /* use the active vt */
+            tty = old_tty;
         if( nr ) unlink("/var/spool/gdm/force-display-on-active-vt");
     }
     arg = g_renew(char *, arg, len + 10);
@@ -156,7 +158,8 @@ void lxdm_get_tty(void)
     g_strfreev(arg);
     g_key_file_set_string(config, "server", "arg", s);
     g_free(s);
-    set_active_vt();
+    if(old_tty!=tty)
+        set_active_vt(tty);
 }
 
 void lxdm_restart_self(void)
@@ -530,6 +533,7 @@ void exit_cb(void)
     put_lock();
     if( reason == 0 )
         execlp(self, self, NULL);
+    set_active_vt(old_tty);
 }
 
 int CatchErrors(Display *dpy, XErrorEvent *ev)
