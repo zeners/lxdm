@@ -1,13 +1,14 @@
 NULL =
 
-bin_PROGRAMS = lxdm-binary lxdm-greeter-gtk
+sbin_PROGRAMS = lxdm-binary
 
 lxdm_binary_CFLAGS = \
 	$(GTK_CFLAGS) \
 	-DCONFIG_DIR=\"$(sysconfdir)/lxdm\" \
 	-DLXDM_DATA_DIR=\"$(datadir)/lxdm\" \
 	$(CONSOLEKIT_CFLAGS) \
-	-Werror-implicit-function-declaration
+	-Werror-implicit-function-declaration \
+	-Wall \
 	$(NULL)
 
 lxdm_binary_LDADD = \
@@ -19,6 +20,8 @@ lxdm_binary_SOURCES = \
 	lxdm.c lxdm.h \
 	ui.c \
 	$(NULL)
+
+libexec_PROGRAMS = lxdm-greeter-gtk
 
 lxdm_greeter_gtk_CFLAGS = \
 	$(GTK_CFLAGS) \

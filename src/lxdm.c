@@ -706,10 +706,11 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 	else
 		replace_env(env, "PATH=","/usr/local/bin:/bin:/usr/bin");
         g_free(path);
-        /* optionally override $LANG and $LANGUAGE */
+        /* optionally override $LANG, $LC_MESSAGES, and $LANGUAGE */
         if( lang && lang[0] )
         {
             replace_env(env, "LANG=", lang);
+            replace_env(env, "LC_MESSAGES=", lang);
             replace_env(env, "LANGUAGE=", lang);
         }
 
@@ -721,11 +722,11 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
         {
             char *p = getenv("DESKTOP");
             if( !strcmp(p, "LXDE") )
-                session = g_strdup("/usr/bin/startlxde");
+                session = g_find_program_in_path("startlxde");
             else if( !strcmp(p, "GNOME") )
-                session = g_strdup("/usr/bin/gnome-session");
+                session = g_find_program_in_path("gnome-session");
             else if( !strcmp(p, "KDE") )
-                session = g_strdup("/usr/bin/startkde");
+                session = g_find_program_in_path("startkde");
             else if( !strcmp(p, "XFCE") )
                 session = g_strdup("startxfce4");
             else

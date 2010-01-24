@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([lxdm], [0.1.0], [http://lxde.org/])
+AC_INIT([lxdm], [0.2.0], [http://lxde.org/])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 AC_CONFIG_SRCDIR([src/lxdm.c])
@@ -65,5 +65,7 @@ AC_CONFIG_FILES([
 	po/Makefile.in
 	pam/Makefile
 	data/Makefile
+    data/lxdm.conf
 ])
+AC_CONFIG_FILES([data/lxdm], [chmod +x data/lxdm])
 AC_OUTPUT

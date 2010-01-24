@@ -1,12 +1,21 @@
 NULL=
 
-EXTRA_DIST= \
+sbin_SCRIPTS = lxdm
+CLEANFILES = $(sbin_SCRIPTS)
+
+lxdmdir = $(datadir)/lxdm
+lxdm_DATA = \
 	lxdm.glade \
-	Xsession \
-	lxdm.conf \
-	lxdm \
-	themes
 	$(NULL)
+
+lxdm_confdir = /etc/lxdm
+lxdm_conf_DATA = \
+	lxdm.conf \
+	Xsession \
+	$(NULL)
+
+install-data-hook:
+	chmod +x $(DESTDIR)/etc/lxdm/Xsession
 
 themedir=$(datadir)/lxdm/themes/Industrial
 theme_DATA= \
@@ -18,4 +27,10 @@ theme_DATA= \
 	themes/Industrial/lang.png \
 	themes/Industrial/session.png \
 	themes/Industrial/greeter.ui \
+	$(NULL)
+
+EXTRA_DIST= \
+	$(lxdm_DATA) \
+	$(lxdm_conf_DATA) \
+	$(theme_DATA) \
 	$(NULL)
