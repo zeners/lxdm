@@ -79,13 +79,11 @@ static GIOChannel *greeter_io;
 static void do_reboot(void)
 {
     printf("reboot\n");
-    fflush(stdout);
 }
 
 static void do_shutdown(void)
 {
     printf("shutdown\n");
-    fflush(stdout);
 }
 
 static void on_screen_size_changed(GdkScreen* scr, GtkWindow* win)
@@ -167,7 +165,6 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 
         printf("login user=%s pass=%s session=%s lang=%s\n",
                user, pass, session_exec, session_lang);
-        fflush(stdout);
 
         /* password check failed */
         g_free(user);
@@ -602,6 +599,9 @@ int main(int arc, char *arg[])
     /* create the login window */
     create_win();
     listen_stdin();
+    /* use line buffered stdout for inter-process-communcation of
+     * single-line-commands */
+    setvbuf(stdout, NULL, _IOLBF, 0 );
     gtk_main();
 
     if( config_changed )
