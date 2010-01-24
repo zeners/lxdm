@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-12 01:46+0100\n"
+"POT-Creation-Date: 2010-01-24 21:50+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,7 +28,7 @@ msgstr ""
 msgid "Language:"
 msgstr ""
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:116 ../src/greeter.c:165
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:132 ../src/greeter.c:181
 msgid "User:"
 msgstr ""
 
@@ -36,18 +36,18 @@ msgstr ""
 msgid "Unspecified"
 msgstr ""
 
-#: ../src/greeter.c:87
+#: ../src/greeter.c:103
 msgid "Password:"
 msgstr ""
 
-#: ../src/greeter.c:211
+#: ../src/greeter.c:232
 msgid "Default"
 msgstr ""
 
-#: ../src/greeter.c:260
+#: ../src/greeter.c:285
 msgid "_Reboot"
 msgstr ""
 
-#: ../src/greeter.c:264
+#: ../src/greeter.c:289
 msgid "_Shutdown"
 msgstr ""

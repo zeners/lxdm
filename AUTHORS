@@ -10,3 +10,8 @@ src/gdm/gdm-languages.[ch]:
 
 src/gdm/locarchive.h:
   Copyright (C) 2002 Free Software Foundation, Inc.
+
+Image files in data/theme/Industrial are taken from 'industrial' gdm theme.
+  License: GPL v2 or later
+  Copyright (C) 2002 Ximian, Inc.
+  Jakub Steiner <jimmac@ximian.com>
