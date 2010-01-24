@@ -28,4 +28,4 @@ if [ -n "$PREFERRED" ]; then
 	export PREFERRED
 fi
 
-exec @prefix@/sbin/lxdm-binary
+exec @prefix@/sbin/lxdm-binary $*
