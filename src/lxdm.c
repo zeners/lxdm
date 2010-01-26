@@ -49,6 +49,7 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
+#include <X11/XKBlib.h>
 
 #include <sys/vt.h>
 #include <sys/ioctl.h>
@@ -515,6 +516,37 @@ static void on_xserver_stop(GPid pid, gint status, gpointer data)
     lxdm_restart_self();
 }
 
+static void set_numlock(void)
+{
+	Display *dpy;
+	XkbDescPtr xkb;
+	unsigned int mask;
+	int on;
+	int i;
+	if(!g_key_file_has_key(config,"base","numlock",NULL))
+		return;
+	on=g_key_file_get_integer(config,"base","numlock",0);
+	dpy=gdk_x11_get_default_xdisplay();
+	if(!dpy) return;
+	xkb = XkbGetKeyboard( dpy, XkbAllComponentsMask, XkbUseCoreKbd );
+	if(!xkb) return;
+	if(!xkb->names)
+	{
+		XkbFreeKeyboard(xkb,0,True);
+		return;
+	}
+	for(i = 0; i < XkbNumVirtualMods; i++)
+	{
+		char *s=XGetAtomName( xkb->dpy, xkb->names->vmods[i]);
+		if(!s) continue;
+		if(strcmp(s,"NumLock")) continue;
+		XkbVirtualModsToReal( xkb, 1 << i, &mask );
+		break;
+	}
+	XkbFreeKeyboard( xkb, 0, True );
+	XkbLockModifiers ( dpy, XkbUseCoreKbd, mask, (on?mask:0));
+}
+
 void startx(void)
 {
     char *arg;
@@ -927,63 +959,6 @@ void init_ck(void)
 }
 #endif
 
-#if 0
-static void apply_theme(void)
-{
-    GKeyFile *tmp;
-    gchar **grps;
-    char *p;
-    gsize len;
-    FILE *fp;
-
-    config = g_key_file_new();
-    g_key_file_load_from_file(config, "/etc/lxdm/lxdm.conf", G_KEY_FILE_KEEP_COMMENTS, NULL);
-
-    p = g_key_file_get_string(config, "display", "theme", 0);
-    if( !p || !p[0] )
-    {
-        g_free(p);
-        g_key_file_free(config);
-        return;
-    }
-
-    tmp = g_key_file_new();
-    g_key_file_load_from_file(config, p, G_KEY_FILE_NONE, NULL);
-    g_free(p);
-    grps = g_key_file_get_groups(tmp, NULL);
-    if( grps )
-    {
-        int i, j;
-        char **keys, *val;
-        for( i = 0; grps[i]; i++ )
-        {
-            keys = g_key_file_get_keys(tmp, grps[i], NULL, NULL);
-            if( !keys ) continue;
-            for( j = 0; keys[j]; j++ )
-            {
-                val = g_key_file_get_string(tmp, grps[i], keys[j], NULL);
-                if( !val ) continue;
-                g_key_file_set_string(config, grps[i], keys[j], val);
-                g_free(val);
-            }
-            g_strfreev(keys);
-        }
-    }
-    g_strfreev(grps);
-    g_key_file_free(tmp);
-
-    p = g_key_file_to_data(config, &len, NULL);
-    fp = fopen("/etc/lxdm/lxdm.conf", "w");
-    if( fp )
-    {
-        fwrite(p, 1, len, fp);
-        fclose(fp);
-    }
-    g_free(p);
-    g_key_file_free(config);
-}
-#endif
-
 int main(int arc, char *arg[])
 {
     int tmp;
@@ -1002,12 +977,6 @@ int main(int arc, char *arg[])
         case 'd':
             daemonmode = 1;
             break;
-#if 0
-        case 'a': /* apply theme default settings */
-            apply_theme();
-            exit(EXIT_SUCCESS);
-            break;
-#endif
         case 'h':
             printf("usage:  lxdm [options ...]\n");
             printf("options:\n");
@@ -1040,6 +1009,7 @@ int main(int arc, char *arg[])
     }
     if( tmp >= 200 )
         exit(EXIT_FAILURE);
+    set_numlock();
 
 #if HAVE_LIBCK_CONNECTOR
     init_ck();

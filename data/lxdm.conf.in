@@ -1,6 +1,7 @@
 [base]
 # autologin=dgod
 # session=/usr/bin/startlxde
+# numlock=0
 greeter=@prefix@/libexec/lxdm-greeter-gtk
 
 [server]
