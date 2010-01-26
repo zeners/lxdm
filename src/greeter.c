@@ -202,7 +202,8 @@ static void load_sessions()
         if( g_key_file_load_from_file(kf, path, 0, NULL) )
         {
             name = g_key_file_get_locale_string(kf, "Desktop Entry", "Name", NULL, NULL);
-            exec = g_key_file_get_string(kf, "Desktop Entry", "Exec", NULL);
+            //exec = g_key_file_get_string(kf, "Desktop Entry", "Exec", NULL);
+            exec=g_strdup(path);
 
             if( !strcmp(name, "LXDE") )
                 gtk_list_store_prepend(list, &it);

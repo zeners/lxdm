@@ -366,10 +366,11 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
 static pam_handle_t *pamh;
 static struct pam_conv conv;
 
-void setup_pam_session(struct passwd *pw)
+void setup_pam_session(struct passwd *pw,char *session_name)
 {
     int err;
     char x[256];
+   
     if( PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &pamh) )
     {
         pamh = NULL;
@@ -380,10 +381,17 @@ void setup_pam_session(struct passwd *pw)
 #ifdef PAM_XDISPLAY
     pam_set_item( pamh, PAM_XDISPLAY, getenv("DISPLAY") );
 #endif
+
+	if(session_name && session_name[0])
+	{
+		char *env;
+		env = g_strdup_printf ("DESKTOP_SESSION=%s", session_name);
+		pam_putenv (pamh, env);
+		g_free (env);
+	}
     err = pam_open_session(pamh, 0); /* FIXME pam session failed */
     if( err != PAM_SUCCESS )
         log_print( "pam open session error \"%s\"\n", pam_strerror(pamh, err) );
-
 }
 
 void close_pam_session(void)
@@ -393,6 +401,32 @@ void close_pam_session(void)
     err = pam_close_session(pamh, 0);
     pam_end(pamh, err);
     pamh = NULL;
+}
+
+void append_pam_environ(char **env)
+{
+	int i,j,n;
+	char **penv;
+	if(!pamh) return;
+	penv=pam_getenvlist(pamh);
+	if(!penv) return;
+	for(i=0;penv[i]!=NULL;i++)
+	{
+		n=strcspn(penv[i],"=")+1;
+		for(j=0;env[j]!=NULL;j++)
+		{
+			if(!strncmp(penv[i],env[j],n))
+				break;
+			if(env[j+1]==NULL)
+			{
+				env[j+1]=g_strdup(penv[i]);
+				env[j+2]=NULL;
+				break;
+			}
+		}
+		free(penv[i]);
+	}
+	free(penv);
 }
 
 #endif
@@ -656,9 +690,72 @@ static void replace_env(char** env, const char* name, const char* new_val)
     *(penv + 1) = NULL;
 }
 
+gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
+{
+	char *name=NULL,*exec=NULL;
+	if(!session || !session[0])
+	{
+		name=g_key_file_get_string(config, "base", "session", 0);
+		if(!name && getenv("PREFERRED"))
+			name = g_strdup(getenv("PREFERRED"));
+		if(!session && getenv("DESKTOP"))
+			name = g_strdup(getenv("DESKTOP"));
+		if(!name) name=g_strdup("LXDE");
+	}
+	else
+	{
+		char *p=strrchr(session,'.');
+		if(p && !strcmp(p,".desktop"))
+		{
+			GKeyFile *cfg=g_key_file_new();
+			if(!g_key_file_load_from_file(cfg,session,G_KEY_FILE_NONE,NULL))
+			{
+				g_key_file_free(cfg);
+				return FALSE;
+			}
+			name=g_key_file_get_string(cfg,"Desktop Entry","Name",NULL);
+			exec=g_key_file_get_string(cfg,"Desktop Entry","Exec",NULL);
+			g_key_file_free(cfg);
+			if(!name || !exec)
+			{
+				g_free(name);
+				g_free(exec);
+				return FALSE;
+			}			
+		}
+		else
+		{
+			name=g_strdup(session);
+		}
+	}
+	if(name && !exec)
+	{
+		if(!strcmp(name,"LXDE"))
+			exec = g_strdup("startlxde");
+		else if( !strcmp(name, "GNOME") )
+			exec = g_strdup("gnome-session");
+		else if( !strcmp(name, "KDE") )
+			exec = g_strdup("startkde");
+		else if( !strcmp(name, "XFCE") )
+			exec = g_strdup("startxfce4");
+		else
+			exec=g_strdup(name);
+	}
+	if(pname) *pname=name;
+	if(pexec) *pexec=exec;
+	return TRUE;
+}
+
 void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 {
+	char *session_name=0,*session_exec=0;
     int pid;
+    
+    if(!lxdm_get_session_info(session,&session_name,&session_exec))
+    {
+		ui_prepare();
+    	return;
+	}
 
     if( pw->pw_shell[0] == '\0' )
     {
@@ -667,7 +764,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
         endusershell();
     }
 #if HAVE_LIBPAM
-    setup_pam_session(pw);
+    setup_pam_session(pw,session_name);
 #endif
 #if HAVE_LIBCK_CONNECTOR
     if( ckc != NULL )
@@ -693,7 +790,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
         char** env, *path;
         int n_env = g_strv_length(environ), i;
         /* copy all environment variables and override some of them */
-        env = g_new(char*, n_env + 1 + 10);
+        env = g_new(char*, n_env + 1 + 13);
         for( i = 0; i < n_env; ++i )
             env[i] = g_strdup(environ[i]);
         env[i] = NULL;
@@ -717,8 +814,13 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
             replace_env(env, "LC_MESSAGES=", lang);
             replace_env(env, "LANGUAGE=", lang);
         }
+        
+#if HAVE_LIBPAM
+		append_pam_environ(env);
+#endif
 
-        if( !session || !session[i] ) /* this means use default session */
+#if 0
+        if( !session || !session[0] ) /* this means use default session */
             session = g_key_file_get_string(config, "base", "session", 0);
         if( !session && getenv("PREFERRED") )
             session = g_strdup( getenv("PREFERRED") );
@@ -740,10 +842,14 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
             session = g_strdup("");
 
         switch_user(pw, session, env);
-        g_strfreev(env);
+#else
+		switch_user(pw, session_exec, env);
+#endif
         reason = 4;
         exit(EXIT_FAILURE);
     }
+    g_free(session_name);
+    g_free(session_exec);
     g_child_watch_add(pid, on_session_stop, 0);
 }
 
