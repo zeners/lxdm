@@ -68,8 +68,6 @@
 
 #include "lxdm.h"
 
-#define XSESSIONS_DIR    "/usr/share/xsessions"
-
 GKeyFile *config;
 static pid_t server;
 #if HAVE_LIBCK_CONNECTOR
@@ -992,7 +990,7 @@ int main(int arc, char *arg[])
     self = arg[0];
 
     config = g_key_file_new();
-    g_key_file_load_from_file(config, "/etc/lxdm/lxdm.conf", G_KEY_FILE_NONE, NULL);
+    g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_NONE, NULL);
 
     get_lock();
     atexit(exit_cb);

@@ -30,13 +30,6 @@
 #include "lang.h"
 #include <time.h>
 
-#define XSESSION_DIR    "/usr/share/xsessions"
-#define CONFIG_FILE     "/etc/lxdm/lxdm.conf"
-
-#ifndef LXDM_DATA_DIR
-#define LXDM_DATA_DIR   "/usr/share/lxdm"
-#endif
-
 enum {
     COL_SESSION_NAME,
     COL_SESSION_EXEC,
@@ -188,7 +181,7 @@ static void load_sessions()
     char* last;
     char *path, *file_name, *name, *exec;
     GKeyFile* kf;
-    GDir* dir = g_dir_open(XSESSION_DIR, 0, NULL);
+    GDir* dir = g_dir_open(XSESSIONS_DIR, 0, NULL);
     if( !dir )
         return;
 
@@ -198,7 +191,7 @@ static void load_sessions()
     kf = g_key_file_new();
     while( ( file_name = (char*)g_dir_read_name(dir) ) != NULL )
     {
-        path = g_build_filename(XSESSION_DIR, file_name, NULL);
+        path = g_build_filename(XSESSIONS_DIR, file_name, NULL);
         if( g_key_file_load_from_file(kf, path, 0, NULL) )
         {
             name = g_key_file_get_locale_string(kf, "Desktop Entry", "Name", NULL, NULL);

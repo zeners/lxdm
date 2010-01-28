@@ -69,3 +69,9 @@ AC_CONFIG_FILES([
 ])
 AC_CONFIG_FILES([data/lxdm], [chmod +x data/lxdm])
 AC_OUTPUT
+
+dnl sanity checks
+if test "$sysconfdir" != "/etc"; then
+   AC_MSG_WARN(sysconfdir is not /etc.)
+   AC_MSG_WARN(Please consider passing --sysconfdir=/etc to configure.)
+fi
