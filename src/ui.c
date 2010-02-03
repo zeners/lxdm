@@ -481,7 +481,7 @@ void ui_prepare(void)
         char **argv;
         gboolean ret;
         g_shell_parse_argv(p, NULL, &argv, NULL);
-
+        
         /* FIXME: what's this? */
         if( greeter > 0 && kill(greeter, 0) == 0 )
             return;

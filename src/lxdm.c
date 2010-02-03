@@ -113,6 +113,31 @@ static void set_active_vt(int vt)
         close(fd);
 }
 
+static gboolean plymouth_is_running(void)
+{
+	int status;
+	gboolean res;
+
+	res=g_spawn_command_line_sync ("/bin/plymouth --ping",NULL,NULL,&status,NULL);
+	if(!res) return FALSE;
+	return WIFEXITED (status) && WEXITSTATUS (status) == 0;
+}
+
+static void plymouth_quit_with_transition(void)
+{
+	g_spawn_command_line_sync("/bin/plymouth quit --retain-splash",NULL,NULL,NULL,NULL);
+}
+
+static void plymouth_quit_without_transition(void)
+{
+	g_spawn_command_line_sync("/bin/plymouth quit --retain-splash",NULL,NULL,NULL,NULL);
+}
+
+static void plymouth_prepare_transition(void)
+{
+	g_spawn_command_line_sync ("/bin/plymouth deactivate",NULL,NULL,NULL,NULL);
+}
+
 void lxdm_get_tty(void)
 {
     char *s = g_key_file_get_string(config, "server", "arg", 0);
@@ -121,6 +146,10 @@ void lxdm_get_tty(void)
     int len;
     int gotvtarg = 0;
     int nr = 0;
+    gboolean plymouth;
+    
+    plymouth=plymouth_is_running();
+    if(plymouth) plymouth_prepare_transition();
 
     old_tty=get_active_vt();
     if( !s ) s = g_strdup("/usr/bin/X");
@@ -136,7 +165,7 @@ void lxdm_get_tty(void)
             gotvtarg = 1;
         }
     }
-    if( !gotvtarg )
+    if(!gotvtarg)
     {
         /* support plymouth */
         nr = g_file_test("/var/spool/gdm/force-display-on-active-vt", G_FILE_TEST_EXISTS);
@@ -144,7 +173,17 @@ void lxdm_get_tty(void)
             /* use the active vt */
             tty = old_tty;
         if( nr ) unlink("/var/spool/gdm/force-display-on-active-vt");
+        if(plymouth)
+        {
+			nr=1;
+			plymouth_quit_with_transition();
+		}
     }
+    else
+    {
+		if(plymouth) /* set tty and plymouth running */
+			plymouth_quit_without_transition();
+	}
     arg = g_renew(char *, arg, len + 10);
     if( !gotvtarg )
         arg[len++] = g_strdup_printf("vt%d", tty);
@@ -402,6 +441,7 @@ void close_pam_session(void)
     pamh = NULL;
 }
 
+#if 0
 void append_pam_environ(char **env)
 {
 	int i,j,n;
@@ -427,6 +467,7 @@ void append_pam_environ(char **env)
 	}
 	free(penv);
 }
+#endif
 
 #endif
 
@@ -846,7 +887,9 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
         }
         
 #if HAVE_LIBPAM
+#if 0
 		append_pam_environ(env);
+#endif
 #endif
 
 #if 0
