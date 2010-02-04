@@ -2,7 +2,7 @@
 # autologin=dgod
 # session=/usr/bin/startlxde
 # numlock=0
-greeter=@prefix@/libexec/lxdm-greeter-gtk
+greeter=@libexecdir@/lxdm-greeter-gtk
 
 [server]
 # arg=/usr/bin/X -nr vt1

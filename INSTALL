@@ -1,28 +1,10 @@
 1 modify data/Xsession as your distribution
-It can run under fedora now, but may can't run on your system, for packagers, follow next steps may help
-
-find Xsession on your system, remember it as OS_XSESSION
-set the content of data/Xsession with
-
-############################################################
-#!/bin/bash
-
-if [ $# -eq 1 ]; then
-        LXSESSION=$1
-else
-        LXSESSION=/usr/bin/startlxde
-fi
-
-OS_XSESSION=/etc/X11/xinit/Xsession
-
-exec OS_XSESSION $LXSESSION
-#############################################################
-
-of cource you should replace OS_XSESSION with yours
 
 2 compile and install
 
-./configure --prefix=/usr
+./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec
 make
 make install
+
+here libexecdir should change as you system path.
 
