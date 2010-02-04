@@ -31,7 +31,7 @@ msgstr "Пользователь:"
 
 #: ../src/gdm/gdm-languages.c:609
 msgid "Unspecified"
-msgstr ""
+msgstr "Незадано"
 
 #: ../src/greeter.c:87
 msgid "Password:"
@@ -66,3 +66,5 @@ msgstr "_Выключение"
 
 #~ msgid "Portuguese"
 #~ msgstr "Португальский"
+
+ 	  	 
