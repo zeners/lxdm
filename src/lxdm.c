@@ -135,7 +135,7 @@ static void plymouth_quit_without_transition(void)
 
 static void plymouth_prepare_transition(void)
 {
-	g_spawn_command_line_sync ("/bin/plymouth deactivate",NULL,NULL,NULL,NULL);
+//	g_spawn_command_line_sync ("/bin/plymouth deactivate",NULL,NULL,NULL,NULL);
 }
 
 void lxdm_get_tty(void)

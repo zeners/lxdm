@@ -1,4 +1,4 @@
-1 modify data/Xsession as your distribution
+1 modify data/Xsession.am as your distribution
 
 2 compile and install
 
