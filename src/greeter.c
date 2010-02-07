@@ -464,9 +464,21 @@ int set_background(void)
         {
             /* default the bg stretch */
             if(!style || strcmp(style, "stretch") == 0 )
-                bg_img = gdk_pixbuf_new_from_file_at_size(bg, gdk_screen_width(), gdk_screen_height(), NULL);
+            {
+                GdkPixbuf *tmp=gdk_pixbuf_new_from_file(bg,0);
+                if(tmp)
+                {
+                    bg_img=gdk_pixbuf_scale_simple(tmp,
+                                                    gdk_screen_width(),
+                                                    gdk_screen_height(),
+                                                    GDK_INTERP_HYPER);
+                    g_object_unref(tmp);
+                }
+            }
             else
+            {
                 bg_img = gdk_pixbuf_new_from_file(bg, 0);
+            }
             if( !bg_img )
             {
                 g_free(bg);
