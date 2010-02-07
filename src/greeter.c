@@ -228,7 +228,7 @@ static void load_sessions()
 
     g_free(last);
     gtk_combo_box_set_model( GTK_COMBO_BOX(sessions), GTK_TREE_MODEL(list) );
-    gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX(sessions), 0);
+    gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(sessions), 0);
     if( active_it.stamp )
         gtk_combo_box_set_active_iter(GTK_COMBO_BOX(sessions), &active_it);
     else
@@ -258,7 +258,7 @@ static void load_langs()
     active = lxdm_load_langs(list, load_lang_cb, lang_str);
     g_free(lang_str);
     gtk_combo_box_set_model( GTK_COMBO_BOX(lang), GTK_TREE_MODEL(list) );
-    gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX(lang), 0);
+    gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(lang), 0);
     gtk_combo_box_set_active(GTK_COMBO_BOX(lang), active < 0 ? 0 : active);
     g_object_unref(list);
 }
@@ -327,7 +327,7 @@ static gboolean on_combobox_entry_button_release(GtkWidget* w, GdkEventButton* e
 
 static void fix_combobox_entry(GtkWidget* combo)
 {
-    GtkWidget* edit = gtk_bin_get_child(combo);
+    GtkWidget* edit = gtk_bin_get_child(GTK_BIN(combo));
     gtk_editable_set_editable( (GtkEditable*)edit, FALSE );
     GTK_WIDGET_UNSET_FLAGS(edit, GTK_CAN_FOCUS);
     g_signal_connect(edit, "button-release-event", G_CALLBACK(on_combobox_entry_button_release), combo);
@@ -407,7 +407,7 @@ static void create_win()
             g_signal_connect(w, "expose-event", G_CALLBACK(on_evt_box_expose), NULL);
     }
     else
-        gtk_event_box_set_visible_window(w, FALSE);
+        gtk_event_box_set_visible_window(GTK_EVENT_BOX(w), FALSE);
 
     if( g_key_file_get_integer(config, "display", "lang", 0) == 0 )
     {
@@ -462,7 +462,8 @@ int set_background(void)
     {
         if( bg[0] != '#' )
         {
-            if( style && strcmp(style, "stretch") == 0 )
+            /* default the bg stretch */
+            if(!style || strcmp(style, "stretch") == 0 )
                 bg_img = gdk_pixbuf_new_from_file_at_size(bg, gdk_screen_width(), gdk_screen_height(), NULL);
             else
                 bg_img = gdk_pixbuf_new_from_file(bg, 0);

@@ -54,6 +54,8 @@
 #include <sys/vt.h>
 #include <sys/ioctl.h>
 
+#include <execinfo.h>
+
 #if HAVE_LIBXMU
 #include <X11/Xmu/WinUtil.h>
 #endif
@@ -214,25 +216,14 @@ void lxdm_quit_self(void)
 
 void log_print(char *fmt, ...)
 {
-    static FILE *log;
+    FILE *log;
     va_list ap;
-    if( !fmt )
-    {
-        if( log )
-            fclose(log);
-        log = 0;
-        return;
-    }
-    if( !log )
-    {
-        log = fopen("/var/log/lxdm.log", "w");
-        if( !log )
-            return;
-    }
+    log = fopen("/var/log/lxdm.log", "a");
+    if(!log) return;
     va_start(ap, fmt);
     vfprintf(log, fmt, ap);
     va_end(ap);
-    fflush(log);
+    fclose(log);
 }
 
 GSList *do_scan_xsessions(void)
@@ -967,7 +958,22 @@ int lxdm_do_auto_login(void)
     return 1;
 }
 
-void sig_handler(int sig)
+static void log_sigsegv(void)
+{
+	void *array[40];
+	size_t size;
+	int fd;
+
+	fd=open("/var/log/lxdm.log",O_WRONLY|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+	if(fd==-1) return;
+
+	size=backtrace(array,40);
+	backtrace_symbols_fd(array,size,fd);
+
+	close(fd);
+}
+
+static void sig_handler(int sig)
 {
     log_print("catch signal %d\n", sig);
     switch( sig )
@@ -975,6 +981,9 @@ void sig_handler(int sig)
     case SIGTERM:
     case SIGINT:
         lxdm_quit_self();
+        break;
+    case SIGSEGV:
+        log_sigsegv();
         break;
     default:
         break;
@@ -991,6 +1000,7 @@ void set_signal(void)
     signal(SIGPIPE, sig_handler);
     signal(SIGUSR1, sig_handler);
     signal(SIGALRM, sig_handler);
+    signal(SIGSEGV, sig_handler);
 }
 
 #if HAVE_LIBCK_CONNECTOR
