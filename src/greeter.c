@@ -130,6 +130,7 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
         {
             GtkTreeModel* model = gtk_combo_box_get_model( GTK_COMBO_BOX(lang) );
             gtk_tree_model_get(model, &it, 1, &session_lang, -1);
+            //FIXME: is session leaked?
         }
 
         tmp = g_key_file_get_string(config, "base", "last_session", NULL);
@@ -241,10 +242,34 @@ static void load_lang_cb(void *arg, char *lang, char *desc)
 {
     GtkListStore* list = (GtkListStore*)arg;
     GtkTreeIter it;
+    gchar *temp,*p,*lang2;
+
+    lang2=g_strdup(lang);
+    p=strchr(lang2,'.');
+    if(p) *p=0;
+
+    //temp=g_strdup_printf("\xe2\x80\x8e%s\t\t\xe2\x80\xab%s",lang,desc);
+    if(lang2[0])
+        temp=g_strdup_printf("%s\t%s",lang2,desc);
+    else
+        temp=g_strdup(desc);
+    g_free(lang2);
     gtk_list_store_append(list, &it);
     gtk_list_store_set(list, &it,
-                       COL_LANG_DISPNAME, desc,
+                       COL_LANG_DISPNAME, temp,
                        COL_LANG, lang, -1);
+    g_free(temp);
+}
+
+static gint lang_cmpr(GtkTreeModel *list,GtkTreeIter *a,GtkTreeIter *b,gpointer user_data)
+{
+	gint ret;
+	gchar *as,*bs;
+	gtk_tree_model_get(list,a,1,&as,-1);
+	gtk_tree_model_get(list,b,1,&bs,-1);
+	ret=strcmp(as,bs);
+	g_free(as);g_free(bs);
+	return ret;
 }
 
 static void load_langs()
@@ -254,8 +279,29 @@ static void load_langs()
     int active = 0;
 
     list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(list),0,GTK_SORT_ASCENDING);
+    gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(list),0,lang_cmpr,NULL,NULL);
+    lxdm_load_langs(list, load_lang_cb);
     lang_str = g_key_file_get_string(config, "base", "last_lang", NULL);
-    active = lxdm_load_langs(list, load_lang_cb, lang_str);
+    if(lang_str && lang_str[0])
+    {
+        gboolean res;
+        GtkTreeIter iter;
+        int i;
+        res=gtk_tree_model_get_iter_first(GTK_TREE_MODEL(list),&iter);
+        if(res) for(i=0;;i++)
+        {
+            gchar *lang;
+            gtk_tree_model_get(GTK_TREE_MODEL(list),&iter,1,&lang,-1);
+            if(!strcmp(lang,lang_str))
+            {
+                 active=i;
+                 break;
+            }
+            res=gtk_tree_model_iter_next(GTK_TREE_MODEL(list),&iter);
+            if(!res) break;
+        }
+    }
     g_free(lang_str);
     gtk_combo_box_set_model( GTK_COMBO_BOX(lang), GTK_TREE_MODEL(list) );
     gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(lang), 0);
