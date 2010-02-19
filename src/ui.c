@@ -613,3 +613,14 @@ int ui_main(void)
     return 0;
 }
 
+void ui_clean(void)
+{
+	if(greeter>0)
+	{
+		extern void stop_pid(int);
+		g_source_remove(greeter_watch);
+		stop_pid(greeter);
+		greeter=-1;
+	}
+}
+

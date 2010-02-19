@@ -490,11 +490,14 @@ void get_lock(void)
         fclose(fp);
         if( ret == 1 )
             if( kill(pid, 0) == 0 || (ret == -1 && errno == EPERM) )
-                exit(EXIT_SUCCESS);
+                lxdm_quit_self();
     }
     fp = fopen(lockfile, "w");
     if( !fp )
-        exit(EXIT_FAILURE);
+    {
+        log_print("open lock file %s fail\n",lockfile);
+        lxdm_quit_self();
+    }
     fprintf( fp, "%d", getpid() );
     fclose(fp);
     g_free(lockfile);
@@ -601,7 +604,8 @@ void startx(void)
         execvp(args[0], args);
         break;
     case -1:
-        exit(EXIT_FAILURE);
+	/* fatal error, should not restart self */
+        lxdm_quit_self();
         break;
     default:
         break;
@@ -618,6 +622,7 @@ void exit_cb(void)
         stop_pid(child);
         child = -1;
     }
+    ui_clean();
 #if HAVE_LIBPAM
     close_pam_session();
 #endif

@@ -49,6 +49,7 @@ void ui_drop(void);
 int ui_main(void);
 void ui_prepare(void);
 int ui_do_login(void);
+void ui_clean(void);
 
 typedef struct{
 	char *name;
