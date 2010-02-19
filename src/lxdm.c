@@ -88,7 +88,7 @@ static int get_active_vt(void)
     int console_fd;
     struct vt_stat console_state = { 0 };
 
-    console_fd = open("/dev/tty0", O_RDONLY | O_NOCTTY);
+    console_fd = open("/dev/console", O_RDONLY | O_NOCTTY);
 
     if( console_fd < 0 )
         goto out;
@@ -318,8 +318,11 @@ void create_server_auth(void)
     g_rand_free(h);
 
     authfile = g_key_file_get_string(config, "base", "authfile", 0);
-    if( !authfile )
-        authfile = g_strdup("/var/run/lxdm.auth");
+    if(!authfile)
+    {
+        mkdir("/var/run/lxdm",0700);
+        authfile = g_strdup("/var/run/lxdm/lxdm.auth");
+    }
     tmp = g_strdup_printf("XAUTHORITY=%s", authfile);
     putenv(tmp);
     g_free(tmp);
