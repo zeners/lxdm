@@ -72,6 +72,7 @@
 
 GKeyFile *config;
 static pid_t server;
+static guint server_watch;
 #if HAVE_LIBCK_CONNECTOR
 static CkConnector *ckc;
 #endif
@@ -208,9 +209,9 @@ void lxdm_restart_self(void)
     exit(0);
 }
 
-void lxdm_quit_self(void)
+void lxdm_quit_self(int code)
 {
-    reason = 1;
+    reason = (code?code:255);
     exit(0);
 }
 
@@ -501,9 +502,9 @@ void get_lock(void)
                 sprintf(path,"/proc/%d/exe",pid);
                 ret=readlink(path,buf,128);
                 if(ret<128 && ret>0 && strstr(buf,"lxdm-binary"))
-                    lxdm_quit_self();
+                    lxdm_quit_self(1);
 #else
-                lxdm_quit_self();
+                lxdm_quit_self(1);
 #endif	
             }
 	}
@@ -512,7 +513,7 @@ void get_lock(void)
     if( !fp )
     {
         log_print("open lock file %s fail\n",lockfile);
-        lxdm_quit_self();
+        lxdm_quit_self(0);
     }
     fprintf( fp, "%d", getpid() );
     fclose(fp);
@@ -560,6 +561,7 @@ void stop_pid(int pid)
 
 static void on_xserver_stop(GPid pid, gint status, gpointer data)
 {
+    //log_print("xserver stop, restart. return status %x\n",status);
     stop_pid(server);
     server = -1;
     lxdm_restart_self();
@@ -616,18 +618,20 @@ void startx(void)
     switch( server )
     {
     case 0:
-        setpgid( 0, getpid() );
         execvp(args[0], args);
+        log_print("exec %s fail\n",args[0]);
+        lxdm_quit_self(0);
         break;
     case -1:
 	/* fatal error, should not restart self */
-        lxdm_quit_self();
+        log_print("fork proc fail\n");
+        lxdm_quit_self(0);
         break;
     default:
         break;
     }
     g_strfreev(args);
-    g_child_watch_add(server, on_xserver_stop, 0);
+    server_watch=g_child_watch_add(server, on_xserver_stop, 0);
 }
 
 void exit_cb(void)
@@ -642,6 +646,10 @@ void exit_cb(void)
 #if HAVE_LIBPAM
     close_pam_session();
 #endif
+    if(server_watch>0)
+    {
+        g_source_remove(server_watch);
+    }
     if( server > 0 )
     {
         stop_pid(server);
@@ -650,7 +658,8 @@ void exit_cb(void)
     put_lock();
     if( reason == 0 )
         execlp(self, self, NULL);
-    set_active_vt(old_tty);
+    if(reason!=1)
+        set_active_vt(old_tty);
 }
 
 int CatchErrors(Display *dpy, XErrorEvent *ev)
@@ -943,10 +952,9 @@ void lxdm_do_reboot(void)
     char *cmd;
     cmd = g_key_file_get_string(config, "cmd", "reboot", 0);
     if( !cmd ) cmd = g_strdup("reboot");
-    reason = 1;
     system(cmd);
     g_free(cmd);
-    lxdm_quit_self();
+    lxdm_quit_self(0);
 }
 
 void lxdm_do_shutdown(void)
@@ -957,7 +965,7 @@ void lxdm_do_shutdown(void)
     reason = 1;
     system(cmd);
     g_free(cmd);
-    lxdm_quit_self();
+    lxdm_quit_self(0);
 }
 
 int lxdm_cur_session(void)
@@ -1001,7 +1009,7 @@ static void sig_handler(int sig)
     {
     case SIGTERM:
     case SIGINT:
-        lxdm_quit_self();
+        lxdm_quit_self(0);
         break;
     case SIGSEGV:
         log_sigsegv();
@@ -1035,6 +1043,7 @@ int main(int arc, char *arg[])
 {
     int tmp;
     int daemonmode = 0;
+    int i;
 
     if( getuid() != 0 )
     {
@@ -1042,6 +1051,8 @@ int main(int arc, char *arg[])
         exit(EXIT_FAILURE);
     }
 
+#if 0
+    /* fedora's prefdm likely not compatible with this */
     while( ( tmp = getopt(arc, arg, "hd") ) != EOF )
     {
         switch( tmp )
@@ -1057,6 +1068,13 @@ int main(int arc, char *arg[])
             break;
         }
     }
+#else
+    for(i=1;i<arc;i++)
+    {
+        if(!strcmp(arg[i],"-d"))
+            daemonmode=1;
+    }
+#endif
 
     if( daemonmode )
         daemon(1, 1);
