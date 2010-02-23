@@ -491,9 +491,22 @@ void get_lock(void)
         int ret;
         ret = fscanf(fp, "%d", &pid);
         fclose(fp);
-        if( ret == 1 )
-            if( kill(pid, 0) == 0 || (ret == -1 && errno == EPERM) )
+        if(ret == 1 && pid!=getpid())
+	{
+            if(kill(pid, 0) == 0 || (ret == -1 && errno == EPERM))
+            {
+                /* we should only quit if the pid running is lxdm */
+#ifdef __linux__
+                char path[64],buf[128];
+                sprintf(path,"/proc/%d/exe",pid);
+                ret=readlink(path,buf,128);
+                if(ret<128 && ret>0 && strstr(buf,"lxdm-binary"))
+                    lxdm_quit_self();
+#else
                 lxdm_quit_self();
+#endif	
+            }
+	}
     }
     fp = fopen(lockfile, "w");
     if( !fp )
