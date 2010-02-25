@@ -13,6 +13,7 @@ lxdm_binary_CFLAGS = \
 	$(NULL)
 
 lxdm_binary_LDADD = \
+	$(XLIB_LIBS) \
 	$(GTK_LIBS) \
 	$(CONSOLEKIT_LIBS) \
 	$(NULL)
@@ -36,6 +37,7 @@ lxdm_greeter_gtk_CFLAGS = \
 	$(NULL)
 
 lxdm_greeter_gtk_LDADD = \
+	$(XLIB_LIBS) \
 	$(GTK_LIBS) \
 	$(NULL)
 
