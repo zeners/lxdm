@@ -571,7 +571,6 @@ void listen_stdin(void)
 
 void set_root_background(void)
 {
-    char *p;
     GdkWindow *root = gdk_get_default_root_window();
 
     /* set background */
