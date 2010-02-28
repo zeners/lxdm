@@ -895,10 +895,10 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 
         /* override $PATH if needed */
         path = g_key_file_get_string(config, "base", "path", 0);
-        if( G_UNLIKELY(path) && path[0] )
-        	replace_env(env, "PATH=", path);
-	else
-		replace_env(env, "PATH=","/usr/local/bin:/bin:/usr/bin");
+        if( G_UNLIKELY(path) && path[0] ) /* if PATH is specified in config file */
+        	replace_env(env, "PATH=", path); /* override current $PATH with config value */
+	else if(!getenv("PATH")) /* if PATH is not set */
+		replace_env(env, "PATH=", "/usr/local/bin:/bin:/usr/bin"); /* set proper default */
         g_free(path);
         /* optionally override $LANG, $LC_MESSAGES, and $LANGUAGE */
         if( lang && lang[0] )
