@@ -57,6 +57,8 @@
 
 #include <execinfo.h>
 
+#include <utmp.h>
+
 #if HAVE_LIBXMU
 #include <X11/Xmu/WinUtil.h>
 #endif
@@ -731,10 +733,23 @@ void stop_clients(int top)
     XSetErrorHandler(NULL);
 }
 
+static int get_run_level(void)
+{
+	int res=0;
+	struct utmp *ut,tmp;
+
+	setutent();
+	tmp.ut_type=RUN_LVL;
+	ut=getutid(&tmp);
+	if(!ut) return 0;
+	res=ut->ut_pid & 0xff;
+	endutent();
+	//log_print("runlevel %c\n",res);
+	return res;
+}
+
 static void on_session_stop(GPid pid, gint status, gpointer data)
 {
-    int code = WEXITSTATUS(status);
-
     killpg(pid, SIGHUP);
     stop_pid(pid);
     child = -1;
@@ -758,12 +773,8 @@ static void on_session_stop(GPid pid, gint status, gpointer data)
         unsetenv("XDG_SESSION_COOKIE");
     }
 #endif
-    if( code == 0 )
-        /* xterm will quit use this, but we shul not quit here */
-        /* so wait someone to kill me may better */
-        //lxdm_quit_self();
-        sleep(2);
-
+    if(get_run_level()!='5')
+        lxdm_quit_self(0);
     ui_prepare();
 }
 
