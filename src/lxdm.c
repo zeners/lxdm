@@ -694,13 +694,12 @@ void free_my_xid(void)
     my_xid = 0;
 }
 
-void stop_clients(int top)
+static void stop_clients(void)
 {
     Window dummy, parent;
     Window *children;
     unsigned int nchildren;
     unsigned int i;
-    XWindowAttributes attr;
     Display *Dpy = gdk_x11_get_default_xdisplay();
     Window Root = gdk_x11_get_default_root_xwindow();
 
@@ -709,24 +708,11 @@ void stop_clients(int top)
 
     nchildren = 0;
     XQueryTree(Dpy, Root, &dummy, &parent, &children, &nchildren);
-    if( !top )
-    {
-        for( i = 0; i < nchildren; i++ )
-        {
-            if( XGetWindowAttributes(Dpy, children[i], &attr) && (attr.map_state == IsViewable) )
-#if HAVE_LIBXMU
-                children[i] = XmuClientWindow(Dpy, children[i]);
-#else
-                children[i] = children[i];
-#endif
-            else
-                children[i] = 0;
-        }
-    }
 
     for( i = 0; i < nchildren; i++ )
         if( children[i] && !is_my_id(children[i]) )
             XKillClient(Dpy, children[i]);
+
     //printf("kill %d\n",i);
     XFree( (char *)children );
     XSync(Dpy, 0);
@@ -753,12 +739,12 @@ static void on_session_stop(GPid pid, gint status, gpointer data)
     killpg(pid, SIGHUP);
     stop_pid(pid);
     child = -1;
+    int level;
 
     if( server > 0 )
     {
         /* FIXME just work around lxde bug of focus can't set */
-        //stop_clients(0);
-        stop_clients(1);
+        stop_clients();
         free_my_xid();
     }
 #if HAVE_LIBPAM
@@ -773,7 +759,8 @@ static void on_session_stop(GPid pid, gint status, gpointer data)
         unsetenv("XDG_SESSION_COOKIE");
     }
 #endif
-    if(get_run_level()!='5')
+    level=get_run_level();
+    if(level=='0' || level=='6')
         lxdm_quit_self(0);
     ui_prepare();
 }

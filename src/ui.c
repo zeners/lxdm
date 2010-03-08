@@ -470,6 +470,8 @@ void ui_prepare(void)
     dpy = gdk_x11_get_default_xdisplay();
     root = gdk_get_default_root_window();
 
+    XSetInputFocus(dpy,GDK_WINDOW_XWINDOW(root),RevertToNone,CurrentTime);
+
     /* if session is running */
     if( lxdm_cur_session() > 0 )
         return;
@@ -590,7 +592,8 @@ void ui_prepare(void)
 
     /* draw the first time */
     gdk_window_show(win);
-    gdk_window_focus(win, 0);
+    //gdk_window_focus(win, GDK_CURRENT_TIME);
+    XSetInputFocus(dpy,GDK_WINDOW_XWINDOW(win),RevertToNone,CurrentTime);
 }
 
 void ui_add_cursor(void)
@@ -605,8 +608,8 @@ void ui_add_cursor(void)
 int ui_main(void)
 {
     GMainLoop *loop = g_main_loop_new(NULL, 0);
-    ui_add_cursor();
     ui_prepare();
+    ui_add_cursor();
     if(greeter == -1) /* if greeter is not used */
         gdk_event_handler_set(ui_event_cb, 0, 0);
     g_main_loop_run(loop);
