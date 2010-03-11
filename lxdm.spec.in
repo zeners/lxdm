@@ -14,7 +14,7 @@ Source0:	lxdm-%{version}.tar.gz
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}
 
-BuildRequires:	gtk2-devel libXmu-devel pam-devel intltool
+BuildRequires:	gtk2-devel pam-devel intltool
 
 %description
 Light weight X11 display manager

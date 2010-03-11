@@ -59,10 +59,6 @@
 
 #include <utmp.h>
 
-#if HAVE_LIBXMU
-#include <X11/Xmu/WinUtil.h>
-#endif
-
 #if HAVE_LIBPAM
 #include <security/pam_appl.h>
 #endif
@@ -471,10 +467,17 @@ void append_pam_environ(char **env)
 
 void switch_user(struct passwd *pw, char *run, char **env)
 {
+    int fd;
     if( !pw || initgroups(pw->pw_name, pw->pw_gid) ||
         setgid(pw->pw_gid) || setuid(pw->pw_uid) || setsid() == -1 )
         exit(EXIT_FAILURE);
     chdir(pw->pw_dir);
+    fd=open(".xsession-errors",O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR);
+    if(fd!=-1)
+    {
+        dup2(fd,STDERR_FILENO);
+        close(fd);
+    }
     create_client_auth(pw->pw_dir);
     execle("/etc/lxdm/Xsession", "/etc/lxdm/Xsession", run, NULL, env);
     exit(EXIT_FAILURE);
@@ -904,42 +907,9 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
             replace_env(env, "LANG=", lang);
             replace_env(env, "LC_MESSAGES=", lang);
             replace_env(env, "LANGUAGE=", lang);
-        }
-        
-#if HAVE_LIBPAM
-#if 0
-		append_pam_environ(env);
-#endif
-#endif
-
-#if 0
-        if( !session || !session[0] ) /* this means use default session */
-            session = g_key_file_get_string(config, "base", "session", 0);
-        if( !session && getenv("PREFERRED") )
-            session = g_strdup( getenv("PREFERRED") );
-        if( !session && getenv("DESKTOP") )
-        {
-            char *p = getenv("DESKTOP");
-            if( !strcmp(p, "LXDE") )
-                session = g_find_program_in_path("startlxde");
-            else if( !strcmp(p, "GNOME") )
-                session = g_find_program_in_path("gnome-session");
-            else if( !strcmp(p, "KDE") )
-                session = g_find_program_in_path("startkde");
-            else if( !strcmp(p, "XFCE") )
-                session = g_strdup("startxfce4");
-            else
-                session = g_strdup(p);
-        }
-        if( !session )
-            session = g_strdup("");
-
-        switch_user(pw, session, env);
-#else
-		switch_user(pw, session_exec, env);
-#endif
-        reason = 4;
-        exit(EXIT_FAILURE);
+        } 
+	switch_user(pw, session_exec, env);
+	lxdm_quit_self(4);
     }
     g_free(session_name);
     g_free(session_exec);
