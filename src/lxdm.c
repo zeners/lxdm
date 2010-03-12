@@ -468,6 +468,9 @@ void append_pam_environ(char **env)
 void switch_user(struct passwd *pw, char *run, char **env)
 {
     int fd;
+
+    g_spawn_command_line_sync ("/etc/lxdm/PreLogin",NULL,NULL,NULL,NULL);
+
     if( !pw || initgroups(pw->pw_name, pw->pw_gid) ||
         setgid(pw->pw_gid) || setuid(pw->pw_uid) || setsid() == -1 )
         exit(EXIT_FAILURE);
@@ -479,6 +482,7 @@ void switch_user(struct passwd *pw, char *run, char **env)
         close(fd);
     }
     create_client_auth(pw->pw_dir);
+    g_spawn_command_line_async ("/etc/lxdm/PostLogin",NULL);
     execle("/etc/lxdm/Xsession", "/etc/lxdm/Xsession", run, NULL, env);
     exit(EXIT_FAILURE);
 }
@@ -766,6 +770,7 @@ static void on_session_stop(GPid pid, gint status, gpointer data)
     if(level=='0' || level=='6')
         lxdm_quit_self(0);
     ui_prepare();
+    g_spawn_command_line_async("/etc/lxdm/PostLogout",NULL);
 }
 
 static void replace_env(char** env, const char* name, const char* new_val)

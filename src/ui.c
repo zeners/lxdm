@@ -372,13 +372,6 @@ void ui_set_bg(void)
 
 static void greeter_setup(gpointer user)
 {
-    struct passwd *pw;
-    if( AUTH_SUCCESS == lxdm_auth_user("lxdm", NULL, &pw) )
-    {
-        initgroups(pw->pw_name, pw->pw_gid);
-        setgid(pw->pw_gid);
-        setuid(pw->pw_uid);
-    }
 }
 
 static gchar *greeter_param(char *str, char *name)
@@ -612,6 +605,7 @@ int ui_main(void)
     ui_add_cursor();
     if(greeter == -1) /* if greeter is not used */
         gdk_event_handler_set(ui_event_cb, 0, 0);
+    g_spawn_command_line_async("/etc/lxdm/LoginReady",NULL);
     g_main_loop_run(loop);
     return 0;
 }

@@ -654,6 +654,7 @@ int main(int arc, char *arg[])
     /* use line buffered stdout for inter-process-communcation of
      * single-line-commands */
     setvbuf(stdout, NULL, _IOLBF, 0 );
+
     gtk_main();
 
     if( config_changed )

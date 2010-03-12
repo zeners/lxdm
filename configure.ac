@@ -68,7 +68,7 @@ AC_CONFIG_FILES([
 	po/Makefile.in
 	pam/Makefile
 	data/Makefile
-    data/lxdm.conf
+	data/lxdm.conf
 ])
 AC_CONFIG_FILES([data/lxdm], [chmod +x data/lxdm])
 AC_OUTPUT
