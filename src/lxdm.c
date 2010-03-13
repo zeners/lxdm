@@ -770,9 +770,9 @@ static void on_session_stop(GPid pid, gint status, gpointer data)
     if(level=='0' || level=='6')
     {
         if(level=='0')
-            g_spawn_command_line_async("/etc/lxdm/PreShutdown",NULL);
+            g_spawn_command_line_sync("/etc/lxdm/PreShutdown",0,0,0,0);
         else
-            g_spawn_command_line_async("/etc/lxdm/PreReboot",NULL);
+            g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
         lxdm_quit_self(0);
     }
     ui_prepare();
@@ -932,6 +932,7 @@ void lxdm_do_reboot(void)
     char *cmd;
     cmd = g_key_file_get_string(config, "cmd", "reboot", 0);
     if( !cmd ) cmd = g_strdup("reboot");
+    g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
     system(cmd);
     g_free(cmd);
     lxdm_quit_self(0);
@@ -942,6 +943,7 @@ void lxdm_do_shutdown(void)
     char *cmd;
     cmd = g_key_file_get_string(config, "cmd", "shutdown", 0);
     if( !cmd ) cmd = g_strdup("shutdown -h now");
+    g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
     reason = 1;
     system(cmd);
     g_free(cmd);
