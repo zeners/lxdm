@@ -768,7 +768,13 @@ static void on_session_stop(GPid pid, gint status, gpointer data)
 #endif
     level=get_run_level();
     if(level=='0' || level=='6')
+    {
+        if(level=='0')
+            g_spawn_command_line_async("/etc/lxdm/PreShutdown",NULL);
+        else
+            g_spawn_command_line_async("/etc/lxdm/PreReboot",NULL);
         lxdm_quit_self(0);
+    }
     ui_prepare();
     g_spawn_command_line_async("/etc/lxdm/PostLogout",NULL);
 }
