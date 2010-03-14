@@ -28,10 +28,6 @@ export CXXFLAGS="$RPM_OPT_FLAGS"
 
 %configure
 
-# a make macro should be used here
-# even a "job based" make if possible
-# %__make %{?jobs:-j%{jobs}}
-
 %__make
 
 %install
@@ -50,7 +46,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun
 
-# exactly as "%find_lang" macro
 %files -f %{name}.lang
 %defattr (-,root,root,-)
 %doc AUTHORS NEWS README COPYING INSTALL ChangeLog
