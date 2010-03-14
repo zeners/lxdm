@@ -3,53 +3,51 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-12 01:46+0100\n"
-"PO-Revision-Date: 2010-03-09 10:22+0200\n"
-"Last-Translator: Indalecio <ifreiria@gmail.com>\n"
+"POT-Creation-Date: 2010-01-24 21:50+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.1\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
-msgstr "Escritorio:"
+msgstr ""
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
-msgstr "Disposición de teclado:"
+msgstr ""
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
-msgstr "Idioma:"
+msgstr ""
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:116 ../src/greeter.c:165
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:132 ../src/greeter.c:181
 msgid "User:"
-msgstr "Usuario:"
+msgstr ""
 
 #: ../src/gdm/gdm-languages.c:609
 msgid "Unspecified"
-msgstr "Sen especificar"
+msgstr ""
 
-#: ../src/greeter.c:87
+#: ../src/greeter.c:103
 msgid "Password:"
-msgstr "Contrasinal:"
+msgstr ""
 
-#: ../src/greeter.c:211
+#: ../src/greeter.c:232
 msgid "Default"
-msgstr "Predefinido"
+msgstr ""
 
-#: ../src/greeter.c:260
+#: ../src/greeter.c:285
 msgid "_Reboot"
-msgstr "_Reiniciar"
+msgstr ""
 
-#: ../src/greeter.c:264
+#: ../src/greeter.c:289
 msgid "_Shutdown"
-msgstr "_Apagar"
+msgstr ""
