@@ -933,7 +933,7 @@ void lxdm_do_reboot(void)
     cmd = g_key_file_get_string(config, "cmd", "reboot", 0);
     if( !cmd ) cmd = g_strdup("reboot");
     g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
-    system(cmd);
+    g_spawn_command_line_async(cmd,0);
     g_free(cmd);
     lxdm_quit_self(0);
 }
@@ -945,7 +945,7 @@ void lxdm_do_shutdown(void)
     if( !cmd ) cmd = g_strdup("shutdown -h now");
     g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
     reason = 1;
-    system(cmd);
+    g_spawn_command_line_async(cmd,0);
     g_free(cmd);
     lxdm_quit_self(0);
 }

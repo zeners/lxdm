@@ -2,4 +2,4 @@ help me!
 
 1. user list in greeter ui
 2. lxdm-config tool to custom the lxdm
-
+3. remove xauth dependency and let login to desktop faster.
