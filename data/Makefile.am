@@ -10,6 +10,12 @@ lxdm_DATA = \
 
 lxdm_confdir = /etc/lxdm
 lxdm_conf_DATA = \
+	PostLogin \
+	PostLogout \
+	PreLogin \
+	PreReboot \
+	PreShutdown \
+	LoginReady \
 	lxdm.conf \
 	Xsession \
 	$(NULL)

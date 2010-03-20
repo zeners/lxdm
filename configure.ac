@@ -69,6 +69,12 @@ AC_CONFIG_FILES([
 	pam/Makefile
 	data/Makefile
 	data/lxdm.conf
+	data/PostLogin
+	data/PostLogout
+	data/PreLogin
+	data/PreReboot
+	data/PreShutdown
+	data/LoginReady
 ])
 AC_CONFIG_FILES([data/lxdm], [chmod +x data/lxdm])
 AC_OUTPUT
