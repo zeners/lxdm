@@ -910,7 +910,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
         if( G_UNLIKELY(path) && path[0] ) /* if PATH is specified in config file */
         	replace_env(env, "PATH=", path); /* override current $PATH with config value */
 	else /* don't use the global env, they are bad for user */
-		replace_env(env, "PATH=", "/usr/local/bin:/bin:/usr/bin"); /* set proper default */
+		replace_env(env, "PATH=", "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"); /* set proper default */
         g_free(path);
         /* optionally override $LANG, $LC_MESSAGES, and $LANGUAGE */
         if( lang && lang[0] )
