@@ -32,6 +32,9 @@ export CXXFLAGS="$RPM_OPT_FLAGS"
 
 %install
 make DESTDIR=${RPM_BUILD_ROOT} install
+cd ${RPM_BUILD_ROOT}/%{_sysconfdir}/lxdm
+rm -rf LoginReady PostLogin PreLogin PostLogout PreReboot PreShutdown
+cd -
 
 %find_lang %{name}
 
