@@ -64,7 +64,12 @@
 #endif
 
 #if HAVE_LIBCK_CONNECTOR
-#include "ck-connector.h"
+#include <ck-connector.h>
+#endif
+
+#if HAVE_LIBXAU
+#include <X11/Xauth.h>
+#include <sys/utsname.h>
 #endif
 
 #include "lxdm.h"
@@ -82,6 +87,10 @@ static pid_t child;
 static int reason;
 static char mcookie[33];
 static int old_tty=1,tty = 7;
+
+#if HAVE_LIBXAU
+static Xauth x_auth;
+#endif
 
 static int get_active_vt(void)
 {
@@ -137,7 +146,7 @@ static void plymouth_quit_without_transition(void)
 
 static void plymouth_prepare_transition(void)
 {
-//	g_spawn_command_line_sync ("/bin/plymouth deactivate",NULL,NULL,NULL,NULL);
+	g_spawn_command_line_sync ("/bin/plymouth deactivate",NULL,NULL,NULL,NULL);
 }
 
 void lxdm_get_tty(void)
@@ -296,12 +305,17 @@ void free_xsessions(GSList *l)
 void create_server_auth(void)
 {
     GRand *h;
-    const char *digits = "0123456789abcdef";
-    int i, r, hex = 0;
+    int i;
     char *authfile;
     char *tmp;
 
     h = g_rand_new();
+#if HAVE_LIBXAU
+    for (i=0;i<16;i++)
+        mcookie[i]=(char)g_rand_int(h);
+#else
+    const char *digits = "0123456789abcdef";
+    int r,hex=0;
     for( i = 0; i < 31; i++ )
     {
         r = g_rand_int(h) % 16;
@@ -315,6 +329,7 @@ void create_server_auth(void)
         r = g_rand_int(h) % 5 + 10;
     mcookie[31] = digits[r];
     mcookie[32] = 0;
+#endif
     g_rand_free(h);
 
     authfile = g_key_file_get_string(config, "base", "authfile", 0);
@@ -327,16 +342,41 @@ void create_server_auth(void)
     putenv(tmp);
     g_free(tmp);
     remove(authfile);
+#if HAVE_LIBXAU
+    FILE *fp=fopen(authfile,"wb");
+    if(fp)
+    {
+        static char xau_address[80];
+        static char xau_number[16];
+        static char xau_name[]="MIT-MAGIC-COOKIE-1";
+        struct utsname uts;
+        uname(&uts);
+        sprintf(xau_address, "%s", uts.nodename);
+        strcpy(xau_number,getenv("DISPLAY")+1); // DISPLAY always exist at lxdm
+        x_auth.family = FamilyLocal;
+        x_auth.address = xau_address;
+        x_auth.number = xau_number;
+        x_auth.name = xau_name;
+        x_auth.address_length = strlen(xau_address);
+        x_auth.number_length = strlen(xau_number);
+        x_auth.name_length = strlen(xau_name);
+        x_auth.data = mcookie;
+        x_auth.data_length = 16;
+        XauWriteAuth(fp,&x_auth);
+        fclose(fp);
+    }
+#else
     tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
                           authfile, getenv("DISPLAY"), mcookie);
     system(tmp);
     g_free(tmp);
+
+#endif
     g_free(authfile);
 }
 
 void create_client_auth(char *home)
 {
-    char *tmp;
     char *authfile;
 
     if( getuid() == 0 ) /* root don't need it */
@@ -344,11 +384,20 @@ void create_client_auth(char *home)
 
     authfile = g_strdup_printf("%s/.Xauthority", home);
     remove(authfile);
-    tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
+#if HAVE_LIBXAU
+    FILE *fp=fopen(authfile,"wb");
+    if(fp)
+    {
+        XauWriteAuth(fp,&x_auth);
+        fclose(fp);
+    }
+#else
+    char *tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
                           authfile, getenv("DISPLAY"), mcookie);
     system(tmp);
-    g_free(authfile);
     g_free(tmp);
+#endif
+    g_free(authfile);
 }
 
 int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)

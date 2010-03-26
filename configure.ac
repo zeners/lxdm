@@ -17,6 +17,7 @@ AM_PROG_CC_C_O
 AC_CHECK_LIB([crypt], [crypt])
 AC_CHECK_LIB([pam], [pam_open_session])
 AC_CHECK_LIB([ck-connector],[ck_connector_open_session])
+AC_CHECK_LIB([Xau],[XauWriteAuth])
 
 # Checks for header files.
 AC_PATH_X
