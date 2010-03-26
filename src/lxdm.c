@@ -881,7 +881,8 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
         d = x; n = getenv("DISPLAY");
         if( ck_connector_open_session_with_parameters(ckc, &error,
                                                       "unix-user", &pw->pw_uid,
-                                                      "display-device", &d,
+// disable this, follow the gdm way 
+                                                      //"display-device", &d,
                                                       "x11-display-device", &d,
                                                       "x11-display", &n,
                                                       NULL) )
