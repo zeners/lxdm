@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-12 01:46+0100\n"
-"PO-Revision-Date: 2010-01-30 06:01+0200\n"
+"PO-Revision-Date: 2010-03-19 14:51+0200\n"
 "Last-Translator: Rahman Yusri Aftian <aftian@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: id\n"
@@ -48,7 +48,7 @@ msgstr "Default"
 
 #: ../src/greeter.c:260
 msgid "_Reboot"
-msgstr ""
+msgstr "_Hidupkan Ulang"
 
 #: ../src/greeter.c:264
 msgid "_Shutdown"
