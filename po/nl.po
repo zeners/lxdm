@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-12 01:46+0100\n"
+"POT-Creation-Date: 2010-03-31 21:35+0200\n"
 "PO-Revision-Date: 2010-02-03 01:25+0200\n"
 "Last-Translator: Horatio <hosoka@hotmail.com>\n"
 "Language-Team: Dutch\n"
-"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.1\n"
 
@@ -31,27 +31,27 @@ msgstr "Toetsenbord layout:"
 msgid "Language:"
 msgstr "Taal:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:116 ../src/greeter.c:165
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:123 ../src/greeter.c:172
 msgid "User:"
 msgstr "Gebruiker:"
 
-#: ../src/gdm/gdm-languages.c:609
+#: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
 msgstr "Geen specificatie"
 
-#: ../src/greeter.c:87
+#: ../src/greeter.c:94
 msgid "Password:"
 msgstr "Paswoord:"
 
-#: ../src/greeter.c:211
+#: ../src/greeter.c:224
 msgid "Default"
 msgstr "Standaard"
 
-#: ../src/greeter.c:260
+#: ../src/greeter.c:322
 msgid "_Reboot"
 msgstr "_Herstarten"
 
-#: ../src/greeter.c:264
+#: ../src/greeter.c:326
 msgid "_Shutdown"
 msgstr "_Afsluiten"
 

@@ -7,13 +7,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-12 01:46+0100\n"
+"POT-Creation-Date: 2010-03-31 21:35+0200\n"
 "PO-Revision-Date: 2010-03-31 08:03+0200\n"
 "Last-Translator: Радослав <rec_ku@hotmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
-"Language: bg\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: bg\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.1\n"
 "X-Poedit-Language: Bulgarian\n"
@@ -31,28 +31,26 @@ msgstr "Клавиатурна подредба:"
 msgid "Language:"
 msgstr "Език:"
 
-#: ../data/lxdm.glade.h:4
-#: ../src/greeter.c:116
-#: ../src/greeter.c:165
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:123 ../src/greeter.c:172
 msgid "User:"
 msgstr "Потребител:"
 
-#: ../src/gdm/gdm-languages.c:609
+#: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
 msgstr "Не е зададен"
 
-#: ../src/greeter.c:87
+#: ../src/greeter.c:94
 msgid "Password:"
 msgstr "Парола:"
 
-#: ../src/greeter.c:211
+#: ../src/greeter.c:224
 msgid "Default"
 msgstr "По подразбиране"
 
-#: ../src/greeter.c:260
+#: ../src/greeter.c:322
 msgid "_Reboot"
 msgstr "_Рестартирай"
 
-#: ../src/greeter.c:264
+#: ../src/greeter.c:326
 msgid "_Shutdown"
 msgstr "_Изключи"

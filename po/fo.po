@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-24 21:50+0800\n"
+"POT-Creation-Date: 2010-03-31 21:35+0200\n"
 "PO-Revision-Date: 2010-03-19 00:06+0200\n"
 "Last-Translator: Gunleif <gunleif@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: fo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fo\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.1\n"
 
@@ -30,26 +30,26 @@ msgstr "Knappaborðssnið:"
 msgid "Language:"
 msgstr "Mál:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:132 ../src/greeter.c:181
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:123 ../src/greeter.c:172
 msgid "User:"
 msgstr "Brúkari:"
 
-#: ../src/gdm/gdm-languages.c:609
+#: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
 msgstr "Ikki tilskilað:"
 
-#: ../src/greeter.c:103
+#: ../src/greeter.c:94
 msgid "Password:"
 msgstr "Atlát:"
 
-#: ../src/greeter.c:232
+#: ../src/greeter.c:224
 msgid "Default"
 msgstr "Forsett"
 
-#: ../src/greeter.c:285
+#: ../src/greeter.c:322
 msgid "_Reboot"
 msgstr "_Endurbyrja"
 
-#: ../src/greeter.c:289
+#: ../src/greeter.c:326
 msgid "_Shutdown"
 msgstr "_Sløkk"

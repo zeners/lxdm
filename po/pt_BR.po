@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-07 04:34+0000\n"
+"POT-Creation-Date: 2010-03-31 21:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,11 +27,11 @@ msgstr "Disposição do teclado:"
 msgid "Language:"
 msgstr "Linguagem:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:123 ../src/greeter.c:171
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:123 ../src/greeter.c:172
 msgid "User:"
 msgstr "Usuário:"
 
-#: ../src/gdm/gdm-languages.c:609
+#: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
 msgstr "Não especificado"
 
@@ -39,14 +39,14 @@ msgstr "Não especificado"
 msgid "Password:"
 msgstr "Senha:"
 
-#: ../src/greeter.c:223
+#: ../src/greeter.c:224
 msgid "Default"
 msgstr "Padrão"
 
-#: ../src/greeter.c:276
+#: ../src/greeter.c:322
 msgid "_Reboot"
 msgstr "_Reiniciar"
 
-#: ../src/greeter.c:280
+#: ../src/greeter.c:326
 msgid "_Shutdown"
 msgstr "De_sligar"

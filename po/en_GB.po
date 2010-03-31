@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-19 04:08+0000\n"
+"POT-Creation-Date: 2010-03-31 21:35+0200\n"
 "PO-Revision-Date: 2010-03-19 23:05:36 +0000\n"
 "Last-Translator: Steve Cook <yorvik.ubunto@gmail.com>\n"
 "Language-Team: English UK en_GB\n"
@@ -32,7 +32,7 @@ msgstr "Language:"
 msgid "User:"
 msgstr "User:"
 
-#: ../src/gdm/gdm-languages.c:609
+#: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
 msgstr "Unspecified"
 
