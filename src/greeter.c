@@ -250,7 +250,7 @@ static void load_lang_cb(void *arg, char *lang, char *desc)
 
     //temp=g_strdup_printf("\xe2\x80\x8e%s\t\t\xe2\x80\xab%s",lang,desc);
     if(lang2[0])
-        temp=g_strdup_printf("%s\t%s",lang2,desc);
+        temp=g_strdup_printf("%s\t%s",lang2,desc?desc:"");
     else
         temp=g_strdup(desc);
     g_free(lang2);
