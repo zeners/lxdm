@@ -444,6 +444,27 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
 }
 
 #if HAVE_LIBPAM
+/*
+static int do_conv(int num, const struct pam_message **msg,struct pam_response **resp, void *arg)
+{
+	*resp = (struct pam_response *) calloc(num, sizeof(struct pam_response));
+	int result = PAM_SUCCESS;
+	int i;
+	for(i=0;i<num;i++)
+	{
+		switch(msg[i]->msg_style){
+		case PAM_PROMPT_ECHO_ON:
+			resp[i]->resp="username";
+			break;
+		case PAM_PROMPT_ECHO_OFF:
+			resp[i]->resp="passwd";
+			break;
+		default:
+			break;
+	}
+	return result;
+}
+*/		 
 static pam_handle_t *pamh;
 static struct pam_conv conv;
 
@@ -470,6 +491,7 @@ void setup_pam_session(struct passwd *pw,char *session_name)
 		pam_putenv (pamh, env);
 		g_free (env);
 	}
+    pam_set_item(pamh,PAM_USER,pw->pw_name);
     err = pam_open_session(pamh, 0); /* FIXME pam session failed */
     if( err != PAM_SUCCESS )
         log_print( "pam open session error \"%s\"\n", pam_strerror(pamh, err) );
@@ -484,7 +506,6 @@ void close_pam_session(void)
     pamh = NULL;
 }
 
-#if 0
 void append_pam_environ(char **env)
 {
 	int i,j,n;
@@ -494,6 +515,7 @@ void append_pam_environ(char **env)
 	if(!penv) return;
 	for(i=0;penv[i]!=NULL;i++)
 	{
+		//printf("PAM %s\n",penv[i]);
 		n=strcspn(penv[i],"=")+1;
 		for(j=0;env[j]!=NULL;j++)
 		{
@@ -510,7 +532,6 @@ void append_pam_environ(char **env)
 	}
 	free(penv);
 }
-#endif
 
 #endif
 
@@ -969,6 +990,10 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
             replace_env(env, "LC_MESSAGES=", lang);
             replace_env(env, "LANGUAGE=", lang);
         } 
+#if HAVE_LIBPAM
+	append_pam_environ(env);
+	pam_end(pamh,0);
+#endif
 	switch_user(pw, session_exec, env);
 	lxdm_quit_self(4);
     }
