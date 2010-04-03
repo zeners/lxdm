@@ -61,6 +61,7 @@
 
 #if HAVE_LIBPAM
 #include <security/pam_appl.h>
+#include <security/pam_modules.h>
 #endif
 
 #if HAVE_LIBCK_CONNECTOR
@@ -400,6 +401,33 @@ void create_client_auth(char *home)
     g_free(authfile);
 }
 
+#if HAVE_LIBPAM
+static char *user_pass[2];
+
+static int do_conv(int num, const struct pam_message **msg,struct pam_response **resp, void *arg)
+{
+	int result = PAM_SUCCESS;
+	int i;
+	*resp = (struct pam_response *) calloc(num, sizeof(struct pam_response));
+	for(i=0;i<num;i++)
+	{
+		switch(msg[i]->msg_style){
+		case PAM_PROMPT_ECHO_ON:
+			resp[i]->resp=strdup(user_pass[0]);
+			break;
+		case PAM_PROMPT_ECHO_OFF:
+			resp[i]->resp=strdup(user_pass[1]);
+			break;
+		default:
+			break;
+		}
+	}
+	return result;
+}
+
+static pam_handle_t *pamh;
+static struct pam_conv conv={.conv=do_conv,.appdata_ptr=user_pass};
+
 int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
 {
     struct passwd *pw;
@@ -440,58 +468,44 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
     if( strstr(pw->pw_shell, "nologin") )
         return AUTH_PRIV;
     *ppw = pw;
+#if HAVE_LIBPAM
+    if(pamh) pam_end(pamh,0);
+    if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &pamh))
+        pamh=NULL;
+    else
+    {
+        user_pass[0]=user;user_pass[1]=pass;
+        pam_authenticate(pamh,PAM_SILENT);
+        user_pass[0]=0;user_pass[1]=0;
+    }
+#endif
     return AUTH_SUCCESS;
 }
-
-#if HAVE_LIBPAM
-/*
-static int do_conv(int num, const struct pam_message **msg,struct pam_response **resp, void *arg)
-{
-	*resp = (struct pam_response *) calloc(num, sizeof(struct pam_response));
-	int result = PAM_SUCCESS;
-	int i;
-	for(i=0;i<num;i++)
-	{
-		switch(msg[i]->msg_style){
-		case PAM_PROMPT_ECHO_ON:
-			resp[i]->resp="username";
-			break;
-		case PAM_PROMPT_ECHO_OFF:
-			resp[i]->resp="passwd";
-			break;
-		default:
-			break;
-	}
-	return result;
-}
-*/		 
-static pam_handle_t *pamh;
-static struct pam_conv conv;
 
 void setup_pam_session(struct passwd *pw,char *session_name)
 {
     int err;
     char x[256];
-   
-    if( PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &pamh) )
+ 
+    if(!pamh && PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &pamh))
     {
         pamh = NULL;
         return;
     }
+    if(!pamh) return;
     sprintf(x, "tty%d", tty);
     pam_set_item(pamh, PAM_TTY, x);
 #ifdef PAM_XDISPLAY
-    pam_set_item( pamh, PAM_XDISPLAY, getenv("DISPLAY") );
+	pam_set_item( pamh, PAM_XDISPLAY, getenv("DISPLAY") );
 #endif
 
-	if(session_name && session_name[0])
-	{
-		char *env;
-		env = g_strdup_printf ("DESKTOP_SESSION=%s", session_name);
-		pam_putenv (pamh, env);
-		g_free (env);
-	}
-    pam_set_item(pamh,PAM_USER,pw->pw_name);
+    if(session_name && session_name[0])
+    {
+        char *env;
+        env = g_strdup_printf ("DESKTOP_SESSION=%s", session_name);
+        pam_putenv (pamh, env);
+        g_free (env);
+    }
     err = pam_open_session(pamh, 0); /* FIXME pam session failed */
     if( err != PAM_SUCCESS )
         log_print( "pam open session error \"%s\"\n", pam_strerror(pamh, err) );
@@ -1070,6 +1084,7 @@ static void sig_handler(int sig)
         break;
     case SIGSEGV:
         log_sigsegv();
+	lxdm_quit_self(0);
         break;
     default:
         break;
