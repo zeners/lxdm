@@ -32,6 +32,8 @@
 #include <unistd.h>
 #include <ctype.h>
 
+#include <sys/wait.h>
+
 #include "lxdm.h"
 
 #define MAX_INPUT_CHARS     32
@@ -269,7 +271,10 @@ void ui_drop(void)
         greeter_io = NULL;
         close(greeter_pipe[1]);
         close(greeter_pipe[0]);
-        kill(greeter, SIGTERM);
+
+        g_source_remove(greeter_watch);
+        waitpid(greeter, 0, 0) ;
+        greeter=-1;
     }
 }
 

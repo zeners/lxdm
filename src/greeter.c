@@ -43,8 +43,13 @@ enum {
     N_LANG_COLS
 };
 
+#ifndef VCONFIG_FILE
+#define VCONFIG_FILE "/var/run/lxdm/lxdm.ini"
+#endif
+
 static gboolean config_changed = FALSE;
 static GKeyFile *config;
+static GKeyFile * var_config;
 static GtkWidget* win;
 static GtkWidget* prompt;
 static GtkWidget* login_entry;
@@ -56,6 +61,7 @@ static GtkWidget* lang;
 static GtkWidget* exit;
 
 static GtkWidget* exit_menu;
+static GtkWidget *lang_menu;
 
 static char* user = NULL;
 static char* pass = NULL;
@@ -133,29 +139,21 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
             //FIXME: is session leaked?
         }
 
-        tmp = g_key_file_get_string(config, "base", "last_session", NULL);
+        tmp = g_key_file_get_string(var_config, "base", "last_session", NULL);
         if( g_strcmp0(tmp, session_desktop_file) )
         {
-            g_key_file_set_string(config, "base", "last_session", session_desktop_file);
+            g_key_file_set_string(var_config, "base", "last_session", session_desktop_file);
             config_changed = TRUE;
         }
         g_free(tmp);
 
-        tmp = g_key_file_get_string(config, "base", "last_lang", NULL);
+        tmp = g_key_file_get_string(var_config, "base", "last_lang", NULL);
         if( g_strcmp0(tmp, session_lang) )
         {
-            g_key_file_set_string(config, "base", "last_lang", session_lang);
+            g_key_file_set_string(var_config, "base", "last_lang", session_lang);
             config_changed = TRUE;
         }
         g_free(tmp);
-
-        if( config_changed )
-        {
-            gsize len;
-            char* data = g_key_file_to_data(config, &len, NULL);
-            g_file_set_contents(CONFIG_FILE, data, len, NULL);
-            g_free(data);
-        }
 
         printf("login user=%s pass=%s session=%s lang=%s\n",
                user, pass, session_exec, session_lang);
@@ -186,7 +184,7 @@ static void load_sessions()
     if( !dir )
         return;
 
-    last = g_key_file_get_string(config, "base", "last_session", NULL);
+    last = g_key_file_get_string(var_config, "base", "last_session", NULL);
 
     list = gtk_list_store_new(N_SESSION_COLS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
     kf = g_key_file_new();
@@ -249,7 +247,7 @@ static void load_lang_cb(void *arg, char *lang, char *desc)
     if(p) *p=0;
 
     //temp=g_strdup_printf("\xe2\x80\x8e%s\t\t\xe2\x80\xab%s",lang,desc);
-    if(lang2[0])
+    if(lang2[0] && lang2[0]!='~')
         temp=g_strdup_printf("%s\t%s",lang2,desc?desc:"");
     else
         temp=g_strdup(desc);
@@ -272,6 +270,120 @@ static gint lang_cmpr(GtkTreeModel *list,GtkTreeIter *a,GtkTreeIter *b,gpointer 
 	return ret;
 }
 
+static void on_menu_lang_select(GtkMenuItem *item,gpointer user_data)
+{
+	GtkTreeIter iter;
+	char *sel=(char*)user_data;
+	int i;
+	gboolean res;
+	GtkTreeModel *list;
+	int active=-1;
+	char *temp;
+	GPtrArray *array;
+	if(!sel || !sel[0]) return;
+	
+	list=gtk_combo_box_get_model(GTK_COMBO_BOX(lang));
+	res=gtk_tree_model_get_iter_first(GTK_TREE_MODEL(list),&iter);
+	for(i=0;res==TRUE;i++)
+	{
+            gtk_tree_model_get(GTK_TREE_MODEL(list),&iter,1,&temp,-1);
+            if(!strcmp(temp,sel))
+            {
+                 g_free(temp);
+                 active=i;
+                 break;
+            }
+            g_free(temp);
+            res=gtk_tree_model_iter_next(GTK_TREE_MODEL(list),&iter);
+	}
+	if(active>=0)
+	{
+		gtk_combo_box_set_active(GTK_COMBO_BOX(lang),active);
+		return;
+	}
+	gtk_list_store_append((GtkListStore*)list, &iter);
+	temp=(char*)gtk_menu_item_get_label(item);
+	gtk_list_store_set((GtkListStore*)list, &iter,
+                       COL_LANG_DISPNAME, temp,
+                       COL_LANG, sel, -1);
+	gtk_combo_box_set_active_iter(GTK_COMBO_BOX(lang),&iter);
+
+	array=g_ptr_array_new_with_free_func(g_free);
+	res=gtk_tree_model_get_iter_first(GTK_TREE_MODEL(list),&iter);
+	while(res==TRUE)
+	{
+		gtk_tree_model_get(GTK_TREE_MODEL(list),&iter,1,&temp,-1);
+		if(!temp || !temp[0] || temp[0]=='~')
+		{
+			g_free(temp);
+		}
+		else
+		{
+			g_ptr_array_add(array,temp);
+		}
+		res=gtk_tree_model_iter_next(GTK_TREE_MODEL(list),&iter);
+	}
+	g_key_file_set_string_list(var_config,"base","last_langs",(void*)array->pdata,array->len);
+	config_changed=TRUE;
+	g_ptr_array_free(array,TRUE);
+}
+
+static void load_menu_lang_cb(void *arg, char *lang, char *desc)
+{
+	GtkWidget *menu=GTK_WIDGET(arg);
+	GtkWidget* item;
+
+	gchar *temp,*p,*lang2;
+
+	lang2=g_strdup(lang);
+	p=strchr(lang2,'.');
+	if(p) *p=0;
+
+	if(lang2[0] && lang2[0]!='~')
+        	temp=g_strdup_printf("%s\t%s",lang2,desc?desc:"");
+	else
+		temp=g_strdup(desc);
+	g_free(lang2);
+
+	item = gtk_menu_item_new_with_label(temp);
+	g_signal_connect(item, "activate", G_CALLBACK(on_menu_lang_select), g_strdup(lang));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	g_free(temp);
+}
+
+static void show_all_languages(void)
+{
+	if(!lang_menu)
+	{
+		lang_menu=gtk_menu_new();
+		lxdm_load_langs(var_config,TRUE,lang_menu,load_menu_lang_cb);
+		gtk_widget_show_all(lang_menu);
+	}
+	gtk_menu_popup(GTK_MENU(lang_menu),NULL,NULL,NULL,NULL,0,gtk_get_current_event_time());
+}
+
+static void on_lang_changed(GtkComboBox *widget)
+{
+	GtkTreeIter it;
+	if( gtk_combo_box_get_active_iter(widget, &it) )
+        {
+		GtkListStore *list=(GtkListStore*)gtk_combo_box_get_model(GTK_COMBO_BOX(lang));
+		char *lang=NULL;
+		gtk_tree_model_get(GTK_TREE_MODEL(list), &it, 1, &lang, -1);
+		if(lang[0]=='~')
+		{
+			gtk_combo_box_set_active(widget,0);
+			show_all_languages();
+		}
+		g_free(lang);
+        }
+        else
+        {
+            return;
+        }
+
+}
+
 static void load_langs()
 {
     GtkListStore* list;
@@ -281,8 +393,8 @@ static void load_langs()
     list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(list),0,GTK_SORT_ASCENDING);
     gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(list),0,lang_cmpr,NULL,NULL);
-    lxdm_load_langs(list, load_lang_cb);
-    lang_str = g_key_file_get_string(config, "base", "last_lang", NULL);
+    lxdm_load_langs(var_config,FALSE,list, load_lang_cb);
+    lang_str = g_key_file_get_string(var_config, "base", "last_lang", NULL);
     if(lang_str && lang_str[0])
     {
         gboolean res;
@@ -295,9 +407,11 @@ static void load_langs()
             gtk_tree_model_get(GTK_TREE_MODEL(list),&iter,1,&lang,-1);
             if(!strcmp(lang,lang_str))
             {
+                 g_free(lang);
                  active=i;
                  break;
             }
+            g_free(lang);
             res=gtk_tree_model_iter_next(GTK_TREE_MODEL(list),&iter);
             if(!res) break;
         }
@@ -307,6 +421,8 @@ static void load_langs()
     gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(lang), 0);
     gtk_combo_box_set_active(GTK_COMBO_BOX(lang), active < 0 ? 0 : active);
     g_object_unref(list);
+
+    g_signal_connect(G_OBJECT(lang),"changed",G_CALLBACK(on_lang_changed),NULL);
 }
 
 static void on_exit_clicked(GtkButton* exit_btn, gpointer user_data)
@@ -551,7 +667,7 @@ static gboolean on_lxdm_command(GIOChannel *source, GIOCondition condition, gpoi
     if( ret != G_IO_STATUS_NORMAL )
         return FALSE;
 
-    if( !strncmp(str, "quit", 4) )
+    if( !strncmp(str, "quit", 4) || !strncmp(str, "exit",4))
         gtk_main_quit();
     else if( !strncmp(str, "reset", 5) )
     {
@@ -626,6 +742,10 @@ int main(int arc, char *arg[])
     config = g_key_file_new();
     g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, NULL);
 
+    var_config = g_key_file_new();
+    g_key_file_set_list_separator(var_config, ' ');
+    g_key_file_load_from_file(var_config,VCONFIG_FILE,0,NULL);
+
     gtk_init(&arc, &arg);
 
     set_background();
@@ -660,11 +780,12 @@ int main(int arc, char *arg[])
     if( config_changed )
     {
         gsize len;
-        char* data = g_key_file_to_data(config, &len, NULL);
-        g_file_set_contents(CONFIG_FILE, data, len, NULL);
+        char* data = g_key_file_to_data(var_config, &len, NULL);
+        g_file_set_contents(VCONFIG_FILE, data, len, NULL);
         g_free(data);
     }
     g_key_file_free(config);
+    g_key_file_free(var_config);
 
     return 0;
 }

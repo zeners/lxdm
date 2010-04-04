@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 21:35+0200\n"
+"POT-Creation-Date: 2010-04-04 14:44+0800\n"
 "PO-Revision-Date: 2010-01-13 00:24+0100\n"
 "Last-Translator: Christoph Wickert <christoph.wickert@googlemail.com>\n"
 "Language-Team: German\n"
@@ -31,29 +31,33 @@ msgstr "Tastaturbelegung:"
 msgid "Language:"
 msgstr "Sprache:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:123 ../src/greeter.c:172
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
 msgid "User:"
 msgstr "Benutzer:"
 
-#: ../src/gdm/gdm-languages.c:614
+#: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
 msgstr "Nicht festgelegt"
 
-#: ../src/greeter.c:94
+#: ../src/greeter.c:100
 msgid "Password:"
 msgstr "Passwort:"
 
-#: ../src/greeter.c:224
+#: ../src/greeter.c:222 ../src/lang.c:76
 msgid "Default"
 msgstr "Standard"
 
-#: ../src/greeter.c:322
+#: ../src/greeter.c:438
 msgid "_Reboot"
 msgstr "_Neustarten"
 
-#: ../src/greeter.c:326
+#: ../src/greeter.c:442
 msgid "_Shutdown"
 msgstr "_Beenden"
+
+#: ../src/lang.c:88
+msgid "More ..."
+msgstr ""
 
 #~ msgid "US English"
 #~ msgstr "Englisch (USA)"

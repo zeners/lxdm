@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 21:35+0200\n"
+"POT-Creation-Date: 2010-04-04 14:44+0800\n"
 "PO-Revision-Date: 2010-01-26 11:48+0200\n"
 "Last-Translator: Hiếu <scamemiv@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,26 +30,30 @@ msgstr "Kiểu bàn phím:"
 msgid "Language:"
 msgstr "Ngôn ngữ:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:123 ../src/greeter.c:172
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
 msgid "User:"
 msgstr "Người dùng:"
 
-#: ../src/gdm/gdm-languages.c:614
+#: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
 msgstr "Chưa xác định"
 
-#: ../src/greeter.c:94
+#: ../src/greeter.c:100
 msgid "Password:"
 msgstr "Mật khẩu:"
 
-#: ../src/greeter.c:224
+#: ../src/greeter.c:222 ../src/lang.c:76
 msgid "Default"
 msgstr "Mặc định"
 
-#: ../src/greeter.c:322
+#: ../src/greeter.c:438
 msgid "_Reboot"
 msgstr "_Khởi động lại"
 
-#: ../src/greeter.c:326
+#: ../src/greeter.c:442
 msgid "_Shutdown"
 msgstr "_Tắt máy"
+
+#: ../src/lang.c:88
+msgid "More ..."
+msgstr ""

@@ -22,6 +22,7 @@ lxdm_conf_DATA = \
 
 install-data-hook:
 	chmod +x $(DESTDIR)/etc/lxdm/Xsession
+	../src/langlist | sort > $(DESTDIR)/@datadir@/@PACKAGE@/lang.txt
 
 themedir=$(datadir)/lxdm/themes/Industrial
 theme_DATA= \
@@ -40,3 +41,4 @@ EXTRA_DIST= \
 	$(lxdm_conf_DATA) \
 	$(theme_DATA) \
 	$(NULL)
+

@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <string.h>
 
 #ifdef HAVE_CONFIG_H
@@ -35,21 +36,55 @@
 
 #include "gdm/gdm-languages.h"
 
-void lxdm_load_langs(void *arg, void (*cb)(void *arg, char *lang, char *desc))
+static char **lxdm_get_all_language_names(void)
+{
+	GPtrArray *array;
+	FILE *fp;
+	array=g_ptr_array_new();
+	fp=fopen(LXDM_DATA_DIR "/lang.txt","r");
+	if(fp)
+	{
+		char line[128];
+		while(fgets(line,128,fp)!=NULL)
+		{
+			char *p=strchr(line,'\n');
+			if(*p) *p=0;
+			g_ptr_array_add(array,g_strdup(line));
+		}
+		fclose(fp);
+	}
+	g_ptr_array_add (array, NULL);
+	return (char **) g_ptr_array_free (array, FALSE);
+}
+
+static char **lxdm_get_config_language_names(GKeyFile *config)
+{
+	char **list;
+
+	list=g_key_file_get_string_list(config,"base","last_langs",NULL,NULL);
+	if(!list)
+	{
+		list=g_malloc0(sizeof(char*));
+	}
+	return list;
+}
+
+void lxdm_load_langs(GKeyFile *config, gboolean all, void *arg, void (*cb)(void *arg, char *lang, char *desc))
 {
     char **langs, **lang;
 
-    //cb(arg,"C","Default");
-    cb(arg, "", "Default"); /* default is to use the system wide settings ,not use the "C" */
+    cb(arg, "", _("Default")); /* default is to use the system wide settings ,not use the "C" */
 
-    /* come up with available languages with gdm-languages */
-    langs = gdm_get_all_language_names();
+    langs = all?lxdm_get_all_language_names():lxdm_get_config_language_names(config);
     for( lang = langs; *lang; ++lang )
     {
-        char* normal = gdm_normalize_language_name(*lang);
+	char *normal=*lang;
         char* readable = gdm_get_language_from_name(normal, normal);
         cb(arg, normal, readable);
         g_free(readable);
-        g_free(normal);
     }
+    g_strfreev(langs);
+
+    if(!all) cb(arg,"~",_("More ..."));
 }
+

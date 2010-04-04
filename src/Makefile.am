@@ -1,6 +1,7 @@
 NULL =
 
 sbin_PROGRAMS = lxdm-binary
+noinst_PROGRAMS = langlist
 
 lxdm_binary_CFLAGS = \
 	$(GTK_CFLAGS) \
@@ -47,4 +48,22 @@ lxdm_greeter_gtk_SOURCES = \
 	gdm/gdm-languages.c gdm/gdm-languages.h \
 	gdm/locarchive.h \
 	$(NULL)
+
+langlist_SOURCES = \
+	langlist.c \
+	gdm/gdm-languages.c gdm/gdm-languages.h \
+	gdm/locarchive.h \
+	$(NULL)
+
+langlist_LDADD = \
+	$(GTK_LIBS) \
+	$(NULL)
+
+langlist_CFLAGS = \
+	$(GTK_CFLAGS) \
+	-DGNOMELOCALEDIR=\"@localedir@\" \
+	-DLIBLOCALEDIR=\"@prefix@/lib/locale\" \
+	-Werror-implicit-function-declaration
+	$(NULL)
+
 

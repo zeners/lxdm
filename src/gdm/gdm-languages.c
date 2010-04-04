@@ -360,11 +360,10 @@ add_locale (const char *language_name)
                 }
         }
 
-	//don't test it for speed
-        //if (!language_name_is_valid (name)) {
-        //        g_free (name);
-        //        return FALSE;
-        //}
+        if (!language_name_is_valid (name)) {
+                g_free (name);
+                return FALSE;
+        }
 
 
         locale = g_new0 (GdmLocale, 1);
@@ -381,13 +380,12 @@ add_locale (const char *language_name)
         locale->name = construct_language_name (locale->language_code, locale->territory_code,
                                                 locale->codeset, locale->modifier);
 
-	// just for speed to
-        //if (!language_name_has_translations (locale->name) &&
-        //    !language_name_has_translations (locale->id) &&
-        //    !language_name_has_translations (locale->language_code)) {
-        //        gdm_locale_free (locale);
-        //        return FALSE;
-        //}
+        if (!language_name_has_translations (locale->name) &&
+            !language_name_has_translations (locale->id) &&
+            !language_name_has_translations (locale->language_code)) {
+                gdm_locale_free (locale);
+                return FALSE;
+        }
 
         old_locale = g_hash_table_lookup (gdm_available_locales_map, locale->id);
         if (old_locale != NULL) {
@@ -522,8 +520,6 @@ collect_locales (void)
                 gdm_available_locales_map = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) gdm_locale_free);
         }
 
-        collect_locales_from_directory ();
-/*
         if (collect_locales_from_archive ()) {
                 return;
         } else {
@@ -533,7 +529,7 @@ collect_locales (void)
 
                 collect_locales_from_directory ();
         }
-*/
+
 }
 
 static gboolean

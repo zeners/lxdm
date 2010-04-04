@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 21:35+0200\n"
+"POT-Creation-Date: 2010-04-04 14:44+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: HsH <hsh@runtu.org>\n"
 "Language-Team:  <hsh@runtu.org>\n"
@@ -25,29 +25,33 @@ msgstr "Клавиатура:"
 msgid "Language:"
 msgstr "Язык:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:123 ../src/greeter.c:172
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
 msgid "User:"
 msgstr "Пользователь:"
 
-#: ../src/gdm/gdm-languages.c:614
+#: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
 msgstr "Незадано"
 
-#: ../src/greeter.c:94
+#: ../src/greeter.c:100
 msgid "Password:"
 msgstr "Пароль:"
 
-#: ../src/greeter.c:224
+#: ../src/greeter.c:222 ../src/lang.c:76
 msgid "Default"
 msgstr "По умолчанию"
 
-#: ../src/greeter.c:322
+#: ../src/greeter.c:438
 msgid "_Reboot"
 msgstr "_Перезагрузка"
 
-#: ../src/greeter.c:326
+#: ../src/greeter.c:442
 msgid "_Shutdown"
 msgstr "_Выключение"
+
+#: ../src/lang.c:88
+msgid "More ..."
+msgstr ""
 
 #~ msgid "US English"
 #~ msgstr "Английский"

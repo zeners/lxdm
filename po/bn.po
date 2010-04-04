@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 21:35+0200\n"
+"POT-Creation-Date: 2010-04-04 14:44+0800\n"
 "PO-Revision-Date: 2010-02-01 11:45+0600\n"
 "Last-Translator: Israt Jahan <israt@snkur.org.bd>\n"
 "Language-Team: Bengali <ankur-bd-l10n@googlegroups.com>\n"
@@ -27,26 +27,30 @@ msgstr "কীবোর্ডের লেআউট:"
 msgid "Language:"
 msgstr "ভাষা"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:123 ../src/greeter.c:172
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
 msgid "User:"
 msgstr "ব্যবহারকারী:"
 
-#: ../src/gdm/gdm-languages.c:614
+#: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
 msgstr "অনুল্লেখিত"
 
-#: ../src/greeter.c:94
+#: ../src/greeter.c:100
 msgid "Password:"
 msgstr "পাসওয়ার্ড:"
 
-#: ../src/greeter.c:224
+#: ../src/greeter.c:222 ../src/lang.c:76
 msgid "Default"
 msgstr "পূর্বনির্ধারিত"
 
-#: ../src/greeter.c:322
+#: ../src/greeter.c:438
 msgid "_Reboot"
 msgstr "রিবুট (_R)"
 
-#: ../src/greeter.c:326
+#: ../src/greeter.c:442
 msgid "_Shutdown"
 msgstr "বন্ধ (_S)"
+
+#: ../src/lang.c:88
+msgid "More ..."
+msgstr ""

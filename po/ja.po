@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 21:35+0200\n"
+"POT-Creation-Date: 2010-04-04 14:44+0800\n"
 "PO-Revision-Date: 2009-10-24 14:42+0900\n"
 "Last-Translator: Hironao Komatsu <hironao@users.sourceforge.net>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
@@ -29,29 +29,33 @@ msgstr "キーボードレイアウト:"
 msgid "Language:"
 msgstr "言語:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:123 ../src/greeter.c:172
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
 msgid "User:"
 msgstr "ユーザ:"
 
-#: ../src/gdm/gdm-languages.c:614
+#: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
 msgstr ""
 
-#: ../src/greeter.c:94
+#: ../src/greeter.c:100
 msgid "Password:"
 msgstr "パスワード:"
 
-#: ../src/greeter.c:224
+#: ../src/greeter.c:222 ../src/lang.c:76
 msgid "Default"
 msgstr "デフォルト"
 
-#: ../src/greeter.c:322
+#: ../src/greeter.c:438
 msgid "_Reboot"
 msgstr "再起動(_R)"
 
-#: ../src/greeter.c:326
+#: ../src/greeter.c:442
 msgid "_Shutdown"
 msgstr "シャットダウン(_S)"
+
+#: ../src/lang.c:88
+msgid "More ..."
+msgstr ""
 
 #~ msgid "US English"
 #~ msgstr "英語(US)"
