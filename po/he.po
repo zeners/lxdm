@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 14:44+0800\n"
+"POT-Creation-Date: 2010-04-05 04:09+0000\n"
 "PO-Revision-Date: 2010-01-13 23:22+0200\n"
 "Last-Translator: Yaron Shahrbani <sh.yaron@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,4 +56,4 @@ msgstr "_כיבוי"
 
 #: ../src/lang.c:88
 msgid "More ..."
-msgstr ""
+msgstr "עוד ..."
