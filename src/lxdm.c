@@ -1048,17 +1048,21 @@ int lxdm_do_auto_login(void)
 {
     struct passwd *pw;
     char *user;
-    char *pass;
+/*  char *pass;
     int ret;
+*/
 
     user = g_key_file_get_string(config, "base", "autologin", 0);
     if( !user )
         return 0;
+    if( AUTH_SUCCESS != lxdm_auth_user(user, 0, &pw) )
+/*
     pass = g_key_file_get_string(config, "base", "password", 0);
     ret=lxdm_auth_user(user, pass, &pw);
     g_free(user);
     g_free(pass);
     if(ret!=AUTH_SUCCESS)
+*/
         return 0;
     lxdm_do_login(pw, NULL, NULL);
     return 1;
