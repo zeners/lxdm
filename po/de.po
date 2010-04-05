@@ -56,9 +56,8 @@ msgid "_Shutdown"
 msgstr "_Beenden"
 
 #: ../src/lang.c:88
-#, fuzzy
 msgid "More ..."
-msgstr "Mehr …"
+msgstr "Weitere…"
 
 #~ msgid "US English"
 #~ msgstr "Englisch (USA)"
