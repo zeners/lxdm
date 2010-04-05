@@ -3,12 +3,12 @@
 # Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Mark Trompell <mark@foresightlinux.org>, 2009.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 14:44+0800\n"
+"POT-Creation-Date: 2010-04-05 04:09+0000\n"
 "PO-Revision-Date: 2010-01-13 00:24+0100\n"
 "Last-Translator: Christoph Wickert <christoph.wickert@googlemail.com>\n"
 "Language-Team: German\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 1.1.0\n"
 "X-Poedit-Language: German\n"
+"X-Generator: Pootle 1.1.0\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
@@ -56,8 +56,9 @@ msgid "_Shutdown"
 msgstr "_Beenden"
 
 #: ../src/lang.c:88
+#, fuzzy
 msgid "More ..."
-msgstr ""
+msgstr "Mehr …"
 
 #~ msgid "US English"
 #~ msgstr "Englisch (USA)"
