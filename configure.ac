@@ -58,6 +58,18 @@ PKG_CHECK_MODULES(CONSOLEKIT, "ck-connector",[
 	echo "ConsoleKit devel package not found"
 	])
 
+AC_ARG_ENABLE(password,
+[  --enable-password        enable to load autologin password store at config file ],
+[case "${enableval}" in
+  yes)  enable_password=yes ;;
+  no)   enable_password=no ;;
+  *) AC_MSG_ERROR([bad value "${enableval}" for --enable-password, use "no" (default) or "yes".]) ;;
+esac],[])
+
+if test "x$enable_password" = "xyes" ; then
+  CFLAGS="$CFLAGS -DENABLE_PASSWORD"
+fi
+
 GETTEXT_PACKAGE=lxdm
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
