@@ -1133,33 +1133,14 @@ int main(int arc, char *arg[])
         exit(EXIT_FAILURE);
     }
 
-#if 0
-    /* fedora's prefdm likely not compatible with this */
-    while( ( tmp = getopt(arc, arg, "hd") ) != EOF )
-    {
-        switch( tmp )
-        {
-        case 'd':
-            daemonmode = 1;
-            break;
-        case 'h':
-            printf("usage:  lxdm [options ...]\n");
-            printf("options:\n");
-            printf("    -d: daemon mode\n");
-            exit(EXIT_SUCCESS);
-            break;
-        }
-    }
-#else
     for(i=1;i<arc;i++)
     {
         if(!strcmp(arg[i],"-d"))
             daemonmode=1;
     }
-#endif
 
     if( daemonmode )
-        daemon(1, 1);
+        (void)daemon(1, 1);
 
     self = arg[0];
 
@@ -1195,3 +1176,4 @@ int main(int arc, char *arg[])
 
     return 0;
 }
+

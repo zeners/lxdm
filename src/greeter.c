@@ -308,7 +308,7 @@ static void on_menu_lang_select(GtkMenuItem *item,gpointer user_data)
                        COL_LANG, sel, -1);
 	gtk_combo_box_set_active_iter(GTK_COMBO_BOX(lang),&iter);
 
-	array=g_ptr_array_new_with_free_func(g_free);
+	array=g_ptr_array_new();
 	res=gtk_tree_model_get_iter_first(GTK_TREE_MODEL(list),&iter);
 	while(res==TRUE)
 	{
@@ -325,6 +325,7 @@ static void on_menu_lang_select(GtkMenuItem *item,gpointer user_data)
 	}
 	g_key_file_set_string_list(var_config,"base","last_langs",(void*)array->pdata,array->len);
 	config_changed=TRUE;
+	g_ptr_array_foreach(array,(GFunc)g_free,0);
 	g_ptr_array_free(array,TRUE);
 }
 
@@ -586,7 +587,7 @@ static void create_win()
         load_langs();
     }
 
-    if( w = (GtkWidget*)gtk_builder_get_object(builder, "time") )
+    if( (w = (GtkWidget*)gtk_builder_get_object(builder, "time"))!=NULL )
     {
         guint timeout = g_timeout_add(1000, (GSourceFunc)on_timeout, w);
         g_signal_connect_swapped(w, "destroy",
