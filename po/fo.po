@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-04-04 14:44+0800\n"
-"PO-Revision-Date: 2010-04-05 18:41+0200\n"
+"PO-Revision-Date: 2010-04-06 11:14+0200\n"
 "Last-Translator: Gunleif <gunleif@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fo\n"
@@ -36,7 +36,7 @@ msgstr "Brúkari:"
 
 #: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
-msgstr "Ikki tilskilað:"
+msgstr "Ikki tilskilað"
 
 #: ../src/greeter.c:100
 msgid "Password:"
