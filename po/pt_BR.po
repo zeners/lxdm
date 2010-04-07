@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 14:44+0800\n"
+"POT-Creation-Date: 2010-04-07 04:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,14 +43,14 @@ msgstr "Senha:"
 msgid "Default"
 msgstr "Padrão"
 
-#: ../src/greeter.c:438
+#: ../src/greeter.c:439
 msgid "_Reboot"
 msgstr "_Reiniciar"
 
-#: ../src/greeter.c:442
+#: ../src/greeter.c:443
 msgid "_Shutdown"
 msgstr "De_sligar"
 
 #: ../src/lang.c:88
 msgid "More ..."
-msgstr ""
+msgstr "Mais..."
