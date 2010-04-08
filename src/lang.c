@@ -22,6 +22,7 @@
 #include "lang.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <string.h>
@@ -36,8 +37,14 @@
 
 #include "gdm/gdm-languages.h"
 
+static int cmpstr(const void *p1, const void *p2)
+{
+           return strcmp(* (char * const *) p1, * (char * const *) p2);
+}
+
 static char **lxdm_get_all_language_names(void)
 {
+#if 0
 	GPtrArray *array;
 	FILE *fp;
 	array=g_ptr_array_new();
@@ -55,6 +62,24 @@ static char **lxdm_get_all_language_names(void)
 	}
 	g_ptr_array_add (array, NULL);
 	return (char **) g_ptr_array_free (array, FALSE);
+#else
+	char **list,**lang;
+	int len;
+	list=gdm_get_all_language_names();
+	if(!list) return NULL;
+	for(lang=list;*lang!=NULL;lang++)
+	{
+		char *normal=gdm_normalize_language_name(*lang);
+		if(normal)
+		{
+			g_free(*lang);
+			*lang=normal;
+		}
+	}
+	len=g_strv_length(list);
+	qsort(list,len,sizeof(char*),(void*)cmpstr);
+	return list;
+#endif
 }
 
 static char **lxdm_get_config_language_names(GKeyFile *config)
@@ -71,19 +96,22 @@ static char **lxdm_get_config_language_names(GKeyFile *config)
 
 void lxdm_load_langs(GKeyFile *config, gboolean all, void *arg, void (*cb)(void *arg, char *lang, char *desc))
 {
-    char **langs, **lang;
+    char **lang;
+    int i;
 
     cb(arg, "", _("Default")); /* default is to use the system wide settings ,not use the "C" */
 
-    langs = all?lxdm_get_all_language_names():lxdm_get_config_language_names(config);
-    for( lang = langs; *lang; ++lang )
+    lang = all?lxdm_get_all_language_names():lxdm_get_config_language_names(config);
+    if(!lang) return;
+
+    for(i=0;lang[i]!=NULL;i++)
     {
-	char *normal=*lang;
-        char* readable = gdm_get_language_from_name(normal, normal);
-        cb(arg, normal, readable);
+        char *readable=gdm_get_language_from_name(lang[i],lang[i]);
+        cb(arg,lang[i],readable);
         g_free(readable);
     }
-    g_strfreev(langs);
+
+    g_strfreev(lang);
 
     if(!all) cb(arg,"~",_("More ..."));
 }
