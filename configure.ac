@@ -17,7 +17,6 @@ AM_PROG_CC_C_O
 AC_CHECK_LIB([crypt], [crypt])
 AC_CHECK_LIB([pam], [pam_open_session])
 AC_CHECK_LIB([ck-connector],[ck_connector_open_session])
-AC_CHECK_LIB([Xau],[XauWriteAuth])
 
 # Checks for header files.
 AC_PATH_X
@@ -63,11 +62,23 @@ AC_ARG_ENABLE(password,
 [case "${enableval}" in
   yes)  enable_password=yes ;;
   no)   enable_password=no ;;
-  *) AC_MSG_ERROR([bad value "${enableval}" for --enable-password, use "no" (default) or "yes".]) ;;
+  *) AC_MSG_ERROR([bad value "${enableval}" for --enable-password, use "yes" (default) or "no".]) ;;
 esac],[])
 
 if test "x$enable_password" = "xyes" ; then
   CFLAGS="$CFLAGS -DENABLE_PASSWORD"
+fi
+
+AC_ARG_ENABLE(xauth,
+    AC_HELP_STRING([--disable-xauth],[disable the xauth support ]),
+    [enable_xauth=$enablevar],
+    [enable_xauth=yes]
+)
+
+if test "x$enable_xauth" = "x$no" ; then
+ CFLAGS="$CFLAGS -DDISABLE_XAUTH"
+else
+ AC_CHECK_LIB([Xau],[XauWriteAuth])
 fi
 
 GETTEXT_PACKAGE=lxdm

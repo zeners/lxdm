@@ -86,8 +86,11 @@ static unsigned int my_xid_n;
 static char *self;
 static pid_t child;
 static int reason;
-static char mcookie[33];
 static int old_tty=1,tty = 7;
+
+#ifndef DISABLE_XAUTH
+static char mcookie[33];
+#endif
 
 #if HAVE_LIBXAU
 static Xauth x_auth;
@@ -303,6 +306,7 @@ void free_xsessions(GSList *l)
     g_slist_free(l);
 }
 
+#ifndef DISABLE_XAUTH
 void create_server_auth(void)
 {
     GRand *h;
@@ -400,6 +404,7 @@ void create_client_auth(char *home)
 #endif
     g_free(authfile);
 }
+#endif
 
 #if HAVE_LIBPAM
 static char *user_pass[2];
@@ -565,7 +570,9 @@ void switch_user(struct passwd *pw, char *run, char **env)
         dup2(fd,STDERR_FILENO);
         close(fd);
     }
+#ifndef DISABLE_XAUTH
     create_client_auth(pw->pw_dir);
+#endif
     g_spawn_command_line_async ("/etc/lxdm/PostLogin",NULL);
     execle("/etc/lxdm/Xsession", "/etc/lxdm/Xsession", run, NULL, env);
     exit(EXIT_FAILURE);
@@ -700,7 +707,9 @@ void startx(void)
     if( !getenv("DISPLAY") )
         putenv("DISPLAY=:0");
 
+#ifndef DISABLE_XAUTH
     create_server_auth();
+#endif
 
     arg = g_key_file_get_string(config, "server", "arg", 0);
     if( !arg ) arg = g_strdup("/usr/bin/X");
