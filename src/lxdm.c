@@ -928,13 +928,13 @@ gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 	}
 	if(name && !exec)
 	{
-		if(!strcmp(name,"LXDE"))
+		if(!strcasecmp(name,"LXDE"))
 			exec = g_strdup("startlxde");
-		else if( !strcmp(name, "GNOME") )
+		else if( !strcasecmp(name, "GNOME") )
 			exec = g_strdup("gnome-session");
-		else if( !strcmp(name, "KDE") )
+		else if( !strcasecmp(name, "KDE") )
 			exec = g_strdup("startkde");
-		else if( !strcmp(name, "XFCE") )
+		else if( !strcasecmp(name, "XFCE") || !strcasecmp(name, "xfce4"))
 			exec = g_strdup("startxfce4");
 		else
 			exec=g_strdup(name);
@@ -946,14 +946,38 @@ gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 
 void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 {
-	char *session_name=0,*session_exec=0;
+    char *session_name=0,*session_exec=0;
+    gboolean alloc_session=FALSE,alloc_lang=FALSE;
     int pid;
+
+    if(!session ||!session[0] || !lang || !lang[0])
+    {
+       char *path=g_strdup_printf("%s/.dmrc",pw->pw_dir);
+       GKeyFile *dmrc=g_key_file_new();
+       g_key_file_load_from_file(dmrc,path,G_KEY_FILE_NONE,0);
+       g_free(path);
+       if(!session || !session[0])
+       {
+           session=g_key_file_get_string(dmrc,"Desktop","Session",NULL);
+           alloc_session=TRUE;
+       }
+       if(!lang || !lang[0])
+       {
+           lang=g_key_file_get_string(dmrc,"Desktop","Language",NULL);
+           alloc_lang=TRUE;
+       }
+       g_key_file_free(dmrc);
+    }
     
     if(!lxdm_get_session_info(session,&session_name,&session_exec))
     {
-		ui_prepare();
+        if(alloc_session)
+            g_free(session);
+        if(alloc_lang)
+            g_free(lang);
+        ui_prepare();
     	return;
-	}
+    }
 
     if( pw->pw_shell[0] == '\0' )
     {
@@ -1022,6 +1046,10 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
     }
     g_free(session_name);
     g_free(session_exec);
+    if(alloc_session)
+        g_free(session);
+    if(alloc_lang)
+        g_free(lang);
     g_child_watch_add(pid, on_session_stop, 0);
 }
 
