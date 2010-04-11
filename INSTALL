@@ -1,11 +1,12 @@
 1 compile and install
 
-./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec
+./configure --prefix=/usr --sysconfdir=/etc
 make
 make install
 
-libexecdir should change as you system path.
-sysconfdir must be /etc
+libexecdir should change as you system path,
+to do that, pass --libexecdir=/your/path at configure.
+sysconfdir must be /etc.
 
 
 2 custom

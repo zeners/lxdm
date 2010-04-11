@@ -92,7 +92,6 @@ AC_CONFIG_FILES([
 	po/Makefile.in
 	pam/Makefile
 	data/Makefile
-	data/lxdm.conf
 	data/PostLogin
 	data/PostLogout
 	data/PreLogin
