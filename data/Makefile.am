@@ -45,5 +45,6 @@ EXTRA_DIST= \
 	$(lxdm_DATA) \
 	$(lxdm_conf_DATA) \
 	$(theme_DATA) \
+	lxdm.conf.in \
 	$(NULL)
 
