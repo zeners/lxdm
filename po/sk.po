@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 14:44+0800\n"
+"POT-Creation-Date: 2010-04-11 04:09+0000\n"
 "PO-Revision-Date: 2010-01-16 19:21+0100\n"
 "Last-Translator: Ivan Masár <helix84@centrum.sk>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,18 +39,18 @@ msgstr "Neurčené"
 msgid "Password:"
 msgstr "Heslo:"
 
-#: ../src/greeter.c:222 ../src/lang.c:76
+#: ../src/greeter.c:222 ../src/lang.c:102
 msgid "Default"
 msgstr "Predvolené"
 
-#: ../src/greeter.c:438
+#: ../src/greeter.c:439
 msgid "_Reboot"
 msgstr "_Reštartovať"
 
-#: ../src/greeter.c:442
+#: ../src/greeter.c:443
 msgid "_Shutdown"
 msgstr "_Vypnúť"
 
-#: ../src/lang.c:88
+#: ../src/lang.c:116
 msgid "More ..."
-msgstr ""
+msgstr "Ďalšie..."
