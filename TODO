@@ -2,3 +2,6 @@ help me!
 
 1. user list in greeter ui
 2. lxdm-config tool to custom the lxdm
+3. user switch support
+4. multi seat support
+5. manpage for lxdm and lxdm.conf
