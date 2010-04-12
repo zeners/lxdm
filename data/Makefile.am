@@ -26,7 +26,13 @@ lxdm_conf_DATA = \
 	$(NULL)
 
 install-data-hook:
-	chmod +x $(DESTDIR)/etc/lxdm/Xsession
+	chmod +x $(DESTDIR)/etc/lxdm/Xsession \
+		$(DESTDIR)/etc/lxdm/PostLogin \
+		$(DESTDIR)/etc/lxdm/PostLogout \
+		$(DESTDIR)/etc/lxdm/PreLogin \
+		$(DESTDIR)/etc/lxdm/PreReboot \
+		$(DESTDIR)/etc/lxdm/PreShutdown \
+		$(DESTDIR)/etc/lxdm/LoginReady
 	chmod 600 $(DESTDIR)/etc/lxdm/lxdm.conf
 
 themedir=$(datadir)/lxdm/themes/Industrial
