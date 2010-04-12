@@ -44,7 +44,7 @@ enum {
 };
 
 #ifndef VCONFIG_FILE
-#define VCONFIG_FILE "/var/run/lxdm/lxdm.ini"
+#define VCONFIG_FILE "/etc/lxdm/lxdm.conf"
 #endif
 
 static gboolean config_changed = FALSE;
@@ -741,11 +741,11 @@ int main(int arc, char *arg[])
     textdomain("lxdm");
 
     config = g_key_file_new();
-    g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, NULL);
+    g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_KEEP_COMMENTS, NULL);
 
     var_config = g_key_file_new();
     g_key_file_set_list_separator(var_config, ' ');
-    g_key_file_load_from_file(var_config,VCONFIG_FILE,0,NULL);
+    g_key_file_load_from_file(var_config,VCONFIG_FILE,G_KEY_FILE_KEEP_COMMENTS, NULL);
 
     gtk_init(&arc, &arg);
 
