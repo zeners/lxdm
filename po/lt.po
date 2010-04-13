@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 14:44+0800\n"
+"POT-Creation-Date: 2010-04-13 04:11+0000\n"
 "PO-Revision-Date: 2010-01-14 10:53+0200\n"
 "Last-Translator: Julius Vitkauskas <zadintuvas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,8 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: lt\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Pootle 2.0.0\n"
 
 #: ../data/lxdm.glade.h:1
@@ -43,18 +42,18 @@ msgstr "Nenurodyta"
 msgid "Password:"
 msgstr "Slaptažodis:"
 
-#: ../src/greeter.c:222 ../src/lang.c:76
+#: ../src/greeter.c:222 ../src/lang.c:102
 msgid "Default"
 msgstr "Numatyta"
 
-#: ../src/greeter.c:438
+#: ../src/greeter.c:439
 msgid "_Reboot"
 msgstr "_Perkrauti"
 
-#: ../src/greeter.c:442
+#: ../src/greeter.c:443
 msgid "_Shutdown"
 msgstr "_Išjungti"
 
-#: ../src/lang.c:88
+#: ../src/lang.c:116
 msgid "More ..."
-msgstr ""
+msgstr "Daugiau..."
