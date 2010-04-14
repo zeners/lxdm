@@ -1,57 +1,56 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Tareq Al Jurf <taljurf@fedoraproject.org>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 14:44+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-04-14 04:11+0000\n"
+"PO-Revision-Date: 2010-04-14 18:15+0300\n"
+"Last-Translator: Tareq Al Jurf <taljurf@fedoraproject.org>\n"
+"Language-Team: Arabic <trans-ar@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
-msgstr ""
+msgstr "سطح المكتب:"
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
-msgstr ""
+msgstr "تخطيط لوحة المفاتيح:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
-msgstr ""
+msgstr "اللغة:"
 
 #: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
 msgid "User:"
-msgstr ""
+msgstr "المستخدم:"
 
 #: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
-msgstr ""
+msgstr "غير محدد"
 
 #: ../src/greeter.c:100
 msgid "Password:"
-msgstr ""
+msgstr "كلمة المرور:"
 
-#: ../src/greeter.c:222 ../src/lang.c:76
+#: ../src/greeter.c:222 ../src/lang.c:102
 msgid "Default"
-msgstr ""
+msgstr "افتراضي"
 
-#: ../src/greeter.c:438
+#: ../src/greeter.c:439
 msgid "_Reboot"
-msgstr ""
+msgstr "إ_عادة التشغيل"
 
-#: ../src/greeter.c:442
+#: ../src/greeter.c:443
 msgid "_Shutdown"
-msgstr ""
+msgstr "_إيقاف التشغيل"
 
-#: ../src/lang.c:88
+#: ../src/lang.c:116
 msgid "More ..."
-msgstr ""
+msgstr "المزيد..."
