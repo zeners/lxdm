@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-13 04:11+0000\n"
+"POT-Creation-Date: 2010-04-16 04:10+0000\n"
 "PO-Revision-Date: 2010-01-14 10:53+0200\n"
 "Last-Translator: Julius Vitkauskas <zadintuvas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
-msgstr "Darbastalis:"
+msgstr "Sesija:"
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
