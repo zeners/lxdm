@@ -15,7 +15,10 @@ AM_PROG_CC_C_O
 
 # Checks for libraries.
 AC_CHECK_LIB([crypt], [crypt])
-AC_CHECK_LIB([pam], [pam_open_session])
+
+AC_ARG_WITH(pam,AC_HELP_STRING([--without-pam],[build without pam]),
+[],[AC_CHECK_LIB([pam], [pam_open_session])])
+
 AC_CHECK_LIB([ck-connector],[ck_connector_open_session])
 
 # Checks for header files.

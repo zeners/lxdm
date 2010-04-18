@@ -61,7 +61,6 @@
 
 #if HAVE_LIBPAM
 #include <security/pam_appl.h>
-#include <security/pam_modules.h>
 #endif
 
 #if HAVE_LIBCK_CONNECTOR
@@ -432,6 +431,7 @@ static int do_conv(int num, const struct pam_message **msg,struct pam_response *
 
 static pam_handle_t *pamh;
 static struct pam_conv conv={.conv=do_conv,.appdata_ptr=user_pass};
+#endif
 
 int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
 {
@@ -487,6 +487,7 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
     return AUTH_SUCCESS;
 }
 
+#if HAVE_LIBPAM
 void setup_pam_session(struct passwd *pw,char *session_name)
 {
     int err;
