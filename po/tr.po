@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 14:44+0800\n"
+"POT-Creation-Date: 2010-04-28 16:42+0200\n"
 "PO-Revision-Date: 2010-01-26 03:29+0200\n"
 "Last-Translator: Kılıç <kilickoken@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,18 +42,18 @@ msgstr "Belirlenmemiş"
 msgid "Password:"
 msgstr "Parola"
 
-#: ../src/greeter.c:222 ../src/lang.c:76
+#: ../src/greeter.c:222 ../src/lang.c:102
 msgid "Default"
 msgstr "Öntanımlı"
 
-#: ../src/greeter.c:438
+#: ../src/greeter.c:439
 msgid "_Reboot"
 msgstr "_Yeniden Başlat"
 
-#: ../src/greeter.c:442
+#: ../src/greeter.c:443
 msgid "_Shutdown"
 msgstr "_Kapat"
 
-#: ../src/lang.c:88
+#: ../src/lang.c:116
 msgid "More ..."
 msgstr ""

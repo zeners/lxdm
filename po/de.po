@@ -3,12 +3,12 @@
 # Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Mark Trompell <mark@foresightlinux.org>, 2009.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-05 04:09+0000\n"
+"POT-Creation-Date: 2010-04-28 16:42+0200\n"
 "PO-Revision-Date: 2010-01-13 00:24+0100\n"
 "Last-Translator: Christoph Wickert <christoph.wickert@googlemail.com>\n"
 "Language-Team: German\n"
@@ -43,19 +43,19 @@ msgstr "Nicht festgelegt"
 msgid "Password:"
 msgstr "Passwort:"
 
-#: ../src/greeter.c:222 ../src/lang.c:76
+#: ../src/greeter.c:222 ../src/lang.c:102
 msgid "Default"
 msgstr "Standard"
 
-#: ../src/greeter.c:438
+#: ../src/greeter.c:439
 msgid "_Reboot"
 msgstr "_Neustarten"
 
-#: ../src/greeter.c:442
+#: ../src/greeter.c:443
 msgid "_Shutdown"
 msgstr "_Beenden"
 
-#: ../src/lang.c:88
+#: ../src/lang.c:116
 msgid "More ..."
 msgstr "Weitere…"
 

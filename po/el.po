@@ -2,19 +2,19 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-08 04:09+0000\n"
+"POT-Creation-Date: 2010-04-28 16:42+0200\n"
 "PO-Revision-Date: 2010-01-12 14:24+0100\n"
 "Last-Translator: George Vasilakos <forfolias@linuxteam.cs.teilar.gr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.1\n"
 
@@ -42,7 +42,7 @@ msgstr "Ακαθόριστο"
 msgid "Password:"
 msgstr "Κωδικός:"
 
-#: ../src/greeter.c:222 ../src/lang.c:76
+#: ../src/greeter.c:222 ../src/lang.c:102
 msgid "Default"
 msgstr "Προεπιλογή"
 
@@ -54,6 +54,6 @@ msgstr "_Επανεκκίνηση"
 msgid "_Shutdown"
 msgstr "_Τερματισμός"
 
-#: ../src/lang.c:88
+#: ../src/lang.c:116
 msgid "More ..."
 msgstr "Περισσότερα ..."

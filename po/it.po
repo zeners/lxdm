@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxem r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-04 14:44+0800\n"
+"POT-Creation-Date: 2010-04-28 16:42+0200\n"
 "PO-Revision-Date: 2010-04-04 10:22+0100\n"
 "Last-Translator: Andrea Florio <andrea@opensuse.org>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -31,9 +31,7 @@ msgstr "Layout Tastiera:"
 msgid "Language:"
 msgstr "Lingua:"
 
-#: ../data/lxdm.glade.h:4
-#: ../src/greeter.c:129
-#: ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
 msgid "User:"
 msgstr "Utente:"
 
@@ -45,33 +43,36 @@ msgstr "Non specificato"
 msgid "Password:"
 msgstr "Password:"
 
-#: ../src/greeter.c:222
-#: ../src/lang.c:76
+#: ../src/greeter.c:222 ../src/lang.c:102
 msgid "Default"
 msgstr "Predefinito"
 
-#: ../src/greeter.c:438
+#: ../src/greeter.c:439
 msgid "_Reboot"
 msgstr "_Riavvia"
 
-#: ../src/greeter.c:442
+#: ../src/greeter.c:443
 msgid "_Shutdown"
 msgstr "_Spegni"
 
-#: ../src/lang.c:88
+#: ../src/lang.c:116
 msgid "More ..."
 msgstr "Di più..."
 
 #~ msgid "US English"
 #~ msgstr "Inglese US"
+
 #~ msgid "Simpllified Chinese"
 #~ msgstr "Cinese Semplificato"
+
 #~ msgid "Traditional Chinese"
 #~ msgstr "Cinese Tradizionale"
+
 #~ msgid "German"
 #~ msgstr "Tedesco"
+
 #~ msgid "Italian"
 #~ msgstr "Italiano"
+
 #~ msgid "Portuguese"
 #~ msgstr "Portoghese"
-

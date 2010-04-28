@@ -2,12 +2,12 @@
 # Copyright (C) 2010 Free Software Foundation. Inc.
 # This file is distributed under the same license as the lxdm package.
 # Hyun-Gwan Seo <westporch@gmail.com>, 2010.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-12 01:46+0100\n"
+"POT-Creation-Date: 2010-04-28 16:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator:Hyun-Gwan Seo <westporch@gmail.com>\n"
 "Language-Team: Korean <westporch@gmail.com>\n"
@@ -27,26 +27,30 @@ msgstr "키보드 레이아웃:"
 msgid "Language:"
 msgstr "언어:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:116 ../src/greeter.c:165
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
 msgid "User:"
 msgstr "사용자:"
 
-#: ../src/gdm/gdm-languages.c:609
+#: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
 msgstr "미분류"
 
-#: ../src/greeter.c:87
+#: ../src/greeter.c:100
 msgid "Password:"
 msgstr "비밀번호:"
 
-#: ../src/greeter.c:211
+#: ../src/greeter.c:222 ../src/lang.c:102
 msgid "Default"
 msgstr "기본값"
 
-#: ../src/greeter.c:260
+#: ../src/greeter.c:439
 msgid "_Reboot"
 msgstr "재시작(_R)"
 
-#: ../src/greeter.c:264
+#: ../src/greeter.c:443
 msgid "_Shutdown"
 msgstr "종료(_S)"
+
+#: ../src/lang.c:116
+msgid "More ..."
+msgstr ""
