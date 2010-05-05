@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 16:42+0200\n"
+"POT-Creation-Date: 2010-05-05 04:10+0000\n"
 "PO-Revision-Date: 2010-03-19 14:51+0200\n"
 "Last-Translator: Rahman Yusri Aftian <aftian@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,23 +24,23 @@ msgstr "Desktop:"
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
-msgstr "Layout Papan Ketik"
+msgstr "Tata Letak Papan Tik:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
-msgstr "Bahasa"
+msgstr "Bahasa:"
 
 #: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
 msgid "User:"
-msgstr "Pengguna"
+msgstr "Pengguna:"
 
 #: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
-msgstr "Tidak spesifik"
+msgstr "Tak dinyatakan"
 
 #: ../src/greeter.c:100
 msgid "Password:"
-msgstr "Sandi"
+msgstr "Kata Sandi:"
 
 #: ../src/greeter.c:222 ../src/lang.c:102
 msgid "Default"
@@ -48,7 +48,7 @@ msgstr "Default"
 
 #: ../src/greeter.c:439
 msgid "_Reboot"
-msgstr "_Hidupkan Ulang"
+msgstr "_Boot Ulang"
 
 #: ../src/greeter.c:443
 msgid "_Shutdown"
@@ -56,4 +56,4 @@ msgstr "_Matikan"
 
 #: ../src/lang.c:116
 msgid "More ..."
-msgstr ""
+msgstr "Lebih banyak ..."
