@@ -29,6 +29,8 @@
 
 #include "lang.h"
 #include <time.h>
+#include <stdlib.h>
+#include <sys/stat.h>
 
 enum {
     COL_SESSION_NAME,
@@ -43,9 +45,8 @@ enum {
     N_LANG_COLS
 };
 
-#ifndef VCONFIG_FILE
-#define VCONFIG_FILE "/etc/lxdm/lxdm.conf"
-#endif
+#define VCONFIG_PATH "/var/lib/lxdm"
+#define VCONFIG_FILE "/var/lib/lxdm/lxdm.conf"
 
 static gboolean config_changed = FALSE;
 static GKeyFile *config;
@@ -58,7 +59,7 @@ static GtkWidget* prompt;
 static GtkWidget* sessions;
 static GtkWidget* lang;
 
-static GtkWidget* exit;
+static GtkWidget* exit_btn;
 
 static GtkWidget* exit_menu;
 static GtkWidget *lang_menu;
@@ -445,7 +446,7 @@ static void load_exit()
     gtk_menu_shell_append(GTK_MENU_SHELL(exit_menu), item);
 
     gtk_widget_show_all(exit_menu);
-    g_signal_connect(exit, "clicked", G_CALLBACK(on_exit_clicked), NULL);
+    g_signal_connect(exit_btn, "clicked", G_CALLBACK(on_exit_clicked), NULL);
 }
 
 static gboolean on_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_data)
@@ -595,7 +596,7 @@ static void create_win()
         on_timeout((GtkLabel*)w);
     }
 
-    exit = (GtkWidget*)gtk_builder_get_object(builder, "exit");
+    exit_btn = (GtkWidget*)gtk_builder_get_object(builder, "exit");
     load_exit();
 
     g_object_unref(builder);
@@ -735,6 +736,7 @@ static void apply_theme(const char* theme_name)
 int main(int arc, char *arg[])
 {
     char* theme_name;
+    GtkSettings*p;
 
     gtk_set_locale();
     bindtextdomain("lxdm", "/usr/share/locale");
@@ -748,6 +750,14 @@ int main(int arc, char *arg[])
     g_key_file_load_from_file(var_config,VCONFIG_FILE,G_KEY_FILE_KEEP_COMMENTS, NULL);
 
     gtk_init(&arc, &arg);
+
+    p=gtk_settings_get_default();
+    if(p)
+    {
+        putenv("GTK_IM_MODULE=gtk-im-context-simple");
+        gtk_settings_set_string_property(p,"gtk-im-module","gtk-im-context-simple",0);
+        gtk_settings_set_long_property(p,"gtk-show-input-method-menu",0,0);
+    }
 
     set_background();
     set_root_background();
@@ -782,6 +792,9 @@ int main(int arc, char *arg[])
     {
         gsize len;
         char* data = g_key_file_to_data(var_config, &len, NULL);
+#ifdef VCONFIG_PATH
+	mkdir(VCONFIG_PATH,0700);
+#endif
         g_file_set_contents(VCONFIG_FILE, data, len, NULL);
         g_free(data);
     }

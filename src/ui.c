@@ -274,6 +274,7 @@ void ui_drop(void)
         close(greeter_pipe[0]);
 
         g_source_remove(greeter_watch);
+        greeter_watch=0;
         waitpid(greeter, 0, 0) ;
         greeter=-1;
     }
@@ -455,7 +456,7 @@ static void on_greeter_exit(GPid pid, gint status, gpointer data)
     if( pid != greeter )
         return;
     greeter = -1;
-    g_source_remove(greeter_watch);
+    greeter_watch=0;
 }
 
 void ui_prepare(void)

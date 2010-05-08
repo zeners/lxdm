@@ -84,6 +84,7 @@ static Window *my_xid;
 static unsigned int my_xid_n;
 static char *self;
 static pid_t child;
+static guint child_watch;
 static int reason;
 static int old_tty=1,tty = 7;
 
@@ -311,7 +312,6 @@ void create_server_auth(void)
     GRand *h;
     int i;
     char *authfile;
-    char *tmp;
 
     h = g_rand_new();
 #if HAVE_LIBXAU
@@ -342,9 +342,7 @@ void create_server_auth(void)
         mkdir("/var/run/lxdm",0700);
         authfile = g_strdup("/var/run/lxdm/lxdm.auth");
     }
-    tmp = g_strdup_printf("XAUTHORITY=%s", authfile);
-    putenv(tmp);
-    g_free(tmp);
+    setenv("XAUTHORITY",authfile,0);
     remove(authfile);
 #if HAVE_LIBXAU
     FILE *fp=fopen(authfile,"wb");
@@ -370,7 +368,7 @@ void create_server_auth(void)
         fclose(fp);
     }
 #else
-    tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
+    char *tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
                           authfile, getenv("DISPLAY"), mcookie);
     system(tmp);
     g_free(tmp);
@@ -415,12 +413,17 @@ static int do_conv(int num, const struct pam_message **msg,struct pam_response *
 	*resp = (struct pam_response *) calloc(num, sizeof(struct pam_response));
 	for(i=0;i<num;i++)
 	{
+		//printf("MSG: %d %s\n",msg[i]->msg_style,msg[i]->msg);
 		switch(msg[i]->msg_style){
 		case PAM_PROMPT_ECHO_ON:
-			resp[i]->resp=strdup(user_pass[0]);
+			resp[i]->resp=strdup(user_pass[0]?user_pass[0]:"");
 			break;
 		case PAM_PROMPT_ECHO_OFF:
-			resp[i]->resp=strdup(user_pass[1]);
+			resp[i]->resp=strdup(user_pass[1]?user_pass[1]:"");
+			break;
+		case PAM_ERROR_MSG:
+		case PAM_TEXT_INFO:
+			//printf("PAM: %s\n",msg[i]->msg);
 			break;
 		default:
 			break;
@@ -436,9 +439,11 @@ static struct pam_conv conv={.conv=do_conv,.appdata_ptr=user_pass};
 int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
 {
     struct passwd *pw;
+#if !HAVE_LIBPAM
     struct spwd *sp;
     char *real;
     char *enc;
+#endif
     if( !user )
         return AUTH_ERROR;
     if( !user[0] )
@@ -452,6 +457,7 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         *ppw = pw;
         return AUTH_SUCCESS;
     }
+#if !HAVE_LIBPAM
     sp = getspnam(user);
     if( !sp )
         return AUTH_FAIL;
@@ -472,18 +478,25 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         return AUTH_FAIL;
     if( strstr(pw->pw_shell, "nologin") )
         return AUTH_PRIV;
-    *ppw = pw;
-#if HAVE_LIBPAM
+#else
     if(pamh) pam_end(pamh,0);
     if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &pamh))
+    {
         pamh=NULL;
+        return AUTH_FAIL;
+    }
     else
     {
+	int ret;
         user_pass[0]=user;user_pass[1]=pass;
-        pam_authenticate(pamh,PAM_SILENT);
-        user_pass[0]=0;user_pass[1]=0;
+        ret=pam_authenticate(pamh,PAM_SILENT);
+	user_pass[0]=0;user_pass[1]=0;
+	if(ret!=PAM_SUCCESS)
+            return AUTH_FAIL;
+	//ret=pam_setcred(pamh, PAM_ESTABLISH_CRED);
     }
 #endif
+    *ppw = pw;
     return AUTH_SUCCESS;
 }
 
@@ -502,7 +515,7 @@ void setup_pam_session(struct passwd *pw,char *session_name)
     sprintf(x, "tty%d", tty);
     pam_set_item(pamh, PAM_TTY, x);
 #ifdef PAM_XDISPLAY
-	pam_set_item( pamh, PAM_XDISPLAY, getenv("DISPLAY") );
+    pam_set_item( pamh, PAM_XDISPLAY, getenv("DISPLAY") );
 #endif
 
     if(session_name && session_name[0])
@@ -514,7 +527,7 @@ void setup_pam_session(struct passwd *pw,char *session_name)
     }
     err = pam_open_session(pamh, 0); /* FIXME pam session failed */
     if( err != PAM_SUCCESS )
-        log_print( "pam open session error \"%s\"\n", pam_strerror(pamh, err) );
+        log_print( "pam open session error \"%s\"\n", pam_strerror(pamh, err));
 }
 
 void close_pam_session(void)
@@ -522,6 +535,7 @@ void close_pam_session(void)
     int err;
     if( !pamh ) return;
     err = pam_close_session(pamh, 0);
+    //err=pam_setcred(pamh, PAM_DELETE_CRED);
     pam_end(pamh, err);
     pamh = NULL;
 }
@@ -666,6 +680,7 @@ static void on_xserver_stop(GPid pid, gint status, gpointer data)
     //log_print("xserver stop, restart. return status %x\n",status);
     stop_pid(server);
     server = -1;
+    server_watch=0;
     lxdm_restart_self();
 }
 
@@ -705,7 +720,7 @@ void startx(void)
     char *arg;
     char **args;
 
-    if( !getenv("DISPLAY") )
+    if(!getenv("DISPLAY"))
         putenv("DISPLAY=:0");
 
 #ifndef DISABLE_XAUTH
@@ -753,6 +768,7 @@ void exit_cb(void)
     if(server_watch>0)
     {
         g_source_remove(server_watch);
+        server_watch=0;
     }
     if( server > 0 )
     {
@@ -871,6 +887,8 @@ static void on_session_stop(GPid pid, gint status, gpointer data)
     }
     ui_prepare();
     g_spawn_command_line_async("/etc/lxdm/PostLogout",NULL);
+    
+    child_watch=0;
 }
 
 static void replace_env(char** env, const char* name, const char* new_val)
@@ -1051,7 +1069,10 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
         g_free(session);
     if(alloc_lang)
         g_free(lang);
-    g_child_watch_add(pid, on_session_stop, 0);
+    child_watch=g_child_watch_add(pid, on_session_stop, 0);
+
+    printf("xserver %d\n",server_watch);
+    printf("session %d\n",child_watch);
 }
 
 void lxdm_do_reboot(void)
