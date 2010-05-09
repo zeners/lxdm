@@ -1,15 +1,15 @@
 # Japanese translations for PACKAGE package
 # PACKAGE パッケージに対する英訳.
-# Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2009, 2010 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Hironao Komatsu <hironao@users.sourceforge.net>, 2009.
+# Hironao Komatsu <hironao@users.sourceforge.net>, 2009, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: lxdm 0.1\n"
+"Project-Id-Version: lxdm 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 16:42+0200\n"
-"PO-Revision-Date: 2009-10-24 14:42+0900\n"
+"POT-Creation-Date: 2010-05-05 15:08+0900\n"
+"PO-Revision-Date: 2010-05-05 15:09+0900\n"
 "Last-Translator: Hironao Komatsu <hironao@users.sourceforge.net>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgstr "ユーザ:"
 
 #: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
-msgstr ""
+msgstr "未指定"
 
 #: ../src/greeter.c:100
 msgid "Password:"
@@ -55,13 +55,4 @@ msgstr "シャットダウン(_S)"
 
 #: ../src/lang.c:116
 msgid "More ..."
-msgstr ""
-
-#~ msgid "US English"
-#~ msgstr "英語(US)"
-
-#~ msgid "Simpllified Chinese"
-#~ msgstr "簡体字中国語"
-
-#~ msgid "Traditional Chinese"
-#~ msgstr "繁体字中国語"
+msgstr "その他 ..."
