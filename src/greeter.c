@@ -754,7 +754,7 @@ int main(int arc, char *arg[])
     p=gtk_settings_get_default();
     if(p)
     {
-        putenv("GTK_IM_MODULE=gtk-im-context-simple");
+        setenv("GTK_IM_MODULE","gtk-im-context-simple",1);
         gtk_settings_set_string_property(p,"gtk-im-module","gtk-im-context-simple",0);
         gtk_settings_set_long_property(p,"gtk-show-input-method-menu",0,0);
     }
