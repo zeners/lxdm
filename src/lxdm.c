@@ -342,7 +342,7 @@ void create_server_auth(void)
         mkdir("/var/run/lxdm",0700);
         authfile = g_strdup("/var/run/lxdm/lxdm.auth");
     }
-    setenv("XAUTHORITY",authfile,0);
+    setenv("XAUTHORITY",authfile,1);
     remove(authfile);
 #if HAVE_LIBXAU
     FILE *fp=fopen(authfile,"wb");
@@ -721,7 +721,7 @@ void startx(void)
     char **args;
 
     if(!getenv("DISPLAY"))
-        putenv("DISPLAY=:0");
+        setenv("DISPLAY",":0",1);
 
 #ifndef DISABLE_XAUTH
     create_server_auth();
@@ -1070,9 +1070,6 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
     if(alloc_lang)
         g_free(lang);
     child_watch=g_child_watch_add(pid, on_session_stop, 0);
-
-    printf("xserver %d\n",server_watch);
-    printf("session %d\n",child_watch);
 }
 
 void lxdm_do_reboot(void)
