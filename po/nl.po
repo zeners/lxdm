@@ -57,7 +57,7 @@ msgstr "_Afsluiten"
 
 #: ../src/lang.c:116
 msgid "More ..."
-msgstr ""
+msgstr "Meer ..."
 
 #~ msgid "US English"
 #~ msgstr "Engels (US)"
