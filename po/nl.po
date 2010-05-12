@@ -3,12 +3,12 @@
 # Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Vincent Van Houtte <vvh@synergylaw.be>, 2009.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 16:42+0200\n"
+"POT-Creation-Date: 2010-05-12 08:34+0000\n"
 "PO-Revision-Date: 2010-02-03 01:25+0200\n"
 "Last-Translator: Horatio <hosoka@hotmail.com>\n"
 "Language-Team: Dutch\n"
@@ -31,7 +31,7 @@ msgstr "Toetsenbord layout:"
 msgid "Language:"
 msgstr "Taal:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:130 ../src/greeter.c:171
 msgid "User:"
 msgstr "Gebruiker:"
 
@@ -39,19 +39,19 @@ msgstr "Gebruiker:"
 msgid "Unspecified"
 msgstr "Geen specificatie"
 
-#: ../src/greeter.c:100
+#: ../src/greeter.c:101
 msgid "Password:"
-msgstr "Paswoord:"
+msgstr "Wachtwoord:"
 
-#: ../src/greeter.c:222 ../src/lang.c:102
+#: ../src/greeter.c:223 ../src/lang.c:102
 msgid "Default"
 msgstr "Standaard"
 
-#: ../src/greeter.c:439
+#: ../src/greeter.c:440
 msgid "_Reboot"
 msgstr "_Herstarten"
 
-#: ../src/greeter.c:443
+#: ../src/greeter.c:444
 msgid "_Shutdown"
 msgstr "_Afsluiten"
 
