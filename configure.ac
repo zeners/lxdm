@@ -84,6 +84,15 @@ else
  AC_CHECK_LIB([Xau],[XauWriteAuth])
 fi
 
+AC_ARG_ENABLE(debug,
+    AC_HELP_STRING([--enable-debug],[enable detailed debug]),
+    [enable_debug=$enablevar],
+    [enable_debug=yes]
+)
+if test "x$enable_debug" = "x$yes" ; then
+	CFLAGS="$CFLAGS -DLXDM_DEBUG"
+fi
+
 GETTEXT_PACKAGE=lxdm
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])

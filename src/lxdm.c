@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include <ctype.h>
 #include <unistd.h>
 #include <stdarg.h>
@@ -238,6 +239,12 @@ void log_print(char *fmt, ...)
     va_end(ap);
     fclose(log);
 }
+
+#ifdef LXDM_DEBUG
+#define dbg_printf log_print
+#else
+#define dbg_printf(fmt,...)
+#endif
 
 GSList *do_scan_xsessions(void)
 {
@@ -445,17 +452,32 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
     char *enc;
 #endif
     if( !user )
+    {
+        dbg_printf("user==NULL\n");
         return AUTH_ERROR;
+    }
     if( !user[0] )
+    {
+        dbg_printf("user[0]==0\n");
         return AUTH_BAD_USER;
+    }
     pw = getpwnam(user);
     endpwent();
     if( !pw )
+    {
+        dbg_printf("user %s not found\n",user);
         return AUTH_BAD_USER;
+    }
     if( !pass )
     {
         *ppw = pw;
+        dbg_printf("user %s auth ok\n",user);
         return AUTH_SUCCESS;
+    }
+    if(strstr(pw->pw_shell, "nologin"))
+    {
+        dbg_printf("user %s have nologin shell\n");
+        return AUTH_PRIV;
     }
 #if !HAVE_LIBPAM
     sp = getspnam(user);
@@ -468,21 +490,27 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         if( !pass[0] )
         {
             *ppw = pw;
+            dbg_printf("user %s auth with no password ok\n",user);
             return AUTH_SUCCESS;
         }
         else
+        {
+            dbg_printf("user %s password not match\n");
             return AUTH_FAIL;
+        }
     }
     enc = crypt(pass, real);
     if( strcmp(real, enc) )
+    {
+        dbg_printf("user %s password not match\n");
         return AUTH_FAIL;
-    if( strstr(pw->pw_shell, "nologin") )
-        return AUTH_PRIV;
+    }
 #else
     if(pamh) pam_end(pamh,0);
     if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &pamh))
     {
         pamh=NULL;
+        dbg_printf("user %s start pam fail\n",user);
         return AUTH_FAIL;
     }
     else
@@ -492,11 +520,15 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         ret=pam_authenticate(pamh,PAM_SILENT);
 	user_pass[0]=0;user_pass[1]=0;
 	if(ret!=PAM_SUCCESS)
+        {
+            dbg_printf("user %s auth fail with %d\n",user,ret);
             return AUTH_FAIL;
+        }
 	//ret=pam_setcred(pamh, PAM_ESTABLISH_CRED);
     }
 #endif
     *ppw = pw;
+    dbg_printf("user %s auth ok\n",pw->pw_name);
     return AUTH_SUCCESS;
 }
 
@@ -995,8 +1027,11 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
         if(alloc_lang)
             g_free(lang);
         ui_prepare();
+        dbg_printf("get session %s info fail\n",session);
     	return;
     }
+
+    dbg_printf("login user %s session %s lang %s\n",pw->pw_name,session_exec,lang);
 
     if( pw->pw_shell[0] == '\0' )
     {
