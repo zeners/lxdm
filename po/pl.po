@@ -3,12 +3,12 @@
 # Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Grzegorz Gibas <amigib@gmail.com>, 2009.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 16:42+0200\n"
+"POT-Creation-Date: 2010-05-13 08:33+0000\n"
 "PO-Revision-Date: 2010-01-13 22:56+0200\n"
 "Last-Translator: Artur Kruszewski <mazdac@gmail.com>\n"
 "Language-Team: Polish\n"
@@ -16,9 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pl\n"
-"Language: pl\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Pootle 2.0.0\n"
 
 #: ../data/lxdm.glade.h:1
@@ -33,7 +31,7 @@ msgstr "Układ klawiatury:"
 msgid "Language:"
 msgstr "Język:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:130 ../src/greeter.c:171
 msgid "User:"
 msgstr "Użytkownik:"
 
@@ -41,25 +39,25 @@ msgstr "Użytkownik:"
 msgid "Unspecified"
 msgstr "Niezdefiniowany"
 
-#: ../src/greeter.c:100
+#: ../src/greeter.c:101
 msgid "Password:"
 msgstr "Hasło:"
 
-#: ../src/greeter.c:222 ../src/lang.c:102
+#: ../src/greeter.c:223 ../src/lang.c:102
 msgid "Default"
 msgstr "Domyślny"
 
-#: ../src/greeter.c:439
+#: ../src/greeter.c:440
 msgid "_Reboot"
 msgstr "_Uruchom ponownie"
 
-#: ../src/greeter.c:443
+#: ../src/greeter.c:444
 msgid "_Shutdown"
 msgstr "_Wyłącz komputer"
 
 #: ../src/lang.c:116
 msgid "More ..."
-msgstr "Więcej ..."
+msgstr "Więcej..."
 
 #~ msgid "US English"
 #~ msgstr "Angielski US"
