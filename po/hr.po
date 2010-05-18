@@ -1,57 +1,57 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Ivica Kolić <ikoli@yahoo.com>, 2010.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 16:42+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-05-13 08:33+0000\n"
+"PO-Revision-Date: 2010-05-18 21:16+0200\n"
+"Last-Translator: Ivica Kolić <ikoli@yahoo.com>\n"
+"Language-Team: Croatian (hr) <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
-msgstr ""
+msgstr "Radna površina"
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
-msgstr ""
+msgstr "Raspored tipkovnice"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
-msgstr ""
+msgstr "Jezik"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:130 ../src/greeter.c:171
 msgid "User:"
-msgstr ""
+msgstr "Korisnik"
 
 #: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
-msgstr ""
+msgstr "Neodređeno"
 
-#: ../src/greeter.c:100
+#: ../src/greeter.c:101
 msgid "Password:"
-msgstr ""
+msgstr "Lozinka"
 
-#: ../src/greeter.c:222 ../src/lang.c:102
+#: ../src/greeter.c:223 ../src/lang.c:102
 msgid "Default"
-msgstr ""
+msgstr "Zadano"
 
-#: ../src/greeter.c:439
+#: ../src/greeter.c:440
 msgid "_Reboot"
-msgstr ""
+msgstr "_Ponovo pokreni"
 
-#: ../src/greeter.c:443
+#: ../src/greeter.c:444
 msgid "_Shutdown"
-msgstr ""
+msgstr "_Isključi"
 
 #: ../src/lang.c:116
 msgid "More ..."
-msgstr ""
+msgstr "Više"
