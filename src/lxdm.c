@@ -313,6 +313,22 @@ void free_xsessions(GSList *l)
     g_slist_free(l);
 }
 
+static void replace_env(char** env, const char* name, const char* new_val)
+{
+    register char** penv;
+    for(penv = env; *penv; ++penv)
+    {
+        if(g_str_has_prefix(*penv, name))
+        {
+            g_free(*penv);
+            *penv = g_strconcat(name, new_val, NULL);
+            return;
+        }
+    }
+    *penv = g_strconcat(name, new_val, NULL);
+    *(penv + 1) = NULL;
+}
+
 #ifndef DISABLE_XAUTH
 void create_server_auth(void)
 {
@@ -384,7 +400,7 @@ void create_server_auth(void)
     g_free(authfile);
 }
 
-void create_client_auth(char *home)
+void create_client_auth(char *home,char **env)
 {
     char *authfile;
 
@@ -406,6 +422,7 @@ void create_client_auth(char *home)
     system(tmp);
     g_free(tmp);
 #endif
+    replace_env(env,"XAUTHORITY=",authfile);
     g_free(authfile);
 }
 #endif
@@ -618,7 +635,7 @@ void switch_user(struct passwd *pw, char *run, char **env)
         close(fd);
     }
 #ifndef DISABLE_XAUTH
-    create_client_auth(pw->pw_dir);
+    create_client_auth(pw->pw_dir,env);
 #endif
     g_spawn_command_line_async ("/etc/lxdm/PostLogin",NULL);
     execle("/etc/lxdm/Xsession", "/etc/lxdm/Xsession", run, NULL, env);
@@ -923,22 +940,6 @@ static void on_session_stop(GPid pid, gint status, gpointer data)
     child_watch=0;
 }
 
-static void replace_env(char** env, const char* name, const char* new_val)
-{
-    register char** penv;
-    for(penv = env; *penv; ++penv)
-    {
-        if(g_str_has_prefix(*penv, name))
-        {
-            g_free(*penv);
-            *penv = g_strconcat(name, new_val, NULL);
-            return;
-        }
-    }
-    *penv = g_strconcat(name, new_val, NULL);
-    *(penv + 1) = NULL;
-}
-
 gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 {
 	char *name=NULL,*exec=NULL;
@@ -1065,7 +1066,8 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
     if( child == 0 )
     {
         char** env, *path;
-        int n_env = g_strv_length(environ), i;
+        int n_env,i;
+        n_env  = g_strv_length(environ);
         /* copy all environment variables and override some of them */
         env = g_new(char*, n_env + 1 + 13);
         for( i = 0; i < n_env; ++i )
