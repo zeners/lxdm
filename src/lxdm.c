@@ -804,6 +804,13 @@ void startx(void)
 
 void exit_cb(void)
 {
+    if(child_watch>0)
+    {
+/* remove on_session_stop callback, so it does not get triggered when
+ * the session is still alive and gets killed below 
+ */
+        g_source_remove(child_watch);
+    }
     if( child > 0 )
     {
         killpg(child, SIGHUP);
