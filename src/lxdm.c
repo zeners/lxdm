@@ -47,8 +47,6 @@
 #include <time.h>
 #include <sys/wait.h>
 #include <glib.h>
-#include <gdk/gdk.h>
-#include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 
@@ -78,6 +76,7 @@
 GKeyFile *config;
 static pid_t server;
 static guint server_watch;
+static Display *dpy;
 #if HAVE_LIBCK_CONNECTOR
 static CkConnector *ckc;
 #endif
@@ -735,7 +734,6 @@ static void on_xserver_stop(GPid pid, gint status, gpointer data)
 
 static void set_numlock(void)
 {
-	Display *dpy;
 	XkbDescPtr xkb;
 	unsigned int mask;
 	int on;
@@ -743,8 +741,6 @@ static void set_numlock(void)
 	if(!g_key_file_has_key(config,"base","numlock",NULL))
 		return;
 	on=g_key_file_get_integer(config,"base","numlock",0);
-	dpy=gdk_x11_get_default_xdisplay();
-	if(!dpy) return;
 	xkb = XkbGetKeyboard( dpy, XkbAllComponentsMask, XkbUseCoreKbd );
 	if(!xkb) return;
 	if(!xkb->names)
@@ -846,9 +842,8 @@ int CatchErrors(Display *dpy, XErrorEvent *ev)
 void get_my_xid(void)
 {
     Window dummy, parent;
-    Display *Dpy = gdk_x11_get_default_xdisplay();
-    Window Root = gdk_x11_get_default_root_xwindow();
-    XQueryTree(Dpy, Root, &dummy, &parent, &my_xid, &my_xid_n);
+    Window Root = DefaultRootWindow(dpy);
+    XQueryTree(dpy, Root, &dummy, &parent, &my_xid, &my_xid_n);
 }
 
 int is_my_id(XID id)
@@ -873,22 +868,21 @@ static void stop_clients(void)
     Window *children;
     unsigned int nchildren;
     unsigned int i;
-    Display *Dpy = gdk_x11_get_default_xdisplay();
-    Window Root = gdk_x11_get_default_root_xwindow();
+    Window Root = DefaultRootWindow(dpy);
 
-    XSync(Dpy, 0);
+    XSync(dpy, 0);
     XSetErrorHandler(CatchErrors);
 
     nchildren = 0;
-    XQueryTree(Dpy, Root, &dummy, &parent, &children, &nchildren);
+    XQueryTree(dpy, Root, &dummy, &parent, &children, &nchildren);
 
     for( i = 0; i < nchildren; i++ )
         if( children[i] && !is_my_id(children[i]) )
-            XKillClient(Dpy, children[i]);
+            XKillClient(dpy, children[i]);
 
     //printf("kill %d\n",i);
     XFree( (char *)children );
-    XSync(Dpy, 0);
+    XSync(dpy, 0);
     XSetErrorHandler(NULL);
 }
 
@@ -1257,7 +1251,7 @@ int main(int arc, char *arg[])
 
     for( tmp = 0; tmp < 200; tmp++ )
     {
-        if( gdk_init_check(0, 0) )
+        if((dpy=XOpenDisplay(0))!=NULL)
             break;
         g_usleep(50 * 1000);
     }

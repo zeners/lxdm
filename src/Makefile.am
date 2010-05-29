@@ -3,7 +3,7 @@ NULL =
 sbin_PROGRAMS = lxdm-binary
 
 lxdm_binary_CFLAGS = \
-	$(GTK_CFLAGS) \
+	$(GLIB_CFLAGS) \
 	-DCONFIG_FILE=\"@sysconfdir@/@PACKAGE@/@PACKAGE@.conf\" \
 	-DXSESSIONS_DIR=\"@datarootdir@/xsessions\" \
 	-DLXDM_DATA_DIR=@datadir@/@PACKAGE@ \
@@ -13,8 +13,8 @@ lxdm_binary_CFLAGS = \
 	$(NULL)
 
 lxdm_binary_LDADD = \
+	$(GLIB_LIBS) \
 	$(XLIB_LIBS) \
-	$(GTK_LIBS) \
 	$(CONSOLEKIT_LIBS) \
 	$(NULL)
 
