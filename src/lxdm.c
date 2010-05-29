@@ -27,14 +27,12 @@
 #ifndef HAVE_LIBPAM
 #define HAVE_LIBPAM 0
 #endif
-#ifndef HAVE_LIBXMU
-#define HAVE_LIBXMU 0
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <setjmp.h>
 #include <ctype.h>
 #include <unistd.h>
 #include <stdarg.h>
@@ -76,7 +74,6 @@
 
 GKeyFile *config;
 static pid_t server;
-static guint server_watch;
 static Display *dpy;
 #if HAVE_LIBCK_CONNECTOR
 static CkConnector *ckc;
@@ -85,8 +82,6 @@ static Window *my_xid;
 static unsigned int my_xid_n;
 static char *self;
 static pid_t child;
-static guint child_watch;
-static int reason;
 static int old_tty=1,tty = 7;
 
 #ifndef DISABLE_XAUTH
@@ -216,16 +211,9 @@ void lxdm_get_tty(void)
         set_active_vt(tty);
 }
 
-void lxdm_restart_self(void)
-{
-    reason = 0;
-    exit(0);
-}
-
 void lxdm_quit_self(int code)
 {
-    reason = (code?code:255);
-    exit(0);
+    exit(code);
 }
 
 void log_print(char *fmt, ...)
@@ -724,16 +712,116 @@ void stop_pid(int pid)
     while( waitpid(-1, 0, WNOHANG) > 0 ) ;
 }
 
-static void on_xserver_stop(GPid pid, gint status, gpointer data)
+static int CatchErrors(Display *dpy, XErrorEvent *ev)
 {
-    //log_print("xserver stop, restart. return status %x\n",status);
-    stop_pid(server);
-    server = -1;
-    server_watch=0;
-    lxdm_restart_self();
+	return 0;
 }
 
-static void set_numlock(void)
+static jmp_buf XErrEnv;
+static int CatchIOErrors(Display *dpy)
+{
+	close(ConnectionNumber(dpy));
+	longjmp(XErrEnv,1);
+	return 0;
+}
+
+static int is_my_id(XID id)
+{
+    int i;
+    if( !my_xid )
+        return 0;
+    for( i = 0; i < my_xid_n; i++ )
+        if( id == my_xid[i] ) return 1;
+    return 0;
+}
+
+static void free_my_xid(void)
+{
+    XFree(my_xid);
+    my_xid = 0;
+}
+
+static void stop_clients(void)
+{
+    Window dummy, parent;
+    Window *children;
+    unsigned int nchildren;
+    unsigned int i;
+    Window Root;
+    if(!dpy) return;
+
+
+    XSetErrorHandler(CatchErrors);
+    XSetIOErrorHandler(CatchIOErrors);
+
+    Root = DefaultRootWindow(dpy);
+
+    nchildren = 0;
+    if(!setjmp(XErrEnv))
+        XQueryTree(dpy, Root, &dummy, &parent, &children, &nchildren);
+    else
+        goto out;
+    for( i = 0; i < nchildren; i++ )
+    {
+        if( children[i] && !is_my_id(children[i]) )
+	{
+            if(!setjmp(XErrEnv))
+                XKillClient(dpy, children[i]);
+	}
+    }
+    XFree( (char *)children );
+    if(!setjmp(XErrEnv))
+        XSync(dpy, 0);
+out:
+    XSetErrorHandler(NULL);
+    XSetIOErrorHandler(NULL);
+}
+
+static void on_xserver_stop(void *data,int pid, int status)
+{
+	//log_print("xserver stop, restart. return status %x\n",status);
+
+	stop_pid(server);
+	server = -1;
+
+	if(child>0)
+		lxcom_del_child_watch(child);
+	if( child > 0 )
+	{
+		killpg(child, SIGHUP);
+		stop_pid(child);
+		child = -1;
+	}
+#if HAVE_LIBPAM
+	close_pam_session();
+#endif
+#if HAVE_LIBCK_CONNECTOR
+	if( ckc != NULL )
+	{
+		//DBusError error;
+		//dbus_error_init(&error);
+		//ck_connector_close_session(ckc, &error);
+		ck_connector_unref(ckc);
+		ckc=NULL;
+		unsetenv("XDG_SESSION_COOKIE");
+	}
+#endif
+
+	free_my_xid(); 
+	XSetErrorHandler(CatchErrors);
+	XSetIOErrorHandler(CatchIOErrors);
+	if(dpy && !setjmp(XErrEnv))
+		XCloseDisplay(dpy);
+	dpy=NULL;
+	XSetErrorHandler(NULL);
+	XSetIOErrorHandler(NULL);
+
+	lxdm_startx();
+	ui_drop();
+	ui_prepare();
+}
+
+static void set_numlock(Display *dpy)
 {
 	XkbDescPtr xkb;
 	unsigned int mask;
@@ -761,10 +849,11 @@ static void set_numlock(void)
 	XkbLockModifiers ( dpy, XkbUseCoreKbd, mask, (on?mask:0));
 }
 
-void startx(void)
+void lxdm_startx(void)
 {
     char *arg;
     char **args;
+    int i;
 
     if(!getenv("DISPLAY"))
         setenv("DISPLAY",":0",1);
@@ -796,20 +885,24 @@ void startx(void)
         break;
     }
     g_strfreev(args);
-    server_watch=g_child_watch_add(server, on_xserver_stop, 0);
+    lxcom_add_child_watch(server, on_xserver_stop, 0);
+
+    for( i = 0; i < 200; i++ )
+    {
+        if((dpy=XOpenDisplay(0))!=NULL)
+            break;
+        g_usleep(50 * 1000);
+    }
+    if( i >= 200 )
+        exit(EXIT_FAILURE);
+    set_numlock(dpy);
 }
 
 void exit_cb(void)
 {
-    if(child_watch>0)
-    {
-/* remove on_session_stop callback, so it does not get triggered when
- * the session is still alive and gets killed below 
- */
-        g_source_remove(child_watch);
-    }
     if( child > 0 )
     {
+        lxcom_del_child_watch(child);
         killpg(child, SIGHUP);
         stop_pid(child);
         child = -1;
@@ -818,26 +911,14 @@ void exit_cb(void)
 #if HAVE_LIBPAM
     close_pam_session();
 #endif
-    if(server_watch>0)
-    {
-        g_source_remove(server_watch);
-        server_watch=0;
-    }
     if( server > 0 )
     {
+        lxcom_del_child_watch(server);
         stop_pid(server);
         server = -1;
     }
     put_lock();
-    if( reason == 0 )
-        execlp(self, self, NULL);
-    if(reason!=1)
-        set_active_vt(old_tty);
-}
-
-int CatchErrors(Display *dpy, XErrorEvent *ev)
-{
-    return 0;
+    set_active_vt(old_tty);
 }
 
 void get_my_xid(void)
@@ -845,46 +926,6 @@ void get_my_xid(void)
     Window dummy, parent;
     Window Root = DefaultRootWindow(dpy);
     XQueryTree(dpy, Root, &dummy, &parent, &my_xid, &my_xid_n);
-}
-
-int is_my_id(XID id)
-{
-    int i;
-    if( !my_xid )
-        return 0;
-    for( i = 0; i < my_xid_n; i++ )
-        if( id == my_xid[i] ) return 1;
-    return 0;
-}
-
-void free_my_xid(void)
-{
-    XFree(my_xid);
-    my_xid = 0;
-}
-
-static void stop_clients(void)
-{
-    Window dummy, parent;
-    Window *children;
-    unsigned int nchildren;
-    unsigned int i;
-    Window Root = DefaultRootWindow(dpy);
-
-    XSync(dpy, 0);
-    XSetErrorHandler(CatchErrors);
-
-    nchildren = 0;
-    XQueryTree(dpy, Root, &dummy, &parent, &children, &nchildren);
-
-    for( i = 0; i < nchildren; i++ )
-        if( children[i] && !is_my_id(children[i]) )
-            XKillClient(dpy, children[i]);
-
-    //printf("kill %d\n",i);
-    XFree( (char *)children );
-    XSync(dpy, 0);
-    XSetErrorHandler(NULL);
 }
 
 static int get_run_level(void)
@@ -895,14 +936,18 @@ static int get_run_level(void)
 	setutent();
 	tmp.ut_type=RUN_LVL;
 	ut=getutid(&tmp);
-	if(!ut) return 0;
+	if(!ut)
+	{
+		endutent();
+		return 0;
+	}
 	res=ut->ut_pid & 0xff;
 	endutent();
 	//log_print("runlevel %c\n",res);
 	return res;
 }
 
-static void on_session_stop(GPid pid, gint status, gpointer data)
+static void on_session_stop(void *data,int pid, int status)
 {
     killpg(pid, SIGHUP);
     stop_pid(pid);
@@ -924,6 +969,8 @@ static void on_session_stop(GPid pid, gint status, gpointer data)
         DBusError error;
         dbus_error_init(&error);
         ck_connector_close_session(ckc, &error);
+        ck_connector_unref(ckc);
+        ckc=NULL;
         unsetenv("XDG_SESSION_COOKIE");
     }
 #endif
@@ -938,8 +985,6 @@ static void on_session_stop(GPid pid, gint status, gpointer data)
     }
     ui_prepare();
     g_spawn_command_line_async("/etc/lxdm/PostLogout",NULL);
-    
-    child_watch=0;
 }
 
 gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
@@ -1046,6 +1091,8 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
     setup_pam_session(pw,session_name);
 #endif
 #if HAVE_LIBCK_CONNECTOR
+    if(!ckc)
+        ckc = ck_connector_new();
     if( ckc != NULL )
     {
         DBusError error;
@@ -1108,7 +1155,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
         g_free(session);
     if(alloc_lang)
         g_free(lang);
-    child_watch=g_child_watch_add(pid, on_session_stop, 0);
+    lxcom_add_child_watch(pid, on_session_stop, 0);
 }
 
 void lxdm_do_reboot(void)
@@ -1128,7 +1175,6 @@ void lxdm_do_shutdown(void)
     cmd = g_key_file_get_string(config, "cmd", "shutdown", 0);
     if( !cmd ) cmd = g_strdup("shutdown -h now");
     g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
-    reason = 1;
     g_spawn_command_line_async(cmd,0);
     g_free(cmd);
     lxdm_quit_self(0);
@@ -1219,16 +1265,8 @@ void set_signal(void)
 	signal(SIGSEGV, sigsegv_handler);
 }
 
-#if HAVE_LIBCK_CONNECTOR
-void init_ck(void)
-{
-    ckc = ck_connector_new();
-}
-#endif
-
 int main(int arc, char *arg[])
 {
-    int tmp;
     int daemonmode = 0;
     int i;
 
@@ -1258,27 +1296,11 @@ int main(int arc, char *arg[])
 
     set_signal();
     lxdm_get_tty();
-    startx();
-
-    for( tmp = 0; tmp < 200; tmp++ )
-    {
-        if((dpy=XOpenDisplay(0))!=NULL)
-            break;
-        g_usleep(50 * 1000);
-    }
-    if( tmp >= 200 )
-        exit(EXIT_FAILURE);
-    set_numlock();
-
-#if HAVE_LIBCK_CONNECTOR
-    init_ck();
-#endif
+    lxdm_startx();
 
     lxdm_do_auto_login();
 
     ui_main();
-
-    lxdm_restart_self();
 
     return 0;
 }

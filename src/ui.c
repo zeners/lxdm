@@ -32,9 +32,9 @@
 #include <sys/wait.h>
 
 #include "lxdm.h"
+#include "lxcom.h"
 
 static pid_t greeter = -1;
-static guint greeter_watch = 0;
 static int greeter_pipe[2];
 static GIOChannel *greeter_io;
 static guint io_id;
@@ -51,11 +51,19 @@ void ui_drop(void)
         greeter_io = NULL;
         close(greeter_pipe[1]);
         close(greeter_pipe[0]);
-
-        g_source_remove(greeter_watch);
-        greeter_watch=0;
+	lxcom_del_child_watch(greeter);
         waitpid(greeter, 0, 0) ;
         greeter=-1;
+    }
+    if(io_id>0)
+    {
+        g_source_remove(io_id);
+        io_id = 0;
+        g_io_channel_unref(greeter_io);
+        greeter_io = NULL;
+        close(greeter_pipe[1]);
+        close(greeter_pipe[0]);
+
     }
 }
 
@@ -133,12 +141,11 @@ static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpo
     return TRUE;
 }
 
-static void on_greeter_exit(GPid pid, gint status, gpointer data)
+static void on_greeter_exit(void *data,int pid, int status)
 {
     if( pid != greeter )
         return;
     greeter = -1;
-    greeter_watch=0;
 }
 
 void ui_prepare(void)
@@ -171,7 +178,7 @@ void ui_prepare(void)
             greeter_io = g_io_channel_unix_new(greeter_pipe[1]);
             io_id = g_io_add_watch(greeter_io, G_IO_IN | G_IO_HUP | G_IO_ERR,
                                    on_greeter_input, NULL);
-            greeter_watch = g_child_watch_add(greeter, on_greeter_exit, 0);
+            lxcom_add_child_watch(greeter, on_greeter_exit, 0);
             return;
         }
     }
@@ -192,7 +199,7 @@ void ui_clean(void)
 	if(greeter>0)
 	{
 		extern void stop_pid(int);
-		g_source_remove(greeter_watch);
+		lxcom_del_child_watch(greeter);
 		stop_pid(greeter);
 		greeter=-1;
 	}

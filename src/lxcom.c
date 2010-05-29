@@ -346,7 +346,7 @@ int lxcom_set_signal_handler(int sig,void (*func)(void *,int),void *data)
 
 	action.sa_handler = sig_handler;
 	sigemptyset (&action.sa_mask);
-	action.sa_flags = SA_NOCLDSTOP;
+	action.sa_flags = 0;
 	sigaction (sig, &action, NULL);
 
 	return 0;

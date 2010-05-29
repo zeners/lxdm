@@ -35,6 +35,7 @@ void lxdm_do_login(struct passwd *pw,char *session,char *lang);
 void lxdm_do_reboot(void);
 void lxdm_do_shutdown(void);
 int lxdm_cur_session(void);
+void lxdm_startx(void);
 
 enum AuthResult
 {
