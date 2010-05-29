@@ -23,7 +23,7 @@ lxdm_binary_SOURCES = \
 	ui.c \
 	$(NULL)
 
-libexec_PROGRAMS = lxdm-greeter-gtk
+libexec_PROGRAMS = lxdm-greeter-gtk lxdm-greeter-gdk
 
 lxdm_greeter_gtk_CFLAGS = \
 	$(GTK_CFLAGS) \
@@ -47,3 +47,22 @@ lxdm_greeter_gtk_SOURCES = \
 	gdm/gdm-languages.c gdm/gdm-languages.h \
 	gdm/locarchive.h \
 	$(NULL)
+
+lxdm_greeter_gdk_CFLAGS = \
+	$(GDK_CFLAGS) \
+	-DCONFIG_FILE=\"@sysconfdir@/@PACKAGE@/@PACKAGE@.conf\" \
+	-DXSESSIONS_DIR=\"@datarootdir@/xsessions\" \
+	-DLXDM_DATA_DIR=\"@datadir@/@PACKAGE@\" \
+	-DPACKAGE_LOCALE_DIR=\"@localedir@\" \
+	-DGNOMELOCALEDIR=\"@localedir@\" \
+	-DLIBLOCALEDIR=\"@prefix@/lib/locale\" \
+	-Werror-implicit-function-declaration
+	$(NULL)
+
+lxdm_greeter_gdk_LDADD = \
+	$(XLIB_LIBS) \
+	$(GDK_LIBS) \
+	$(NULL)
+
+lxdm_greeter_gdk_SOURCES = \
+	greeter-gdk.c
