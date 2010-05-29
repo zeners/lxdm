@@ -19,8 +19,7 @@ lxdm_binary_LDADD = \
 	$(NULL)
 
 lxdm_binary_SOURCES = \
-	lxdm.c lxdm.h \
-	ui.c \
+	lxdm.c lxdm.h ui.c lxcom.c lxcom.h\
 	$(NULL)
 
 libexec_PROGRAMS = lxdm-greeter-gtk lxdm-greeter-gdk

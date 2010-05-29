@@ -72,6 +72,7 @@
 #endif
 
 #include "lxdm.h"
+#include "lxcom.h"
 
 GKeyFile *config;
 static pid_t server;
@@ -1178,15 +1179,10 @@ static void log_sigsegv(void)
 	close(fd);
 }
 
-static void sig_handler(int sig)
+static void sigsegv_handler(int sig)
 {
-    log_print("catch signal %d\n", sig);
     switch( sig )
     {
-    case SIGTERM:
-    case SIGINT:
-        lxdm_quit_self(0);
-        break;
     case SIGSEGV:
         log_sigsegv();
 	lxdm_quit_self(0);
@@ -1196,17 +1192,31 @@ static void sig_handler(int sig)
     }
 }
 
+static void lxdm_signal_handler(void *data,int sig)
+{
+    switch( sig )
+    {
+    case SIGTERM:
+    case SIGINT:
+        lxdm_quit_self(0);
+        break;
+    default:
+        break;
+    }
+
+}
+
 void set_signal(void)
 {
-    signal(SIGQUIT, sig_handler);
-    signal(SIGTERM, sig_handler);
-    signal(SIGKILL, sig_handler);
-    signal(SIGINT, sig_handler);
-    signal(SIGHUP, sig_handler);
-    signal(SIGPIPE, sig_handler);
-    signal(SIGUSR1, sig_handler);
-    signal(SIGALRM, sig_handler);
-    signal(SIGSEGV, sig_handler);
+	lxcom_set_signal_handler(SIGQUIT,lxdm_signal_handler,0);
+	lxcom_set_signal_handler(SIGTERM,lxdm_signal_handler,0);
+	lxcom_set_signal_handler(SIGKILL,lxdm_signal_handler,0);
+	lxcom_set_signal_handler(SIGINT,lxdm_signal_handler,0);
+	lxcom_set_signal_handler(SIGHUP,lxdm_signal_handler,0);
+	lxcom_set_signal_handler(SIGPIPE,lxdm_signal_handler,0);
+	lxcom_set_signal_handler(SIGUSR1,lxdm_signal_handler,0);
+	lxcom_set_signal_handler(SIGALRM,lxdm_signal_handler,0);
+	signal(SIGSEGV, sigsegv_handler);
 }
 
 #if HAVE_LIBCK_CONNECTOR
@@ -1243,6 +1253,7 @@ int main(int arc, char *arg[])
     g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_NONE, NULL);
 
     get_lock();
+    lxcom_init("/tmp/lxdm.sock");
     atexit(exit_cb);
 
     set_signal();
