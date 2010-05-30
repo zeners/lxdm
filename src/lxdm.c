@@ -90,34 +90,34 @@ static Xauth x_auth;
 
 static int get_active_vt(void)
 {
-    int console_fd;
-    struct vt_stat console_state = { 0 };
+	int console_fd;
+	struct vt_stat console_state = { 0 };
 
-    console_fd = open("/dev/console", O_RDONLY | O_NOCTTY);
+	console_fd = open("/dev/console", O_RDONLY | O_NOCTTY);
 
-    if( console_fd < 0 )
-        goto out;
+	if( console_fd < 0 )
+		goto out;
 
-    if( ioctl(console_fd, VT_GETSTATE, &console_state) < 0 )
-        goto out;
+	if( ioctl(console_fd, VT_GETSTATE, &console_state) < 0 )
+		goto out;
 
 out:
-    if( console_fd >= 0 )
-        close(console_fd);
+	if( console_fd >= 0 )
+		close(console_fd);
 
-    return console_state.v_active;
+	return console_state.v_active;
 }
 
 static void set_active_vt(int vt)
 {
-    int fd;
+	int fd;
 
-    fd = open("/dev/console", O_RDWR);
-    if( fd < 0 )
-        fd = 0;
-    ioctl(fd, VT_ACTIVATE, vt);
-    if( fd != 0 )
-        close(fd);
+	fd = open("/dev/console", O_RDWR);
+	if( fd < 0 )
+		fd = 0;
+	ioctl(fd, VT_ACTIVATE, vt);
+	if( fd != 0 )
+		close(fd);
 }
 
 static gboolean plymouth_is_running(void)
@@ -209,19 +209,19 @@ void lxdm_get_tty(void)
 
 void lxdm_quit_self(int code)
 {
-    exit(code);
+	exit(code);
 }
 
 void log_print(char *fmt, ...)
 {
-    FILE *log;
-    va_list ap;
-    log = fopen("/var/log/lxdm.log", "a");
-    if(!log) return;
-    va_start(ap, fmt);
-    vfprintf(log, fmt, ap);
-    va_end(ap);
-    fclose(log);
+	FILE *log;
+	va_list ap;
+	log = fopen("/var/log/lxdm.log", "a");
+	if(!log) return;
+	va_start(ap, fmt);
+	vfprintf(log, fmt, ap);
+	va_end(ap);
+	fclose(log);
 }
 
 #ifdef LXDM_DEBUG
@@ -821,76 +821,76 @@ static void set_numlock(Display *dpy)
 
 void lxdm_startx(void)
 {
-    char *arg;
-    char **args;
-    int i;
-    Display *dpy=NULL;
+	char *arg;
+	char **args;
+	int i;
+	Display *dpy=NULL;
 
-    if(!getenv("DISPLAY"))
-        setenv("DISPLAY",":0",1);
+	if(!getenv("DISPLAY"))
+		setenv("DISPLAY",":0",1);
 
-#ifndef DISABLE_XAUTH
-    create_server_auth();
-#endif
+	#ifndef DISABLE_XAUTH
+	create_server_auth();
+	#endif
 
-    arg = g_key_file_get_string(config, "server", "arg", 0);
-    if( !arg ) arg = g_strdup("/usr/bin/X");
-    args = g_strsplit(arg, " ", -1);
-    g_free(arg);
+	arg = g_key_file_get_string(config, "server", "arg", 0);
+	if( !arg ) arg = g_strdup("/usr/bin/X");
+	args = g_strsplit(arg, " ", -1);
+	g_free(arg);
 
-    server = vfork();
+	server = vfork();
 
-    switch( server )
-    {
-    case 0:
-        execvp(args[0], args);
-        log_print("exec %s fail\n",args[0]);
-        lxdm_quit_self(0);
-        break;
-    case -1:
+	switch( server )
+	{
+	case 0:
+		execvp(args[0], args);
+		log_print("exec %s fail\n",args[0]);
+		lxdm_quit_self(0);
+		break;
+	case -1:
 	/* fatal error, should not restart self */
-        log_print("fork proc fail\n");
-        lxdm_quit_self(0);
-        break;
-    default:
-        break;
-    }
-    g_strfreev(args);
-    lxcom_add_child_watch(server, on_xserver_stop, 0);
+		log_print("fork proc fail\n");
+		lxdm_quit_self(0);
+		break;
+	default:
+		break;
+	}
+	g_strfreev(args);
+	lxcom_add_child_watch(server, on_xserver_stop, 0);
 
-    for( i = 0; i < 200; i++ )
-    {
-        if((dpy=XOpenDisplay(0))!=NULL)
-            break;
-        g_usleep(50 * 1000);
-    }
-    if( i >= 200 )
-        exit(EXIT_FAILURE);
-    set_numlock(dpy);
-    if(!setjmp(XErrEnv)) XCloseDisplay(dpy);
+	for( i = 0; i < 200; i++ )
+	{
+		if((dpy=XOpenDisplay(0))!=NULL)
+			break;
+		g_usleep(50 * 1000);
+	}
+	if( i >= 200 )
+		exit(EXIT_FAILURE);
+	set_numlock(dpy);
+	if(!setjmp(XErrEnv)) XCloseDisplay(dpy);
 }
 
 void exit_cb(void)
 {
-    if( child > 0 )
-    {
-        lxcom_del_child_watch(child);
-        killpg(child, SIGHUP);
-        stop_pid(child);
-        child = -1;
-    }
-    ui_clean();
-#if HAVE_LIBPAM
-    close_pam_session();
-#endif
-    if( server > 0 )
-    {
-        lxcom_del_child_watch(server);
-        stop_pid(server);
-        server = -1;
-    }
-    put_lock();
-    set_active_vt(old_tty);
+	if( child > 0 )
+	{
+		lxcom_del_child_watch(child);
+		killpg(child, SIGHUP);
+		stop_pid(child);
+		child = -1;
+	}
+	ui_clean();
+	#if HAVE_LIBPAM
+	close_pam_session();
+	#endif
+	if( server > 0 )
+	{
+		lxcom_del_child_watch(server);
+		stop_pid(server);
+		server = -1;
+	}
+	put_lock();
+	set_active_vt(old_tty);
 }
 
 static int get_run_level(void)
@@ -904,7 +904,7 @@ static int get_run_level(void)
 	if(!ut)
 	{
 		endutent();
-		return 0;
+		return 5;
 	}
 	res=ut->ut_pid & 0xff;
 	endutent();
@@ -914,41 +914,41 @@ static int get_run_level(void)
 
 static void on_session_stop(void *data,int pid, int status)
 {
-    killpg(pid, SIGHUP);
-    stop_pid(pid);
-    child = -1;
-    int level;
+	killpg(pid, SIGHUP);
+	stop_pid(pid);
+	child = -1;
+	int level;
 
-    if( server > 0 )
-    {
-        /* FIXME just work around lxde bug of focus can't set */
-        stop_clients();
-    }
-#if HAVE_LIBPAM
-    close_pam_session();
-#endif
-#if HAVE_LIBCK_CONNECTOR
-    if( ckc != NULL )
-    {
-        DBusError error;
-        dbus_error_init(&error);
-        ck_connector_close_session(ckc, &error);
-        ck_connector_unref(ckc);
-        ckc=NULL;
-        unsetenv("XDG_SESSION_COOKIE");
-    }
-#endif
-    level=get_run_level();
-    if(level=='0' || level=='6')
-    {
-        if(level=='0')
-            g_spawn_command_line_sync("/etc/lxdm/PreShutdown",0,0,0,0);
-        else
-            g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
-        lxdm_quit_self(0);
-    }
-    ui_prepare();
-    g_spawn_command_line_async("/etc/lxdm/PostLogout",NULL);
+	if( server > 0 )
+	{
+		/* FIXME just work around lxde bug of focus can't set */
+		stop_clients();
+	}
+	#if HAVE_LIBPAM
+	close_pam_session();
+	#endif
+	#if HAVE_LIBCK_CONNECTOR
+	if( ckc != NULL )
+	{
+		DBusError error;
+		dbus_error_init(&error);
+		ck_connector_close_session(ckc, &error);
+		ck_connector_unref(ckc);
+		ckc=NULL;
+		unsetenv("XDG_SESSION_COOKIE");
+	}
+	#endif
+	level=get_run_level();
+	if(level=='0' || level=='6')
+	{
+		if(level=='0')
+			g_spawn_command_line_sync("/etc/lxdm/PreShutdown",0,0,0,0);
+		else
+			g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
+		lxdm_quit_self(0);
+	}
+	ui_prepare();
+	g_spawn_command_line_async("/etc/lxdm/PostLogout",NULL);
 }
 
 gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
@@ -1009,168 +1009,167 @@ gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 
 void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 {
-    char *session_name=0,*session_exec=0;
-    gboolean alloc_session=FALSE,alloc_lang=FALSE;
-    int pid;
+	char *session_name=0,*session_exec=0;
+	gboolean alloc_session=FALSE,alloc_lang=FALSE;
+	int pid;
 
-    if(!session ||!session[0] || !lang || !lang[0])
-    {
-       char *path=g_strdup_printf("%s/.dmrc",pw->pw_dir);
-       GKeyFile *dmrc=g_key_file_new();
-       g_key_file_load_from_file(dmrc,path,G_KEY_FILE_NONE,0);
-       g_free(path);
-       if(!session || !session[0])
-       {
-           session=g_key_file_get_string(dmrc,"Desktop","Session",NULL);
-           alloc_session=TRUE;
-       }
-       if(!lang || !lang[0])
-       {
-           lang=g_key_file_get_string(dmrc,"Desktop","Language",NULL);
-           alloc_lang=TRUE;
-       }
-       g_key_file_free(dmrc);
-    }
-    
-    if(!lxdm_get_session_info(session,&session_name,&session_exec))
-    {
-        if(alloc_session)
-            g_free(session);
-        if(alloc_lang)
-            g_free(lang);
-        ui_prepare();
-        dbg_printf("get session %s info fail\n",session);
-    	return;
-    }
+	if(!session ||!session[0] || !lang || !lang[0])
+	{
+		char *path=g_strdup_printf("%s/.dmrc",pw->pw_dir);
+		GKeyFile *dmrc=g_key_file_new();
+		g_key_file_load_from_file(dmrc,path,G_KEY_FILE_NONE,0);
+		g_free(path);
+		if(!session || !session[0])
+		{
+			session=g_key_file_get_string(dmrc,"Desktop","Session",NULL);
+			alloc_session=TRUE;
+		}
+		if(!lang || !lang[0])
+		{
+			lang=g_key_file_get_string(dmrc,"Desktop","Language",NULL);
+			alloc_lang=TRUE;
+		}
+		g_key_file_free(dmrc);
+	}
 
-    dbg_printf("login user %s session %s lang %s\n",pw->pw_name,session_exec,lang);
+	if(!lxdm_get_session_info(session,&session_name,&session_exec))
+	{
+		if(alloc_session)
+			g_free(session);
+		if(alloc_lang)
+			g_free(lang);
+		ui_prepare();
+		dbg_printf("get session %s info fail\n",session);
+		return;
+	}
 
-    if( pw->pw_shell[0] == '\0' )
-    {
-        setusershell();
-        strcpy( pw->pw_shell, getusershell() );
-        endusershell();
-    }
-#if HAVE_LIBPAM
-    setup_pam_session(pw,session_name);
-#endif
-#if HAVE_LIBCK_CONNECTOR
-    if(!ckc)
-        ckc = ck_connector_new();
-    if( ckc != NULL )
-    {
-        DBusError error;
-        char x[256], *d, *n;
-        sprintf(x, "/dev/tty%d", tty);
-        dbus_error_init(&error);
-        d = x; n = getenv("DISPLAY");
-        if( ck_connector_open_session_with_parameters(ckc, &error,
-                                                      "unix-user", &pw->pw_uid,
-// disable this, follow the gdm way 
-                                                      //"display-device", &d,
-                                                      "x11-display-device", &d,
-                                                      "x11-display", &n,
-                                                      NULL) )
-            setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(ckc), 1);
-    }
-#endif
-    child = pid = fork();
-    if( child == 0 )
-    {
-        char** env, *path;
-        int n_env,i;
-        n_env  = g_strv_length(environ);
-        /* copy all environment variables and override some of them */
-        env = g_new(char*, n_env + 1 + 13);
-        for( i = 0; i < n_env; ++i )
-            env[i] = g_strdup(environ[i]);
-        env[i] = NULL;
+	dbg_printf("login user %s session %s lang %s\n",pw->pw_name,session_exec,lang);
 
-        replace_env(env, "HOME=", pw->pw_dir);
-        replace_env(env, "SHELL=", pw->pw_shell);
-        replace_env(env, "USER=", pw->pw_name);
-        replace_env(env, "LOGNAME=", pw->pw_name);
+	if( pw->pw_shell[0] == '\0' )
+	{
+		setusershell();
+		strcpy( pw->pw_shell, getusershell() );
+		endusershell();
+	}
+	#if HAVE_LIBPAM
+	setup_pam_session(pw,session_name);
+	#endif
+	#if HAVE_LIBCK_CONNECTOR
+	if(!ckc)
+		ckc = ck_connector_new();
+	if( ckc != NULL )
+	{
+		DBusError error;
+		char x[256], *d, *n;
+		sprintf(x, "/dev/tty%d", tty);
+		dbus_error_init(&error);
+		d = x; n = getenv("DISPLAY");
+		if( ck_connector_open_session_with_parameters(ckc, &error,
+													  "unix-user", &pw->pw_uid,
+	// disable this, follow the gdm way 
+													  //"display-device", &d,
+													  "x11-display-device", &d,
+													  "x11-display", &n,
+													  NULL) )
+			setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(ckc), 1);
+	}
+	#endif
+	child = pid = fork();
+	if( child == 0 )
+	{
+		char** env, *path;
+		int n_env,i;
+		n_env  = g_strv_length(environ);
+		/* copy all environment variables and override some of them */
+		env = g_new(char*, n_env + 1 + 13);
+		for( i = 0; i < n_env; ++i )
+			env[i] = g_strdup(environ[i]);
+		env[i] = NULL;
 
-        /* override $PATH if needed */
-        path = g_key_file_get_string(config, "base", "path", 0);
-        if( G_UNLIKELY(path) && path[0] ) /* if PATH is specified in config file */
-        	replace_env(env, "PATH=", path); /* override current $PATH with config value */
+		replace_env(env, "HOME=", pw->pw_dir);
+		replace_env(env, "SHELL=", pw->pw_shell);
+		replace_env(env, "USER=", pw->pw_name);
+		replace_env(env, "LOGNAME=", pw->pw_name);
+
+		/* override $PATH if needed */
+		path = g_key_file_get_string(config, "base", "path", 0);
+		if( G_UNLIKELY(path) && path[0] ) /* if PATH is specified in config file */
+			replace_env(env, "PATH=", path); /* override current $PATH with config value */
 	else /* don't use the global env, they are bad for user */
 		replace_env(env, "PATH=", "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"); /* set proper default */
-        g_free(path);
-        /* optionally override $LANG, $LC_MESSAGES, and $LANGUAGE */
-        if( lang && lang[0] )
-        {
-            replace_env(env, "LANG=", lang);
-            replace_env(env, "LC_MESSAGES=", lang);
-            replace_env(env, "LANGUAGE=", lang);
-        } 
-#if HAVE_LIBPAM
+		g_free(path);
+		/* optionally override $LANG, $LC_MESSAGES, and $LANGUAGE */
+		if( lang && lang[0] )
+		{
+			replace_env(env, "LANG=", lang);
+			replace_env(env, "LC_MESSAGES=", lang);
+			replace_env(env, "LANGUAGE=", lang);
+		} 
+	#if HAVE_LIBPAM
 	append_pam_environ(env);
 	pam_end(pamh,0);
-#endif
+	#endif
 	switch_user(pw, session_exec, env);
 	lxdm_quit_self(4);
-    }
-    g_free(session_name);
-    g_free(session_exec);
-    if(alloc_session)
-        g_free(session);
-    if(alloc_lang)
-        g_free(lang);
-    lxcom_add_child_watch(pid, on_session_stop, 0);
+	}
+	g_free(session_name);
+	g_free(session_exec);
+	if(alloc_session)
+		g_free(session);
+	if(alloc_lang)
+		g_free(lang);
+	lxcom_add_child_watch(pid, on_session_stop, 0);
 }
 
 void lxdm_do_reboot(void)
 {
-    char *cmd;
-    cmd = g_key_file_get_string(config, "cmd", "reboot", 0);
-    if( !cmd ) cmd = g_strdup("reboot");
-    g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
-    g_spawn_command_line_async(cmd,0);
-    g_free(cmd);
-    lxdm_quit_self(0);
+	char *cmd;
+	cmd = g_key_file_get_string(config, "cmd", "reboot", 0);
+	if( !cmd ) cmd = g_strdup("reboot");
+	g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
+	g_spawn_command_line_async(cmd,0);
+	g_free(cmd);
+	lxdm_quit_self(0);
 }
 
 void lxdm_do_shutdown(void)
 {
-    char *cmd;
-    cmd = g_key_file_get_string(config, "cmd", "shutdown", 0);
-    if( !cmd ) cmd = g_strdup("shutdown -h now");
-    g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
-    g_spawn_command_line_async(cmd,0);
-    g_free(cmd);
-    lxdm_quit_self(0);
+	char *cmd;
+	cmd = g_key_file_get_string(config, "cmd", "shutdown", 0);
+	if( !cmd ) cmd = g_strdup("shutdown -h now");
+	g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
+	g_spawn_command_line_async(cmd,0);
+	g_free(cmd);
+	lxdm_quit_self(0);
 }
 
 int lxdm_cur_session(void)
 {
-    return child;
+	return child;
 }
 
 int lxdm_do_auto_login(void)
 {
-    struct passwd *pw;
-    char *user;
-    char *pass=NULL;
-    int ret;
+	struct passwd *pw;
+	char *user;
+	char *pass=NULL;
+	int ret;
 
 
-    user = g_key_file_get_string(config, "base", "autologin", 0);
-    if( !user )
-        return 0;
+	user = g_key_file_get_string(config, "base", "autologin", 0);
+	if( !user )
+		return 0;
 
-#ifdef ENABLE_PASSWORD
-    pass = g_key_file_get_string(config, "base", "password", 0);
-#endif
-    ret=lxdm_auth_user(user, pass, &pw);
-    g_free(user);
-    g_free(pass);
-    if(ret!=AUTH_SUCCESS)
-
-        return 0;
-    lxdm_do_login(pw, NULL, NULL);
-    return 1;
+	#ifdef ENABLE_PASSWORD
+	pass = g_key_file_get_string(config, "base", "password", 0);
+	#endif
+	ret=lxdm_auth_user(user, pass, &pw);
+	g_free(user);
+	g_free(pass);
+	if(ret!=AUTH_SUCCESS)
+		return 0;
+	lxdm_do_login(pw, NULL, NULL);
+	return 1;
 }
 
 static void log_sigsegv(void)
@@ -1190,29 +1189,28 @@ static void log_sigsegv(void)
 
 static void sigsegv_handler(int sig)
 {
-    switch( sig )
-    {
-    case SIGSEGV:
-        log_sigsegv();
+	switch( sig )
+	{
+	case SIGSEGV:
+		log_sigsegv();
 	lxdm_quit_self(0);
-        break;
-    default:
-        break;
-    }
+		break;
+	default:
+		break;
+	}
 }
 
 static void lxdm_signal_handler(void *data,int sig)
 {
-    switch( sig )
-    {
-    case SIGTERM:
-    case SIGINT:
-        lxdm_quit_self(0);
-        break;
-    default:
-        break;
-    }
-
+	switch( sig )
+	{
+	case SIGTERM:
+	case SIGINT:
+		lxdm_quit_self(0);
+		break;
+	default:
+		break;
+	}
 }
 
 void set_signal(void)
@@ -1230,45 +1228,45 @@ void set_signal(void)
 
 int main(int arc, char *arg[])
 {
-    int daemonmode = 0;
-    int i;
+	int daemonmode = 0;
+	int i;
 
-    
-    for(i=1;i<arc;i++)
-    {
-        if(!strcmp(arg[i],"-d"))
-            daemonmode=1;
-        else if(!strcmp(arg[i],"-c") && i+1<arc)
-        {
-            int count=strlen(arg[i+1])+1;
-            i=lxcom_send("/tmp/lxdm.sock",arg[i+1],count);
-            return (i==count)?0:-1;
-        }
-    }
-    if( getuid() != 0 )
-    {
-        printf("only root is allowed to use this program\n");
-        exit(EXIT_FAILURE);
-    }
 
-    if( daemonmode )
-        (void)daemon(1, 1);
+	for(i=1;i<arc;i++)
+	{
+		if(!strcmp(arg[i],"-d"))
+			daemonmode=1;
+		else if(!strcmp(arg[i],"-c") && i+1<arc)
+		{
+			int count=strlen(arg[i+1])+1;
+			i=lxcom_send("/tmp/lxdm.sock",arg[i+1],count);
+			return (i==count)?0:-1;
+		}
+	}
+	if( getuid() != 0 )
+	{
+		printf("only root is allowed to use this program\n");
+		exit(EXIT_FAILURE);
+	}
 
-    config = g_key_file_new();
-    g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_NONE, NULL);
+	if( daemonmode )
+		(void)daemon(1, 1);
 
-    get_lock();
-    lxcom_init("/tmp/lxdm.sock");
-    atexit(exit_cb);
+	config = g_key_file_new();
+	g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_NONE, NULL);
 
-    set_signal();
-    lxdm_get_tty();
-    lxdm_startx();
+	get_lock();
+	lxcom_init("/tmp/lxdm.sock");
+	atexit(exit_cb);
 
-    lxdm_do_auto_login();
+	set_signal();
+	lxdm_get_tty();
+	lxdm_startx();
 
-    ui_main();
+	lxdm_do_auto_login();
 
-    return 0;
+	ui_main();
+
+	return 0;
 }
 

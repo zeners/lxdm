@@ -41,30 +41,29 @@ static guint io_id;
 
 void ui_drop(void)
 {
-    /* if greeter, do quit */
-    if( greeter > 0 )
-    {
-        write(greeter_pipe[0], "exit\n", 5);
-        g_source_remove(io_id);
-        io_id = 0;
-        g_io_channel_unref(greeter_io);
-        greeter_io = NULL;
-        close(greeter_pipe[1]);
-        close(greeter_pipe[0]);
+	/* if greeter, do quit */
+	if( greeter > 0 )
+	{
+		write(greeter_pipe[0], "exit\n", 5);
+		g_source_remove(io_id);
+		io_id = 0;
+		g_io_channel_unref(greeter_io);
+		greeter_io = NULL;
+		close(greeter_pipe[1]);
+		close(greeter_pipe[0]);
 	lxcom_del_child_watch(greeter);
-        waitpid(greeter, 0, 0) ;
-        greeter=-1;
-    }
-    if(io_id>0)
-    {
-        g_source_remove(io_id);
-        io_id = 0;
-        g_io_channel_unref(greeter_io);
-        greeter_io = NULL;
-        close(greeter_pipe[1]);
-        close(greeter_pipe[0]);
-
-    }
+		waitpid(greeter, 0, 0) ;
+		greeter=-1;
+	}
+	if(io_id>0)
+	{
+		g_source_remove(io_id);
+		io_id = 0;
+		g_io_channel_unref(greeter_io);
+		greeter_io = NULL;
+		close(greeter_pipe[1]);
+		close(greeter_pipe[0]);
+	}
 }
 
 static void greeter_setup(gpointer user)
@@ -73,125 +72,125 @@ static void greeter_setup(gpointer user)
 
 static gchar *greeter_param(char *str, char *name)
 {
-    char *temp, *p;
-    char ret[128];
-    int i;
-    temp = g_strdup_printf(" %s=", name);
-    p = strstr(str, temp);
-    if( !p )
-    {
-        g_free(temp);
-        return NULL;
-    }
-    p += strlen(temp);
-    g_free(temp);
-    for( i = 0; i < 127; i++ )
-    {
-        if( !p[i] || isspace(p[i]) )
-            break;
-        ret[i] = p[i];
-    }
-    ret[i] = 0;
-    return g_strdup(ret);
+	char *temp, *p;
+	char ret[128];
+	int i;
+	temp = g_strdup_printf(" %s=", name);
+	p = strstr(str, temp);
+	if( !p )
+	{
+		g_free(temp);
+		return NULL;
+	}
+	p += strlen(temp);
+	g_free(temp);
+	for( i = 0; i < 127; i++ )
+	{
+		if( !p[i] || isspace(p[i]) )
+			break;
+		ret[i] = p[i];
+	}
+	ret[i] = 0;
+	return g_strdup(ret);
 }
 
 static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpointer data)
 {
-    GIOStatus ret;
-    char *str;
+	GIOStatus ret;
+	char *str;
 
-    if( !(G_IO_IN & condition) )
-        return FALSE;
-    ret = g_io_channel_read_line(source, &str, NULL, NULL, NULL);
-    if( ret != G_IO_STATUS_NORMAL )
-        return FALSE;
+	if( !(G_IO_IN & condition) )
+		return FALSE;
+	ret = g_io_channel_read_line(source, &str, NULL, NULL, NULL);
+	if( ret != G_IO_STATUS_NORMAL )
+		return FALSE;
 
-    if( !strncmp(str, "reboot", 6) )
-        lxdm_do_reboot();
-    else if( !strncmp(str, "shutdown", 6) )
-        lxdm_do_shutdown();
-    else if( !strncmp(str, "log ", 4) )
-        log_print(str + 4);
-    else if( !strncmp(str, "login ", 6) )
-    {
-        char *user = greeter_param(str, "user");
-        char *pass = greeter_param(str, "pass");
-        char *session = greeter_param(str, "session");
-        char *lang = greeter_param(str, "lang");
-        if( user && pass )
-        {
-            struct passwd *pw;
-            int ret = lxdm_auth_user(user, pass, &pw);
-            if( AUTH_SUCCESS == ret && pw != NULL )
-            {
-                ui_drop();
-                lxdm_do_login(pw, session, lang);
-                if( lxdm_cur_session() <= 0 )
-                    ui_prepare();
-            }
-            else
-                write(greeter_pipe[0], "reset\n", 6);
-        }
-        g_free(user);
-        g_free(pass);
-        g_free(session);
-        g_free(lang);
-    }
-    g_free(str);
-    return TRUE;
+	if( !strncmp(str, "reboot", 6) )
+		lxdm_do_reboot();
+	else if( !strncmp(str, "shutdown", 6) )
+		lxdm_do_shutdown();
+	else if( !strncmp(str, "log ", 4) )
+		log_print(str + 4);
+	else if( !strncmp(str, "login ", 6) )
+	{
+		char *user = greeter_param(str, "user");
+		char *pass = greeter_param(str, "pass");
+		char *session = greeter_param(str, "session");
+		char *lang = greeter_param(str, "lang");
+		if( user && pass )
+		{
+			struct passwd *pw;
+			int ret = lxdm_auth_user(user, pass, &pw);
+			if( AUTH_SUCCESS == ret && pw != NULL )
+			{
+				ui_drop();
+				lxdm_do_login(pw, session, lang);
+				if( lxdm_cur_session() <= 0 )
+					ui_prepare();
+			}
+			else
+				write(greeter_pipe[0], "reset\n", 6);
+		}
+		g_free(user);
+		g_free(pass);
+		g_free(session);
+		g_free(lang);
+	}
+	g_free(str);
+	return TRUE;
 }
 
 static void on_greeter_exit(void *data,int pid, int status)
 {
-    if( pid != greeter )
-        return;
-    greeter = -1;
+	if( pid != greeter )
+		return;
+	greeter = -1;
 }
 
 void ui_prepare(void)
 {
-    char *p;
+	char *p;
 
-    /* if session is running */
-    if( lxdm_cur_session() > 0 )
-        return;
+	/* if session is running */
+	if( lxdm_cur_session() > 0 )
+		return;
 
-    /* if find greeter, run it */
-    p = g_key_file_get_string(config, "base", "greeter", NULL);
-    if( p && p[0] )
-    {
-        char **argv;
-        gboolean ret;
-        g_shell_parse_argv(p, NULL, &argv, NULL);
-        
-        /* FIXME: what's this? */
-        if( greeter > 0 && kill(greeter, 0) == 0 )
-            return;
+	/* if find greeter, run it */
+	p = g_key_file_get_string(config, "base", "greeter", NULL);
+	if( p && p[0] )
+	{
+		char **argv;
+		gboolean ret;
+		g_shell_parse_argv(p, NULL, &argv, NULL);
+		
+		/* FIXME: what's this? */
+		if( greeter > 0 && kill(greeter, 0) == 0 )
+			return;
 
-        ret = g_spawn_async_with_pipes(NULL, argv, NULL,
-                                       G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD, greeter_setup, 0,
-                                       &greeter, greeter_pipe + 0, greeter_pipe + 1, NULL, NULL);
-        g_strfreev(argv);
-        if( ret == TRUE )
-        {
-            g_free(p);
-            greeter_io = g_io_channel_unix_new(greeter_pipe[1]);
-            io_id = g_io_add_watch(greeter_io, G_IO_IN | G_IO_HUP | G_IO_ERR,
-                                   on_greeter_input, NULL);
-            lxcom_add_child_watch(greeter, on_greeter_exit, 0);
-            return;
-        }
-    }
-    g_free(p);
+		ret = g_spawn_async_with_pipes(NULL, argv, NULL,
+									   G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD, greeter_setup, 0,
+									   &greeter, greeter_pipe + 0, greeter_pipe + 1, NULL, NULL);
+		g_strfreev(argv);
+		if( ret == TRUE )
+		{
+			g_free(p);
+			greeter_io = g_io_channel_unix_new(greeter_pipe[1]);
+			io_id = g_io_add_watch(greeter_io, G_IO_IN | G_IO_HUP | G_IO_ERR,
+								   on_greeter_input, NULL);
+			lxcom_add_child_watch(greeter, on_greeter_exit, 0);
+			return;
+		}
+	}
+	g_free(p);
 }
 
 int ui_main(void)
 {
-    GMainLoop *loop = g_main_loop_new(NULL, 0);
-    ui_prepare();
-    g_spawn_command_line_async("/etc/lxdm/LoginReady",NULL);
-    g_main_loop_run(loop);
-    return 0;
+	GMainLoop *loop = g_main_loop_new(NULL, 0);
+	ui_prepare();
+	g_spawn_command_line_async("/etc/lxdm/LoginReady",NULL);
+	g_main_loop_run(loop);
+	return 0;
 }
 
 void ui_clean(void)

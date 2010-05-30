@@ -55,7 +55,7 @@ void ui_clean(void);
 typedef struct{
 	char *name;
 	char *exec;
-    char* desktop_file;
+	char* desktop_file;
 }Session;
 
 GSList *do_scan_xsessions(void);
@@ -64,3 +64,4 @@ void free_xsessions(GSList *);
 G_END_DECLS
 
 #endif/*_LXDM_H_*/
+
