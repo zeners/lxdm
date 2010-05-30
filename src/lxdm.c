@@ -74,13 +74,9 @@
 
 GKeyFile *config;
 static pid_t server;
-static Display *dpy;
 #if HAVE_LIBCK_CONNECTOR
 static CkConnector *ckc;
 #endif
-static Window *my_xid;
-static unsigned int my_xid_n;
-static char *self;
 static pid_t child;
 static int old_tty=1,tty = 7;
 
@@ -725,29 +721,16 @@ static int CatchIOErrors(Display *dpy)
 	return 0;
 }
 
-static int is_my_id(XID id)
-{
-    int i;
-    if( !my_xid )
-        return 0;
-    for( i = 0; i < my_xid_n; i++ )
-        if( id == my_xid[i] ) return 1;
-    return 0;
-}
-
-static void free_my_xid(void)
-{
-    XFree(my_xid);
-    my_xid = 0;
-}
-
 static void stop_clients(void)
 {
     Window dummy, parent;
     Window *children;
     unsigned int nchildren;
     unsigned int i;
+    Display *dpy;
     Window Root;
+
+    dpy=XOpenDisplay(0);
     if(!dpy) return;
 
 
@@ -763,23 +746,22 @@ static void stop_clients(void)
         goto out;
     for( i = 0; i < nchildren; i++ )
     {
-        if( children[i] && !is_my_id(children[i]) )
-	{
-            if(!setjmp(XErrEnv))
-                XKillClient(dpy, children[i]);
-	}
+        if(!setjmp(XErrEnv))
+            XKillClient(dpy, children[i]);
     }
     XFree( (char *)children );
     if(!setjmp(XErrEnv))
         XSync(dpy, 0);
 out:
+    if(!setjmp(XErrEnv))
+        XCloseDisplay(dpy);
     XSetErrorHandler(NULL);
     XSetIOErrorHandler(NULL);
 }
 
 static void on_xserver_stop(void *data,int pid, int status)
 {
-	//log_print("xserver stop, restart. return status %x\n",status);
+	log_print("xserver stop, restart. return status %x\n",status);
 
 	stop_pid(server);
 	server = -1;
@@ -798,23 +780,11 @@ static void on_xserver_stop(void *data,int pid, int status)
 #if HAVE_LIBCK_CONNECTOR
 	if( ckc != NULL )
 	{
-		//DBusError error;
-		//dbus_error_init(&error);
-		//ck_connector_close_session(ckc, &error);
 		ck_connector_unref(ckc);
 		ckc=NULL;
 		unsetenv("XDG_SESSION_COOKIE");
 	}
 #endif
-
-	free_my_xid(); 
-	XSetErrorHandler(CatchErrors);
-	XSetIOErrorHandler(CatchIOErrors);
-	if(dpy && !setjmp(XErrEnv))
-		XCloseDisplay(dpy);
-	dpy=NULL;
-	XSetErrorHandler(NULL);
-	XSetIOErrorHandler(NULL);
 
 	lxdm_startx();
 	ui_drop();
@@ -854,6 +824,7 @@ void lxdm_startx(void)
     char *arg;
     char **args;
     int i;
+    Display *dpy=NULL;
 
     if(!getenv("DISPLAY"))
         setenv("DISPLAY",":0",1);
@@ -896,6 +867,7 @@ void lxdm_startx(void)
     if( i >= 200 )
         exit(EXIT_FAILURE);
     set_numlock(dpy);
+    if(!setjmp(XErrEnv)) XCloseDisplay(dpy);
 }
 
 void exit_cb(void)
@@ -919,13 +891,6 @@ void exit_cb(void)
     }
     put_lock();
     set_active_vt(old_tty);
-}
-
-void get_my_xid(void)
-{
-    Window dummy, parent;
-    Window Root = DefaultRootWindow(dpy);
-    XQueryTree(dpy, Root, &dummy, &parent, &my_xid, &my_xid_n);
 }
 
 static int get_run_level(void)
@@ -958,7 +923,6 @@ static void on_session_stop(void *data,int pid, int status)
     {
         /* FIXME just work around lxde bug of focus can't set */
         stop_clients();
-        free_my_xid();
     }
 #if HAVE_LIBPAM
     close_pam_session();
@@ -1110,7 +1074,6 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
             setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(ckc), 1);
     }
 #endif
-    get_my_xid();
     child = pid = fork();
     if( child == 0 )
     {
@@ -1270,22 +1233,26 @@ int main(int arc, char *arg[])
     int daemonmode = 0;
     int i;
 
+    
+    for(i=1;i<arc;i++)
+    {
+        if(!strcmp(arg[i],"-d"))
+            daemonmode=1;
+        else if(!strcmp(arg[i],"-c") && i+1<arc)
+        {
+            int count=strlen(arg[i+1])+1;
+            i=lxcom_send("/tmp/lxdm.sock",arg[i+1],count);
+            return (i==count)?0:-1;
+        }
+    }
     if( getuid() != 0 )
     {
         printf("only root is allowed to use this program\n");
         exit(EXIT_FAILURE);
     }
 
-    for(i=1;i<arc;i++)
-    {
-        if(!strcmp(arg[i],"-d"))
-            daemonmode=1;
-    }
-
     if( daemonmode )
         (void)daemon(1, 1);
-
-    self = arg[0];
 
     config = g_key_file_new();
     g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_NONE, NULL);
