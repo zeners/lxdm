@@ -51,6 +51,7 @@ msgstr "রিবুট (_R)"
 msgid "_Shutdown"
 msgstr "বন্ধ (_S)"
 
+# snigdha
 #: ../src/lang.c:116
 msgid "More ..."
-msgstr ""
+msgstr "আরও..."
