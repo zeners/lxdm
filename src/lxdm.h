@@ -34,8 +34,6 @@ int lxdm_auth_user(char *user,char *pass,struct passwd **ppw);
 void lxdm_do_login(struct passwd *pw,char *session,char *lang);
 void lxdm_do_reboot(void);
 void lxdm_do_shutdown(void);
-int lxdm_cur_session(void);
-void lxdm_startx(void);
 
 enum AuthResult
 {
@@ -50,7 +48,6 @@ void ui_drop(void);
 int ui_main(void);
 void ui_prepare(void);
 int ui_do_login(void);
-void ui_clean(void);
 
 typedef struct{
 	char *name;

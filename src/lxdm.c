@@ -72,21 +72,35 @@
 #include "lxdm.h"
 #include "lxcom.h"
 
-GKeyFile *config;
-static pid_t server;
+typedef struct{
+	gboolean idle;
+	gboolean greeter;
+	int tty;
+	pid_t server;
+	pid_t child;
+	uid_t user;
+	int display;
+	/* we must hold this, else Xserver will crack */
+	Display *dpy;
+#if HAVE_LIBPAM
+	pam_handle_t *pamh;
+#endif
 #if HAVE_LIBCK_CONNECTOR
-static CkConnector *ckc;
+	CkConnector *ckc;
 #endif
-static pid_t child;
-static int old_tty=1,tty = 7;
-
 #ifndef DISABLE_XAUTH
-static char mcookie[33];
+	char mcookie[33];
 #endif
-
 #if HAVE_LIBXAU
-static Xauth x_auth;
+	Xauth x_auth;
 #endif
+}LXSession;
+
+GKeyFile *config;
+static int old_tty=1,def_tty = 7,nr_tty=0;
+static GSList *session_list;
+
+static void lxdm_startx(LXSession *s);
 
 static int get_active_vt(void)
 {
@@ -120,6 +134,304 @@ static void set_active_vt(int vt)
 		close(fd);
 }
 
+void stop_pid(int pid)
+{
+    if( pid <= 0 ) return;
+    lxcom_del_child_watch(pid);
+    if( killpg(pid, SIGTERM) < 0 )
+        killpg(pid, SIGKILL);
+    if( kill(pid, 0) == 0 )
+    {
+        if( kill(pid, SIGTERM) )
+            kill(pid, SIGKILL);
+        while( 1 )
+        {
+            int wpid, status;
+            wpid = waitpid(pid,&status,0);
+            if(wpid<0 || pid == wpid)
+            	break;
+        }
+    }
+    while( waitpid(-1, 0, WNOHANG) > 0 ) ;
+}
+
+static int CatchErrors(Display *dpy, XErrorEvent *ev)
+{
+	return 0;
+}
+
+static jmp_buf XErrEnv;
+static int CatchIOErrors(Display *dpy)
+{
+	close(ConnectionNumber(dpy));
+	longjmp(XErrEnv,1);
+	return 0;
+}
+
+static void stop_clients(LXSession *s)
+{
+    Window dummy, parent;
+    Window *children;
+    unsigned int nchildren;
+    unsigned int i;
+    Window Root;
+    
+    if(!s->dpy) return;
+    
+    XSetErrorHandler(CatchErrors);
+    XSetIOErrorHandler(CatchIOErrors);
+
+    Root = DefaultRootWindow(s->dpy);
+
+    nchildren = 0;
+    if(!setjmp(XErrEnv))
+        XQueryTree(s->dpy, Root, &dummy, &parent, &children, &nchildren);
+    else
+        goto out;
+    for( i = 0; i < nchildren; i++ )
+    {
+        if(!setjmp(XErrEnv))
+            XKillClient(s->dpy, children[i]);
+    }
+    XFree((char *)children);
+    if(!setjmp(XErrEnv))
+        XSync(s->dpy, 0);
+out:
+    XSetErrorHandler(NULL);
+    XSetIOErrorHandler(NULL);
+}
+
+static void close_pam_session(pam_handle_t *pamh)
+{
+    int err;
+    if( !pamh ) return;
+    err = pam_close_session(pamh, 0);
+    //err=pam_setcred(pamh, PAM_DELETE_CRED);
+    pam_end(pamh, err);
+    pamh = NULL;
+}
+
+static LXSession *lxsession_find_greeter(void)
+{
+	GSList *p;
+	for(p=session_list;p!=NULL;p=p->next)
+	{
+		LXSession *s=p->data;
+		if(s->greeter) return s;
+	}
+	return NULL;
+}
+
+static LXSession *lxsession_find_idle(void)
+{
+	GSList *p;
+	for(p=session_list;p!=NULL;p=p->next)
+	{
+		LXSession *s=p->data;
+		if(s->idle) return s;
+	}
+	return NULL;
+}
+
+static LXSession *lxsession_find_user(uid_t user)
+{
+	GSList *p;
+	for(p=session_list;p!=NULL;p=p->next)
+	{
+		LXSession *s=p->data;
+		if(s->greeter) continue;
+		if(s->user==user) return s;
+	}
+	return NULL;
+}
+
+static LXSession *lxsession_find_tty(int tty)
+{
+	GSList *p;
+	for(p=session_list;p!=NULL;p=p->next)
+	{
+		LXSession *s=p->data;
+		if(s->tty==tty) return s;
+	}
+	return NULL;
+}
+
+static LXSession *lxsession_get_active(void)
+{
+	LXSession *s;
+	s=lxsession_find_tty(get_active_vt());
+	return (s && !s->idle)?s:0;
+}
+
+static void lxsession_set_active(LXSession *s)
+{
+	if(!s) return;
+	set_active_vt(s->tty);
+}
+
+static gboolean tty_is_used(int tty)
+{
+	GSList *p;
+	for(p=session_list;p!=NULL;p=p->next)
+	{
+		LXSession *s=p->data;
+		if(s->tty==tty)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+static gboolean display_is_used(int display)
+{
+	GSList *p;
+	for(p=session_list;p!=NULL;p=p->next)
+	{
+		LXSession *s=p->data;
+		if(s->display==display)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+static int lxsession_alloc_tty(void)
+{
+	int i;
+	if(!tty_is_used(def_tty))
+		return def_tty;
+	for(i=7;i<13;i++)
+	{
+		if(!tty_is_used(i))
+			return i;
+	}
+	return 0;
+}
+
+static int lxsession_alloc_display(void)
+{
+	int i;
+	for(i=0;i<11;i++)
+	{
+		if(!display_is_used(i))
+			return i;
+	}
+	return -1;
+}
+
+static LXSession *lxsession_add(void)
+{
+	LXSession *s;
+	
+	s=lxsession_find_idle();
+	if(s) return s;
+	if(g_slist_length(session_list)>=4)
+		return NULL;
+	s=g_new0(LXSession,1);
+	s->greeter=TRUE;
+	s->tty=lxsession_alloc_tty();
+	s->display=lxsession_alloc_display();
+	s->idle=TRUE;
+	if(!s->tty || s->display<0)
+	{
+		log_print("alloc tty s->tty, display %d fail\n",s->tty,s->display);
+		g_free(s);
+		return NULL;
+	}
+	session_list=g_slist_prepend(session_list,s);
+	lxdm_startx(s);
+	return s;
+}
+
+static LXSession *lxsession_greeter(void)
+{
+	char temp[16];
+	LXSession *s;
+	s=lxsession_find_greeter();
+	if(s)
+	{
+		log_print("find prev greeter\n");
+		lxsession_set_active(s);
+		return s;
+	}
+	log_print("find greeter %p\n",s);
+	s=lxsession_find_idle();
+	log_print("find idle %p\n",s);
+	if(!s) s=lxsession_add();
+	log_print("add %p\n",s);
+	if(!s)
+	{
+		log_print("add new fail\n");
+		return NULL;
+	}
+	s->greeter=TRUE;
+	s->idle=FALSE;
+	sprintf(temp,":%d",s->display);
+	setenv("DISPLAY",temp,1);
+	log_print("prepare greeter on %s\n",temp);
+	ui_prepare();
+	lxsession_set_active(s);
+	log_print("start greeter on %s\n",temp);
+	return s;
+}
+
+static void lxsession_stop(LXSession *s)
+{
+	if(s->greeter)
+	{
+		ui_drop();
+		s->greeter=FALSE;
+	}
+	if(s->child>0)
+	{
+		lxcom_del_child_watch(s->child);
+		killpg(s->child, SIGHUP);
+		stop_pid(s->child);
+		s->child = -1;
+	}
+	if( s->server > 0 )
+	{
+		stop_clients(s);
+	}
+#if HAVE_LIBPAM
+	close_pam_session(s->pamh);
+	s->pamh=NULL;
+#endif
+#if HAVE_LIBCK_CONNECTOR
+	if( s->ckc != NULL )
+	{
+		DBusError error;
+		dbus_error_init(&error);
+		ck_connector_close_session(s->ckc, &error);
+		ck_connector_unref(s->ckc);
+		s->ckc=NULL;
+	}
+#endif
+	s->idle=TRUE;
+}
+
+static void lxsession_free(LXSession *s)
+{
+	if(!s)
+		return;
+	session_list=g_slist_remove(session_list,s);
+	lxsession_stop(s);
+	if(s->server)
+	{
+		if(s->dpy)
+		{
+			XSetErrorHandler(CatchErrors);
+			XSetIOErrorHandler(CatchIOErrors);
+			if(!setjmp(XErrEnv))
+				XCloseDisplay(s->dpy);
+			XSetErrorHandler(NULL);
+			XSetIOErrorHandler(NULL);
+			s->dpy=NULL;
+		}
+		stop_pid(s->server);
+		s->server=0;
+	}
+	g_free(s);
+}
+
 static gboolean plymouth_is_running(void)
 {
 	int status;
@@ -145,6 +457,29 @@ static void plymouth_prepare_transition(void)
 	g_spawn_command_line_sync ("/bin/plymouth deactivate",NULL,NULL,NULL,NULL);
 }
 
+static char *lxsession_xserver_command(LXSession *s)
+{
+	char *p = g_key_file_get_string(config, "server", "arg", 0);
+	int arc;
+    char **arg;
+
+	if(!p) p=g_strdup("/usr/bin/X");	
+	g_shell_parse_argv(p, &arc, &arg, 0);
+    g_free(p);
+    arg = g_renew(char *, arg, arc + 10);
+    arc=1;
+    arg[arc++] = g_strdup_printf(":%d",s->display);
+    arg[arc++] = g_strdup_printf("vt%02d", s->tty);
+    arg[arc++] = g_strdup("-nolisten");
+    arg[arc++] = g_strdup("tcp");
+    if(nr_tty)
+    	arg[arc++] = g_strdup("-nr");
+    arg[arc] = NULL;
+    p=g_strjoinv(" ", arg);
+    g_strfreev(arg);
+    return p;
+}
+
 void lxdm_get_tty(void)
 {
     char *s = g_key_file_get_string(config, "server", "arg", 0);
@@ -152,7 +487,6 @@ void lxdm_get_tty(void)
     char **arg;
     int len;
     int gotvtarg = 0;
-    int nr = 0;
     gboolean plymouth;
     
     plymouth=plymouth_is_running();
@@ -168,21 +502,25 @@ void lxdm_get_tty(void)
         if( !strncmp(p, "vt", 2) && isdigit(p[2]) &&
            ( !p[3] || (isdigit(p[3]) && !p[4]) ) )
         {
-            tty = atoi(p + 2);
+            def_tty = atoi(p + 2);
             gotvtarg = 1;
         }
+        else if(!strcmp(p,"-nr"))
+        {
+			nr_tty=1;
+		}
     }
     if(!gotvtarg)
     {
         /* support plymouth */
-        nr = g_file_test("/var/spool/gdm/force-display-on-active-vt", G_FILE_TEST_EXISTS);
-        if( nr || g_key_file_get_integer(config, "server", "active_vt", 0) )
+        nr_tty = g_file_test("/var/spool/gdm/force-display-on-active-vt", G_FILE_TEST_EXISTS);
+        if( nr_tty || g_key_file_get_integer(config, "server", "active_vt", 0) )
             /* use the active vt */
-            tty = old_tty;
-        if( nr ) unlink("/var/spool/gdm/force-display-on-active-vt");
+            def_tty = old_tty;
+        if( nr_tty ) unlink("/var/spool/gdm/force-display-on-active-vt");
         if(plymouth)
         {
-			nr=1;
+			nr_tty=1;
 			plymouth_quit_with_transition();
 		}
     }
@@ -191,24 +529,12 @@ void lxdm_get_tty(void)
 		if(plymouth) /* set tty and plymouth running */
 			plymouth_quit_without_transition();
 	}
-    arg = g_renew(char *, arg, len + 10);
-    if( !gotvtarg )
-        arg[len++] = g_strdup_printf("vt%d", tty);
-    arg[len++] = g_strdup("-nolisten");
-    arg[len++] = g_strdup("tcp");
-    if( nr != 0 )
-        arg[len++] = g_strdup("-nr");
-    arg[len] = NULL;
-    s = g_strjoinv(" ", arg);
     g_strfreev(arg);
-    g_key_file_set_string(config, "server", "arg", s);
-    g_free(s);
-    if(old_tty!=tty)
-        set_active_vt(tty);
 }
 
 void lxdm_quit_self(int code)
 {
+	log_print("quit code %d\n",code);
 	exit(code);
 }
 
@@ -314,7 +640,7 @@ static void replace_env(char** env, const char* name, const char* new_val)
 }
 
 #ifndef DISABLE_XAUTH
-void create_server_auth(void)
+void create_server_auth(LXSession *s)
 {
     GRand *h;
     int i;
@@ -323,7 +649,7 @@ void create_server_auth(void)
     h = g_rand_new();
 #if HAVE_LIBXAU
     for (i=0;i<16;i++)
-        mcookie[i]=(char)g_rand_int(h);
+        s->mcookie[i]=(char)g_rand_int(h);
 #else
     const char *digits = "0123456789abcdef";
     int r,hex=0;
@@ -343,12 +669,9 @@ void create_server_auth(void)
 #endif
     g_rand_free(h);
 
-    authfile = g_key_file_get_string(config, "base", "authfile", 0);
-    if(!authfile)
-    {
-        mkdir("/var/run/lxdm",0700);
-        authfile = g_strdup("/var/run/lxdm/lxdm.auth");
-    }
+	mkdir("/var/run/lxdm",0700);
+	authfile = g_strdup_printf("/var/run/lxdm/lxdm-:%d.auth",s->display);
+
     setenv("XAUTHORITY",authfile,1);
     remove(authfile);
 #if HAVE_LIBXAU
@@ -362,16 +685,16 @@ void create_server_auth(void)
         uname(&uts);
         sprintf(xau_address, "%s", uts.nodename);
         strcpy(xau_number,getenv("DISPLAY")+1); // DISPLAY always exist at lxdm
-        x_auth.family = FamilyLocal;
-        x_auth.address = xau_address;
-        x_auth.number = xau_number;
-        x_auth.name = xau_name;
-        x_auth.address_length = strlen(xau_address);
-        x_auth.number_length = strlen(xau_number);
-        x_auth.name_length = strlen(xau_name);
-        x_auth.data = mcookie;
-        x_auth.data_length = 16;
-        XauWriteAuth(fp,&x_auth);
+        s->x_auth.family = FamilyLocal;
+        s->x_auth.address = xau_address;
+        s->x_auth.number = xau_number;
+        s->x_auth.name = xau_name;
+        s->x_auth.address_length = strlen(xau_address);
+        s->x_auth.number_length = strlen(xau_number);
+        s->x_auth.name_length = strlen(xau_name);
+        s->x_auth.data = s->mcookie;
+        s->x_auth.data_length = 16;
+        XauWriteAuth(fp,&s->x_auth);
         fclose(fp);
     }
 #else
@@ -386,10 +709,16 @@ void create_server_auth(void)
 
 void create_client_auth(char *home,char **env)
 {
+	LXSession *s;
     char *authfile;
-
-    if( getuid() == 0 ) /* root don't need it */
+	uid_t user;
+	
+    if((user=getuid())== 0 ) /* root don't need it */
         return;
+        
+	s=lxsession_find_user(user);
+	if(!s)
+		return;
 
     authfile = g_strdup_printf("%s/.Xauthority", home);
     remove(authfile);
@@ -397,12 +726,12 @@ void create_client_auth(char *home,char **env)
     FILE *fp=fopen(authfile,"wb");
     if(fp)
     {
-        XauWriteAuth(fp,&x_auth);
+        XauWriteAuth(fp,&s->x_auth);
         fclose(fp);
     }
 #else
     char *tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
-                          authfile, getenv("DISPLAY"), mcookie);
+                          authfile, getenv("DISPLAY"), s->mcookie);
     system(tmp);
     g_free(tmp);
 #endif
@@ -440,7 +769,6 @@ static int do_conv(int num, const struct pam_message **msg,struct pam_response *
 	return result;
 }
 
-static pam_handle_t *pamh;
 static struct pam_conv conv={.conv=do_conv,.appdata_ptr=user_pass};
 #endif
 
@@ -507,25 +835,34 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         return AUTH_FAIL;
     }
 #else
-    if(pamh) pam_end(pamh,0);
-    if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &pamh))
+    LXSession *s;
+    s=lxsession_find_greeter();
+    if(!s) s=lxsession_find_idle();
+    if(!s) s=lxsession_add();
+    if(!s)
     {
-        pamh=NULL;
+        log_print("lxsession_add fail\n");
+        exit(0);
+    }
+    if(s->pamh) pam_end(s->pamh,0);
+    if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &s->pamh))
+    {
+        s->pamh=NULL;
         dbg_printf("user %s start pam fail\n",user);
         return AUTH_FAIL;
     }
     else
     {
-	int ret;
+		int ret;
         user_pass[0]=user;user_pass[1]=pass;
-        ret=pam_authenticate(pamh,PAM_SILENT);
-	user_pass[0]=0;user_pass[1]=0;
-	if(ret!=PAM_SUCCESS)
+        ret=pam_authenticate(s->pamh,PAM_SILENT);
+		user_pass[0]=0;user_pass[1]=0;
+		if(ret!=PAM_SUCCESS)
         {
             dbg_printf("user %s auth fail with %d\n",user,ret);
             return AUTH_FAIL;
         }
-	//ret=pam_setcred(pamh, PAM_ESTABLISH_CRED);
+		//ret=pam_setcred(s->pamh, PAM_ESTABLISH_CRED);
     }
 #endif
     *ppw = pw;
@@ -534,46 +871,36 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
 }
 
 #if HAVE_LIBPAM
-void setup_pam_session(struct passwd *pw,char *session_name)
+void setup_pam_session(LXSession *s,struct passwd *pw,char *session_name)
 {
     int err;
     char x[256];
  
-    if(!pamh && PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &pamh))
+    if(!s->pamh && PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &s->pamh))
     {
-        pamh = NULL;
+        s->pamh = NULL;
         return;
     }
-    if(!pamh) return;
-    sprintf(x, "tty%d", tty);
-    pam_set_item(pamh, PAM_TTY, x);
+    if(!s->pamh) return;
+    sprintf(x, "tty%d", s->tty);
+    pam_set_item(s->pamh, PAM_TTY, x);
 #ifdef PAM_XDISPLAY
-    pam_set_item( pamh, PAM_XDISPLAY, getenv("DISPLAY") );
+    pam_set_item(s->pamh, PAM_XDISPLAY, getenv("DISPLAY") );
 #endif
 
     if(session_name && session_name[0])
     {
         char *env;
         env = g_strdup_printf ("DESKTOP_SESSION=%s", session_name);
-        pam_putenv (pamh, env);
+        pam_putenv (s->pamh, env);
         g_free (env);
     }
-    err = pam_open_session(pamh, 0); /* FIXME pam session failed */
+    err = pam_open_session(s->pamh, 0); /* FIXME pam session failed */
     if( err != PAM_SUCCESS )
-        log_print( "pam open session error \"%s\"\n", pam_strerror(pamh, err));
+        log_print( "pam open session error \"%s\"\n", pam_strerror(s->pamh, err));
 }
 
-void close_pam_session(void)
-{
-    int err;
-    if( !pamh ) return;
-    err = pam_close_session(pamh, 0);
-    //err=pam_setcred(pamh, PAM_DELETE_CRED);
-    pam_end(pamh, err);
-    pamh = NULL;
-}
-
-void append_pam_environ(char **env)
+void append_pam_environ(pam_handle_t *pamh,char **env)
 {
 	int i,j,n;
 	char **penv;
@@ -689,106 +1016,30 @@ void put_lock(void)
     g_free(lockfile);
 }
 
-void stop_pid(int pid)
-{
-    if( pid <= 0 ) return;
-    if( killpg(pid, SIGTERM) < 0 )
-        killpg(pid, SIGKILL);
-    if( kill(pid, 0) == 0 )
-    {
-        if( kill(pid, SIGTERM) )
-            kill(pid, SIGKILL);
-        while( 1 )
-        {
-            int wpid, status;
-            wpid = wait(&status);
-            if( pid == wpid ) break;
-        }
-    }
-    while( waitpid(-1, 0, WNOHANG) > 0 ) ;
-}
-
-static int CatchErrors(Display *dpy, XErrorEvent *ev)
-{
-	return 0;
-}
-
-static jmp_buf XErrEnv;
-static int CatchIOErrors(Display *dpy)
-{
-	close(ConnectionNumber(dpy));
-	longjmp(XErrEnv,1);
-	return 0;
-}
-
-static void stop_clients(void)
-{
-    Window dummy, parent;
-    Window *children;
-    unsigned int nchildren;
-    unsigned int i;
-    Display *dpy;
-    Window Root;
-
-    dpy=XOpenDisplay(0);
-    if(!dpy) return;
-
-
-    XSetErrorHandler(CatchErrors);
-    XSetIOErrorHandler(CatchIOErrors);
-
-    Root = DefaultRootWindow(dpy);
-
-    nchildren = 0;
-    if(!setjmp(XErrEnv))
-        XQueryTree(dpy, Root, &dummy, &parent, &children, &nchildren);
-    else
-        goto out;
-    for( i = 0; i < nchildren; i++ )
-    {
-        if(!setjmp(XErrEnv))
-            XKillClient(dpy, children[i]);
-    }
-    XFree( (char *)children );
-    if(!setjmp(XErrEnv))
-        XSync(dpy, 0);
-out:
-    if(!setjmp(XErrEnv))
-        XCloseDisplay(dpy);
-    XSetErrorHandler(NULL);
-    XSetIOErrorHandler(NULL);
-}
-
 static void on_xserver_stop(void *data,int pid, int status)
 {
+	LXSession *s=data;
+	LXSession *greeter=lxsession_find_greeter();
+
 	log_print("xserver stop, restart. return status %x\n",status);
 
-	stop_pid(server);
-	server = -1;
-
-	if(child>0)
-		lxcom_del_child_watch(child);
-	if( child > 0 )
+	stop_pid(pid);
+	s->server = -1;
+	lxsession_stop(s);
+	
+	if(s->greeter || !greeter)
 	{
-		killpg(child, SIGHUP);
-		stop_pid(child);
-		child = -1;
+		s->greeter=TRUE;
+		set_active_vt(s->tty);
+		lxdm_startx(s);
+		ui_drop();
+		ui_prepare();
 	}
-#if HAVE_LIBPAM
-	close_pam_session();
-#endif
-#if HAVE_LIBCK_CONNECTOR
-	if( ckc != NULL )
+	else
 	{
-		ck_connector_unref(ckc);
-		ckc=NULL;
-		unsetenv("XDG_SESSION_COOKIE");
+		lxsession_free(s);
+		lxsession_set_active(greeter);
 	}
-#endif
-
-	lxdm_startx();
-	ui_drop();
-	ui_prepare();
 }
 
 static void set_numlock(Display *dpy)
@@ -819,28 +1070,27 @@ static void set_numlock(Display *dpy)
 	XkbLockModifiers ( dpy, XkbUseCoreKbd, mask, (on?mask:0));
 }
 
-void lxdm_startx(void)
+void lxdm_startx(LXSession *s)
 {
 	char *arg;
 	char **args;
 	int i;
-	Display *dpy=NULL;
-
-	if(!getenv("DISPLAY"))
-		setenv("DISPLAY",":0",1);
+	char display[16];
+	
+	sprintf(display,":%d",s->display);
+	setenv("DISPLAY",display,1);
 
 	#ifndef DISABLE_XAUTH
-	create_server_auth();
+	create_server_auth(s);
 	#endif
 
-	arg = g_key_file_get_string(config, "server", "arg", 0);
-	if( !arg ) arg = g_strdup("/usr/bin/X");
+	arg = lxsession_xserver_command(s);
 	args = g_strsplit(arg, " ", -1);
 	g_free(arg);
 
-	server = vfork();
+	s->server = vfork();
 
-	switch( server )
+	switch( s->server )
 	{
 	case 0:
 		execvp(args[0], args);
@@ -856,39 +1106,27 @@ void lxdm_startx(void)
 		break;
 	}
 	g_strfreev(args);
-	lxcom_add_child_watch(server, on_xserver_stop, 0);
+	lxcom_add_child_watch(s->server, on_xserver_stop, s);
 
-	for( i = 0; i < 200; i++ )
+	log_print("add xserver watch\n");
+	for( i = 0; i < 100; i++ )
 	{
-		if((dpy=XOpenDisplay(0))!=NULL)
+		if((s->dpy=XOpenDisplay(display))!=NULL)
 			break;
 		g_usleep(50 * 1000);
+		//log_print("retry %d\n",i);
 	}
 	if( i >= 200 )
 		exit(EXIT_FAILURE);
-	set_numlock(dpy);
-	if(!setjmp(XErrEnv)) XCloseDisplay(dpy);
+	set_numlock(s->dpy);
 }
 
-void exit_cb(void)
+static void exit_cb(void)
 {
-	if( child > 0 )
-	{
-		lxcom_del_child_watch(child);
-		killpg(child, SIGHUP);
-		stop_pid(child);
-		child = -1;
-	}
-	ui_clean();
-	#if HAVE_LIBPAM
-	close_pam_session();
-	#endif
-	if( server > 0 )
-	{
-		lxcom_del_child_watch(server);
-		stop_pid(server);
-		server = -1;
-	}
+	log_print("exit cb\n");
+	while(session_list)
+		lxsession_free(session_list->data);
+	log_print("free session\n");
 	put_lock();
 	set_active_vt(old_tty);
 }
@@ -914,30 +1152,11 @@ static int get_run_level(void)
 
 static void on_session_stop(void *data,int pid, int status)
 {
-	killpg(pid, SIGHUP);
-	stop_pid(pid);
-	child = -1;
 	int level;
+	LXSession *s=data;
 
-	if( server > 0 )
-	{
-		/* FIXME just work around lxde bug of focus can't set */
-		stop_clients();
-	}
-	#if HAVE_LIBPAM
-	close_pam_session();
-	#endif
-	#if HAVE_LIBCK_CONNECTOR
-	if( ckc != NULL )
-	{
-		DBusError error;
-		dbus_error_init(&error);
-		ck_connector_close_session(ckc, &error);
-		ck_connector_unref(ckc);
-		ckc=NULL;
-		unsetenv("XDG_SESSION_COOKIE");
-	}
-	#endif
+	lxsession_stop(s);
+
 	level=get_run_level();
 	if(level=='0' || level=='6')
 	{
@@ -945,9 +1164,13 @@ static void on_session_stop(void *data,int pid, int status)
 			g_spawn_command_line_sync("/etc/lxdm/PreShutdown",0,0,0,0);
 		else
 			g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
+		log_print("run level %c\n",level);
 		lxdm_quit_self(0);
 	}
-	ui_prepare();
+	if(s!=lxsession_greeter())
+	{
+		lxsession_free(s);
+	}
 	g_spawn_command_line_async("/etc/lxdm/PostLogout",NULL);
 }
 
@@ -1012,6 +1235,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 	char *session_name=0,*session_exec=0;
 	gboolean alloc_session=FALSE,alloc_lang=FALSE;
 	int pid;
+	LXSession *s,*prev;
 
 	if(!session ||!session[0] || !lang || !lang[0])
 	{
@@ -1051,31 +1275,54 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 		strcpy( pw->pw_shell, getusershell() );
 		endusershell();
 	}
+	prev=lxsession_find_user(pw->pw_uid);
+	s=lxsession_find_greeter();
+	if(prev)
+	{
+		if(s) lxsession_free(s);
+		lxsession_set_active(prev);
+		return;
+	}
+	if(!s) s=lxsession_find_idle();
+	if(!s) s=lxsession_add();
+	if(!s)
+	{
+		log_print("lxsession_add fail\n");
+		exit(0);
+	}
+	s->greeter=FALSE;
+	s->idle=FALSE;
+	s->user=pw->pw_uid;
+	if(s->ckc)
+	{
+		ck_connector_unref(s->ckc);
+		s->ckc=NULL;
+	}
 	#if HAVE_LIBPAM
-	setup_pam_session(pw,session_name);
+	setup_pam_session(s,pw,session_name);
 	#endif
 	#if HAVE_LIBCK_CONNECTOR
-	if(!ckc)
-		ckc = ck_connector_new();
-	if( ckc != NULL )
+	if(!s->ckc)
+		s->ckc = ck_connector_new();
+	if( s->ckc != NULL )
 	{
 		DBusError error;
 		char x[256], *d, *n;
-		sprintf(x, "/dev/tty%d", tty);
+		sprintf(x, "/dev/tty%d", s->tty);
 		dbus_error_init(&error);
 		d = x; n = getenv("DISPLAY");
-		if( ck_connector_open_session_with_parameters(ckc, &error,
+		if( ck_connector_open_session_with_parameters(s->ckc, &error,
 													  "unix-user", &pw->pw_uid,
 	// disable this, follow the gdm way 
 													  //"display-device", &d,
 													  "x11-display-device", &d,
 													  "x11-display", &n,
 													  NULL) )
-			setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(ckc), 1);
+		setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(s->ckc), 1);
 	}
 	#endif
-	child = pid = fork();
-	if( child == 0 )
+	s->child = pid = fork();
+	if(s->child==0)
 	{
 		char** env, *path;
 		int n_env,i;
@@ -1095,8 +1342,8 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 		path = g_key_file_get_string(config, "base", "path", 0);
 		if( G_UNLIKELY(path) && path[0] ) /* if PATH is specified in config file */
 			replace_env(env, "PATH=", path); /* override current $PATH with config value */
-	else /* don't use the global env, they are bad for user */
-		replace_env(env, "PATH=", "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"); /* set proper default */
+		else /* don't use the global env, they are bad for user */
+			replace_env(env, "PATH=", "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"); /* set proper default */
 		g_free(path);
 		/* optionally override $LANG, $LC_MESSAGES, and $LANGUAGE */
 		if( lang && lang[0] )
@@ -1105,12 +1352,12 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 			replace_env(env, "LC_MESSAGES=", lang);
 			replace_env(env, "LANGUAGE=", lang);
 		} 
-	#if HAVE_LIBPAM
-	append_pam_environ(env);
-	pam_end(pamh,0);
-	#endif
-	switch_user(pw, session_exec, env);
-	lxdm_quit_self(4);
+		#if HAVE_LIBPAM
+		append_pam_environ(s->pamh,env);
+		pam_end(s->pamh,0);
+		#endif
+		switch_user(pw, session_exec, env);
+		lxdm_quit_self(4);
 	}
 	g_free(session_name);
 	g_free(session_exec);
@@ -1118,7 +1365,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 		g_free(session);
 	if(alloc_lang)
 		g_free(lang);
-	lxcom_add_child_watch(pid, on_session_stop, 0);
+	lxcom_add_child_watch(pid, on_session_stop, s);
 }
 
 void lxdm_do_reboot(void)
@@ -1143,18 +1390,12 @@ void lxdm_do_shutdown(void)
 	lxdm_quit_self(0);
 }
 
-int lxdm_cur_session(void)
-{
-	return child;
-}
-
 int lxdm_do_auto_login(void)
 {
 	struct passwd *pw;
 	char *user;
 	char *pass=NULL;
 	int ret;
-
 
 	user = g_key_file_get_string(config, "base", "autologin", 0);
 	if( !user )
@@ -1189,11 +1430,10 @@ static void log_sigsegv(void)
 
 static void sigsegv_handler(int sig)
 {
-	switch( sig )
-	{
+	switch(sig){
 	case SIGSEGV:
 		log_sigsegv();
-	lxdm_quit_self(0);
+		lxdm_quit_self(0);
 		break;
 	default:
 		break;
@@ -1202,14 +1442,26 @@ static void sigsegv_handler(int sig)
 
 static void lxdm_signal_handler(void *data,int sig)
 {
-	switch( sig )
-	{
+	switch(sig){
 	case SIGTERM:
 	case SIGINT:
+		log_print("QUIT BY SIGNAL\n");
 		lxdm_quit_self(0);
 		break;
 	default:
 		break;
+	}
+}
+
+static void lxdm_user_cmd(void *data,int user,int arc,char **arg)
+{
+	log_print("user %d session %p cmd %s\n",user , lxsession_find_user(user),arg[0]);
+	if(user!=0 && lxsession_find_user(user)==NULL)
+		return;
+	if(!strcmp(arg[0],"USER_SWITCH"))
+	{
+		log_print("start greeter\n");
+		lxsession_greeter();
 	}
 }
 
@@ -1261,12 +1513,15 @@ int main(int arc, char *arg[])
 
 	set_signal();
 	lxdm_get_tty();
-	lxdm_startx();
+	lxsession_add();
 
 	lxdm_do_auto_login();
+	if(!lxsession_get_active())
+		lxsession_greeter();
+
+	lxcom_add_cmd_handler(-1,lxdm_user_cmd,NULL);
 
 	ui_main();
 
 	return 0;
 }
-

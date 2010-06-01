@@ -1,5 +1,5 @@
 /*
- *      lxdm.c - basic ui of lxdm
+ *      ui.c - basic ui of lxdm
  *
  *      Copyright 2009 dgod <dgod.osa@gmail.com>
  *
@@ -44,6 +44,7 @@ void ui_drop(void)
 	/* if greeter, do quit */
 	if( greeter > 0 )
 	{
+		lxcom_del_child_watch(greeter);
 		write(greeter_pipe[0], "exit\n", 5);
 		g_source_remove(io_id);
 		io_id = 0;
@@ -51,7 +52,6 @@ void ui_drop(void)
 		greeter_io = NULL;
 		close(greeter_pipe[1]);
 		close(greeter_pipe[0]);
-	lxcom_del_child_watch(greeter);
 		waitpid(greeter, 0, 0) ;
 		greeter=-1;
 	}
@@ -125,8 +125,6 @@ static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpo
 			{
 				ui_drop();
 				lxdm_do_login(pw, session, lang);
-				if( lxdm_cur_session() <= 0 )
-					ui_prepare();
 			}
 			else
 				write(greeter_pipe[0], "reset\n", 6);
@@ -150,10 +148,6 @@ static void on_greeter_exit(void *data,int pid, int status)
 void ui_prepare(void)
 {
 	char *p;
-
-	/* if session is running */
-	if( lxdm_cur_session() > 0 )
-		return;
 
 	/* if find greeter, run it */
 	p = g_key_file_get_string(config, "base", "greeter", NULL);
@@ -192,15 +186,3 @@ int ui_main(void)
 	g_main_loop_run(loop);
 	return 0;
 }
-
-void ui_clean(void)
-{
-	if(greeter>0)
-	{
-		extern void stop_pid(int);
-		lxcom_del_child_watch(greeter);
-		stop_pid(greeter);
-		greeter=-1;
-	}
-}
-

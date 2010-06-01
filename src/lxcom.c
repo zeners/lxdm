@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #if !defined(linux) && !defined(__NetBSD__)
@@ -92,14 +93,14 @@ static gboolean lxcom_dispatch (GSource *source,GSourceFunc callback,gpointer us
 {
 	char buf[4096];
 	char ctrl[CMSG_SPACE(sizeof(struct ucred))];
-        struct iovec v={buf,sizeof(buf)};
-        struct msghdr h={0,0,&v,1,ctrl,sizeof(ctrl),0};
-        struct cmsghdr  *cmptr;
+	struct iovec v={buf,sizeof(buf)};
+	struct msghdr h={0,0,&v,1,ctrl,sizeof(ctrl),0};
+	struct cmsghdr  *cmptr;
 	int ret;
 
 	while(1)
 	{
-	        ret=recvmsg(self_server_fd,&h,0);
+		ret=recvmsg(self_server_fd,&h,0);
 
 		if(ret<0) break;
 		if(ret>4000) continue;
@@ -127,7 +128,7 @@ static gboolean lxcom_dispatch (GSource *source,GSourceFunc callback,gpointer us
 				g_strfreev(argv);
 			}
 			break;
-                }
+		}
 	}
 
 	return TRUE;
@@ -143,6 +144,7 @@ static GSourceFuncs lxcom_funcs =
 
 static gboolean lxcom_func(gpointer data,int uid,int pid,int argc,char **argv)
 {
+	gboolean deal=FALSE;
 	GSList *p,*n;
 	assert(argc>0 && argv!=NULL);
 
@@ -181,15 +183,29 @@ static gboolean lxcom_func(gpointer data,int uid,int pid,int argc,char **argv)
 				}
 			}
 		}
+		deal=TRUE;
 		break;
 	}
-	for(p=user_cmd_list;p!=NULL;p=n)
+	if(!deal) for(p=user_cmd_list;p!=NULL;p=n)
 	{
 		UserCmd *item=p->data;
 		n=p->next;
 		if(item->user==uid)
 		{
 			item->func(item->data,uid,argc,argv);
+			deal=TRUE;
+			break;
+		}
+	}
+	if(!deal) for(p=user_cmd_list;p!=NULL;p=n)
+	{
+		UserCmd *item=p->data;
+		n=p->next;
+		if(item->user==-1)
+		{
+			item->func(item->data,uid,argc,argv);
+			deal=TRUE;
+			break;
 		}
 	}
 	}while(0);	
@@ -212,6 +228,7 @@ void lxcom_init(const char *sock)
 	struct sockaddr_un su;
 	int ret,on=1;
 	struct sigaction action;
+	struct stat st;
 
 	sock_path=sock;
 	atexit(lxcom_exit_cb);
@@ -245,6 +262,11 @@ void lxcom_init(const char *sock)
 	sigemptyset (&action.sa_mask);
 	action.sa_flags = SA_NOCLDSTOP;
 	sigaction (SIGCHLD, &action, NULL);
+
+	if(!stat(sock,&st))
+	{
+		chmod(sock,st.st_mode|S_IWOTH|S_IWGRP);
+	}
 }
 
 static ssize_t lxcom_write(int s,const void *buf,size_t count)
@@ -292,6 +314,7 @@ ssize_t lxcom_send(const char *sock,const void *buf,ssize_t count)
 	ret=connect(s,(struct sockaddr*)&su,sizeof(su));
 	if(ret!=0)
 	{
+		perror("connect");
 		close(s);
 		return -1;
 	}
@@ -355,7 +378,7 @@ int lxcom_set_signal_handler(int sig,void (*func)(void *,int),void *data)
 int lxcom_add_cmd_handler(int user,void (*func)(void *,int,int,char **),void *data)
 {
 	UserCmd *item;
-	if(user<0 || !func)
+	if(!func)
 		return -1;
 	item=g_new(UserCmd,1);
 	item->data=data;
