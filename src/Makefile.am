@@ -7,6 +7,7 @@ lxdm_binary_CFLAGS = \
 	-DCONFIG_FILE=\"@sysconfdir@/@PACKAGE@/@PACKAGE@.conf\" \
 	-DXSESSIONS_DIR=\"@datarootdir@/xsessions\" \
 	-DLXDM_DATA_DIR=@datadir@/@PACKAGE@ \
+	-DLXDM_NUMLOCK_PATH=\"@libexecdir@/lxdm-numlock\" \
 	$(CONSOLEKIT_CFLAGS) \
 	-Werror-implicit-function-declaration \
 	-Wall \
@@ -14,15 +15,15 @@ lxdm_binary_CFLAGS = \
 
 lxdm_binary_LDADD = \
 	$(GLIB_LIBS) \
-	$(XLIB_LIBS) \
+	$(XCONN_LIBS) \
 	$(CONSOLEKIT_LIBS) \
 	$(NULL)
 
 lxdm_binary_SOURCES = \
-	lxdm.c lxdm.h ui.c lxcom.c lxcom.h\
+	lxdm.c lxdm.h ui.c lxcom.c lxcom.h xconn.c xconn.h
 	$(NULL)
 
-libexec_PROGRAMS = lxdm-greeter-gtk lxdm-greeter-gdk
+libexec_PROGRAMS = lxdm-greeter-gtk lxdm-greeter-gdk lxdm-numlock
 
 lxdm_greeter_gtk_CFLAGS = \
 	$(GTK_CFLAGS) \
@@ -65,3 +66,16 @@ lxdm_greeter_gdk_LDADD = \
 
 lxdm_greeter_gdk_SOURCES = \
 	greeter-gdk.c
+
+lxdm_numlock_SOURCES = \
+	numlock.c \
+	$(NULL)
+
+lxdm_numlock_CFLAGS = \
+	$(XLIB_CFLAGS) \
+	-DLXDM_NUMLOCK_PATH=\"@libexecdir@/lxdm-numlock\" \
+	$(NULL)
+
+lxdm_numlock_LDADD = \
+	$(XLIB_LIBS) \
+	$(NULL)

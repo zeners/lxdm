@@ -32,7 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <setjmp.h>
 #include <ctype.h>
 #include <unistd.h>
 #include <stdarg.h>
@@ -45,8 +44,6 @@
 #include <time.h>
 #include <sys/wait.h>
 #include <glib.h>
-#include <X11/Xlib.h>
-#include <X11/XKBlib.h>
 
 #include <sys/vt.h>
 #include <sys/ioctl.h>
@@ -64,13 +61,9 @@
 #include <ck-connector.h>
 #endif
 
-#if HAVE_LIBXAU
-#include <X11/Xauth.h>
-#include <sys/utsname.h>
-#endif
-
 #include "lxdm.h"
 #include "lxcom.h"
+#include "xconn.h"
 
 typedef struct{
 	gboolean idle;
@@ -81,7 +74,7 @@ typedef struct{
 	uid_t user;
 	int display;
 	/* we must hold this, else Xserver will crack */
-	Display *dpy;
+	xconn_t dpy;
 #if HAVE_LIBPAM
 	pam_handle_t *pamh;
 #endif
@@ -90,9 +83,6 @@ typedef struct{
 #endif
 #ifndef DISABLE_XAUTH
 	char mcookie[33];
-#endif
-#if HAVE_LIBXAU
-	Xauth x_auth;
 #endif
 }LXSession;
 
@@ -153,52 +143,6 @@ void stop_pid(int pid)
         }
     }
     while( waitpid(-1, 0, WNOHANG) > 0 ) ;
-}
-
-static int CatchErrors(Display *dpy, XErrorEvent *ev)
-{
-	return 0;
-}
-
-static jmp_buf XErrEnv;
-static int CatchIOErrors(Display *dpy)
-{
-	close(ConnectionNumber(dpy));
-	longjmp(XErrEnv,1);
-	return 0;
-}
-
-static void stop_clients(LXSession *s)
-{
-    Window dummy, parent;
-    Window *children;
-    unsigned int nchildren;
-    unsigned int i;
-    Window Root;
-    
-    if(!s->dpy) return;
-    
-    XSetErrorHandler(CatchErrors);
-    XSetIOErrorHandler(CatchIOErrors);
-
-    Root = DefaultRootWindow(s->dpy);
-
-    nchildren = 0;
-    if(!setjmp(XErrEnv))
-        XQueryTree(s->dpy, Root, &dummy, &parent, &children, &nchildren);
-    else
-        goto out;
-    for( i = 0; i < nchildren; i++ )
-    {
-        if(!setjmp(XErrEnv))
-            XKillClient(s->dpy, children[i]);
-    }
-    XFree((char *)children);
-    if(!setjmp(XErrEnv))
-        XSync(s->dpy, 0);
-out:
-    XSetErrorHandler(NULL);
-    XSetIOErrorHandler(NULL);
 }
 
 static void close_pam_session(pam_handle_t *pamh)
@@ -389,7 +333,7 @@ static void lxsession_stop(LXSession *s)
 	}
 	if( s->server > 0 )
 	{
-		stop_clients(s);
+		xconn_clean(s->dpy);
 	}
 #if HAVE_LIBPAM
 	close_pam_session(s->pamh);
@@ -418,12 +362,7 @@ static void lxsession_free(LXSession *s)
 	{
 		if(s->dpy)
 		{
-			XSetErrorHandler(CatchErrors);
-			XSetIOErrorHandler(CatchIOErrors);
-			if(!setjmp(XErrEnv))
-				XCloseDisplay(s->dpy);
-			XSetErrorHandler(NULL);
-			XSetIOErrorHandler(NULL);
+			xconn_close(s->dpy);
 			s->dpy=NULL;
 		}
 		stop_pid(s->server);
@@ -461,23 +400,23 @@ static char *lxsession_xserver_command(LXSession *s)
 {
 	char *p = g_key_file_get_string(config, "server", "arg", 0);
 	int arc;
-    char **arg;
+	char **arg;
 
 	if(!p) p=g_strdup("/usr/bin/X");	
 	g_shell_parse_argv(p, &arc, &arg, 0);
-    g_free(p);
-    arg = g_renew(char *, arg, arc + 10);
-    arc=1;
-    arg[arc++] = g_strdup_printf(":%d",s->display);
-    arg[arc++] = g_strdup_printf("vt%02d", s->tty);
-    arg[arc++] = g_strdup("-nolisten");
-    arg[arc++] = g_strdup("tcp");
-    if(nr_tty)
-    	arg[arc++] = g_strdup("-nr");
-    arg[arc] = NULL;
-    p=g_strjoinv(" ", arg);
-    g_strfreev(arg);
-    return p;
+	g_free(p);
+	arg = g_renew(char *, arg, arc + 10);
+	arc=1;
+	if(nr_tty)
+		arg[arc++] = g_strdup("-nr");
+	arg[arc++] = g_strdup_printf(":%d",s->display);
+	arg[arc++] = g_strdup_printf("vt%02d", s->tty);
+	arg[arc++] = g_strdup("-nolisten");
+	arg[arc++] = g_strdup("tcp");
+        arg[arc] = NULL;
+	p=g_strjoinv(" ", arg);
+	g_strfreev(arg);
+	return p;
 }
 
 void lxdm_get_tty(void)
@@ -647,16 +586,12 @@ void create_server_auth(LXSession *s)
     char *authfile;
 
     h = g_rand_new();
-#if HAVE_LIBXAU
-    for (i=0;i<16;i++)
-        s->mcookie[i]=(char)g_rand_int(h);
-#else
     const char *digits = "0123456789abcdef";
     int r,hex=0;
     for( i = 0; i < 31; i++ )
     {
         r = g_rand_int(h) % 16;
-        mcookie[i] = digits[r];
+        s->mcookie[i] = digits[r];
         if( r > 9 )
             hex++;
     }
@@ -664,9 +599,8 @@ void create_server_auth(LXSession *s)
         r = g_rand_int(h) % 10;
     else
         r = g_rand_int(h) % 5 + 10;
-    mcookie[31] = digits[r];
-    mcookie[32] = 0;
-#endif
+    s->mcookie[31] = digits[r];
+    s->mcookie[32] = 0;
     g_rand_free(h);
 
 	mkdir("/var/run/lxdm",0700);
@@ -674,69 +608,34 @@ void create_server_auth(LXSession *s)
 
     setenv("XAUTHORITY",authfile,1);
     remove(authfile);
-#if HAVE_LIBXAU
-    FILE *fp=fopen(authfile,"wb");
-    if(fp)
-    {
-        static char xau_address[80];
-        static char xau_number[16];
-        static char xau_name[]="MIT-MAGIC-COOKIE-1";
-        struct utsname uts;
-        uname(&uts);
-        sprintf(xau_address, "%s", uts.nodename);
-        strcpy(xau_number,getenv("DISPLAY")+1); // DISPLAY always exist at lxdm
-        s->x_auth.family = FamilyLocal;
-        s->x_auth.address = xau_address;
-        s->x_auth.number = xau_number;
-        s->x_auth.name = xau_name;
-        s->x_auth.address_length = strlen(xau_address);
-        s->x_auth.number_length = strlen(xau_number);
-        s->x_auth.name_length = strlen(xau_name);
-        s->x_auth.data = s->mcookie;
-        s->x_auth.data_length = 16;
-        XauWriteAuth(fp,&s->x_auth);
-        fclose(fp);
-    }
-#else
     char *tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
-                          authfile, getenv("DISPLAY"), mcookie);
-    system(tmp);
+                          authfile, getenv("DISPLAY"), s->mcookie);
+    g_spawn_command_line_sync(tmp,NULL,NULL,NULL,NULL);
     g_free(tmp);
-
-#endif
     g_free(authfile);
 }
 
 void create_client_auth(char *home,char **env)
 {
 	LXSession *s;
-    char *authfile;
+	char *authfile;
 	uid_t user;
 	
-    if((user=getuid())== 0 ) /* root don't need it */
-        return;
+	if((user=getuid())== 0 ) /* root don't need it */
+		return;
         
 	s=lxsession_find_user(user);
 	if(!s)
 		return;
 
-    authfile = g_strdup_printf("%s/.Xauthority", home);
-    remove(authfile);
-#if HAVE_LIBXAU
-    FILE *fp=fopen(authfile,"wb");
-    if(fp)
-    {
-        XauWriteAuth(fp,&s->x_auth);
-        fclose(fp);
-    }
-#else
-    char *tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
+	authfile = g_strdup_printf("%s/.Xauthority", home);
+	remove(authfile);
+	char *tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
                           authfile, getenv("DISPLAY"), s->mcookie);
-    system(tmp);
-    g_free(tmp);
-#endif
-    replace_env(env,"XAUTHORITY=",authfile);
-    g_free(authfile);
+	g_spawn_command_line_async(tmp,NULL);
+	g_free(tmp);
+	replace_env(env,"XAUTHORITY=",authfile);
+	g_free(authfile);
 }
 #endif
 
@@ -1042,34 +941,6 @@ static void on_xserver_stop(void *data,int pid, int status)
 	}
 }
 
-static void set_numlock(Display *dpy)
-{
-	XkbDescPtr xkb;
-	unsigned int mask;
-	int on;
-	int i;
-	if(!g_key_file_has_key(config,"base","numlock",NULL))
-		return;
-	on=g_key_file_get_integer(config,"base","numlock",0);
-	xkb = XkbGetKeyboard( dpy, XkbAllComponentsMask, XkbUseCoreKbd );
-	if(!xkb) return;
-	if(!xkb->names)
-	{
-		XkbFreeKeyboard(xkb,0,True);
-		return;
-	}
-	for(i = 0; i < XkbNumVirtualMods; i++)
-	{
-		char *s=XGetAtomName( xkb->dpy, xkb->names->vmods[i]);
-		if(!s) continue;
-		if(strcmp(s,"NumLock")) continue;
-		XkbVirtualModsToReal( xkb, 1 << i, &mask );
-		break;
-	}
-	XkbFreeKeyboard( xkb, 0, True );
-	XkbLockModifiers ( dpy, XkbUseCoreKbd, mask, (on?mask:0));
-}
-
 void lxdm_startx(LXSession *s)
 {
 	char *arg;
@@ -1111,14 +982,20 @@ void lxdm_startx(LXSession *s)
 	log_print("add xserver watch\n");
 	for( i = 0; i < 100; i++ )
 	{
-		if((s->dpy=XOpenDisplay(display))!=NULL)
+		if((s->dpy=xconn_open(display))!=NULL)
 			break;
 		g_usleep(50 * 1000);
 		//log_print("retry %d\n",i);
 	}
 	if( i >= 200 )
 		exit(EXIT_FAILURE);
-	set_numlock(s->dpy);
+	if(g_key_file_has_key(config,"base","numlock",NULL))
+	{
+		i=g_key_file_get_integer(config,"base","numlock",0);
+		arg=g_strdup_printf("%s %d",LXDM_NUMLOCK_PATH,i);
+		g_spawn_command_line_async(arg,NULL);
+		g_free(arg);
+	}
 }
 
 static void exit_cb(void)

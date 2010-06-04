@@ -81,15 +81,13 @@ if test "x$enable_password" = "xyes" ; then
 fi
 
 AC_ARG_ENABLE(xauth,
-    AC_HELP_STRING([--disable-xauth],[disable the xauth support ]),
-    [enable_xauth=$enablevar],
-    [enable_xauth=yes]
+	AC_HELP_STRING([--disable-xauth],[disable the xauth support ]),
+	[enable_xauth=$enablevar],
+	[enable_xauth=yes]
 )
 
 if test "x$enable_xauth" = "x$no" ; then
- CFLAGS="$CFLAGS -DDISABLE_XAUTH"
-else
- AC_CHECK_LIB([Xau],[XauWriteAuth])
+  CFLAGS="$CFLAGS -DDISABLE_XAUTH"
 fi
 
 AC_ARG_ENABLE(debug,
@@ -100,6 +98,27 @@ AC_ARG_ENABLE(debug,
 if test "x$enable_debug" = "x$yes" ; then
 	CFLAGS="$CFLAGS -DLXDM_DEBUG"
 fi
+
+AC_ARG_WITH(xconn,
+	[AC_HELP_STRING([-with-xconn=@<:@xlib/xcb@:>@],[use xlib or xcb to use])],
+	[if test "x$with_xconn" = "xxlib"; then
+		PKG_CHECK_MODULES(XCONN,"x11")
+		AC_SUBST(XCONN_CFLAGS)
+		AC_SUBST(XCONN_LIBS)
+		CFLAGS="$CFLAGS -DLXDM_XCONN_XLIB"
+
+	 else
+		PKG_CHECK_MODULES(XCONN,"xcb")
+		AC_SUBST(XCONN_CFLAGS)
+		AC_SUBST(XCONN_LIBS)
+		CFLAGS="$CFLAGS -DLXDM_XCONN_XCB"
+	 fi],
+	[PKG_CHECK_MODULES(XCONN,"xcb")
+	 AC_SUBST(XCONN_CFLAGS)
+	 AC_SUBST(XCONN_LIBS)
+	 CFLAGS="$CFLAGS -DLXDM_XCONN_XCB"
+	]
+)
 
 GETTEXT_PACKAGE=lxdm
 AC_SUBST(GETTEXT_PACKAGE)
