@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <glib.h>
 
 #ifdef LXDM_XCONN_XLIB
@@ -144,7 +145,9 @@ xconn_t xconn_open(const char *display)
 	xconn_t c;
 	int fd;
 	dpy=xcb_connect(display,0);
-	if(!dpy) return NULL;
+	/* is error in setup stage, there is memory leak at xcb */
+	if(!dpy || xcb_connection_has_error(dpy))
+		return NULL;
 	c=malloc(sizeof(*c));
 	c->c=dpy;
 	fd=xcb_get_file_descriptor(dpy);
@@ -162,6 +165,8 @@ void xconn_close(xconn_t c)
 {
 	if(!c) return;
 	g_source_remove(c->id);
+	/* hack, clear the xcb has_error, so we can free it any way */
+	*(int*)c->c=0;
 	xcb_disconnect(c->c);
 	free(c);
 }

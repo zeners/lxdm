@@ -918,18 +918,20 @@ void put_lock(void)
 static void on_xserver_stop(void *data,int pid, int status)
 {
 	LXSession *s=data;
-	LXSession *greeter=lxsession_find_greeter();
+	LXSession *greeter;
 
 	log_print("xserver stop, restart. return status %x\n",status);
 
 	stop_pid(pid);
 	s->server = -1;
 	lxsession_stop(s);
-	
+	greeter=lxsession_find_greeter();
 	if(s->greeter || !greeter)
 	{
 		s->greeter=TRUE;
 		set_active_vt(s->tty);
+		xconn_close(s->dpy);
+		s->dpy=NULL;
 		lxdm_startx(s);
 		ui_drop();
 		ui_prepare();
