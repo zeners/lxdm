@@ -149,6 +149,9 @@ void ui_prepare(void)
 {
 	char *p;
 
+	if(greeter>0)
+		return;
+
 	/* if find greeter, run it */
 	p = g_key_file_get_string(config, "base", "greeter", NULL);
 	if( p && p[0] )
@@ -156,14 +159,9 @@ void ui_prepare(void)
 		char **argv;
 		gboolean ret;
 		g_shell_parse_argv(p, NULL, &argv, NULL);
-		
-		/* FIXME: what's this? */
-		if( greeter > 0 && kill(greeter, 0) == 0 )
-			return;
-
 		ret = g_spawn_async_with_pipes(NULL, argv, NULL,
-									   G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD, greeter_setup, 0,
-									   &greeter, greeter_pipe + 0, greeter_pipe + 1, NULL, NULL);
+				   G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD, greeter_setup, 0,
+				   &greeter, greeter_pipe + 0, greeter_pipe + 1, NULL, NULL);
 		g_strfreev(argv);
 		if( ret == TRUE )
 		{
@@ -181,8 +179,8 @@ void ui_prepare(void)
 int ui_main(void)
 {
 	GMainLoop *loop = g_main_loop_new(NULL, 0);
-	ui_prepare();
-	g_spawn_command_line_async("/etc/lxdm/LoginReady",NULL);
+	if(greeter>0)
+		g_spawn_command_line_async("/etc/lxdm/LoginReady",NULL);
 	g_main_loop_run(loop);
 	return 0;
 }

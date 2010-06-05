@@ -166,7 +166,8 @@ void xconn_close(xconn_t c)
 	if(!c) return;
 	g_source_remove(c->id);
 	/* hack, clear the xcb has_error, so we can free it any way */
-	*(int*)c->c=0;
+	if(xcb_connection_has_error(c->c) && *(int*)c->c==1)
+		*(int*)c->c=0;
 	xcb_disconnect(c->c);
 	free(c);
 }

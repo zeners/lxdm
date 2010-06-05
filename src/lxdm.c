@@ -73,8 +73,8 @@ typedef struct{
 	pid_t child;
 	uid_t user;
 	int display;
-	/* we must hold this, else Xserver will crack */
-	xconn_t dpy;
+	char *xarg;	/* hold xserver command */
+	xconn_t dpy;	/* hold this, or X crack */
 #if HAVE_LIBPAM
 	pam_handle_t *pamh;
 #endif
@@ -200,16 +200,24 @@ static LXSession *lxsession_find_tty(int tty)
 	return NULL;
 }
 
-static LXSession *lxsession_get_active(void)
+static gboolean lxsession_get_active(void)
 {
-	LXSession *s;
-	s=lxsession_find_tty(get_active_vt());
-	return (s && !s->idle)?s:0;
+	GSList *p;
+	for(p=session_list;p!=NULL;p=p->next)
+	{
+		LXSession *s=p->data;
+		if(s->greeter || s->idle)
+			continue;
+		return TRUE;
+	}
+	return FALSE;
 }
 
 static void lxsession_set_active(LXSession *s)
 {
-	if(!s) return;
+	if(!s || s->tty<=0) return;
+	if(get_active_vt()==s->tty)
+		return;
 	set_active_vt(s->tty);
 }
 
@@ -270,7 +278,7 @@ static LXSession *lxsession_add(void)
 	if(g_slist_length(session_list)>=4)
 		return NULL;
 	s=g_new0(LXSession,1);
-	s->greeter=TRUE;
+	s->greeter=FALSE;
 	s->tty=lxsession_alloc_tty();
 	s->display=lxsession_alloc_display();
 	s->idle=TRUE;
@@ -398,10 +406,11 @@ static void plymouth_prepare_transition(void)
 
 static char *lxsession_xserver_command(LXSession *s)
 {
-	char *p = g_key_file_get_string(config, "server", "arg", 0);
+	char *p;
 	int arc;
 	char **arg;
 
+	p=g_key_file_get_string(config, "server", "arg", 0);
 	if(!p) p=g_strdup("/usr/bin/X");	
 	g_shell_parse_argv(p, &arc, &arg, 0);
 	g_free(p);
@@ -410,7 +419,8 @@ static char *lxsession_xserver_command(LXSession *s)
 	if(nr_tty)
 		arg[arc++] = g_strdup("-nr");
 	arg[arc++] = g_strdup_printf(":%d",s->display);
-	arg[arc++] = g_strdup_printf("vt%02d", s->tty);
+	if(s->tty>0)
+		arg[arc++] = g_strdup_printf("vt%02d", s->tty);
 	arg[arc++] = g_strdup("-nolisten");
 	arg[arc++] = g_strdup("tcp");
         arg[arc] = NULL;
@@ -421,54 +431,54 @@ static char *lxsession_xserver_command(LXSession *s)
 
 void lxdm_get_tty(void)
 {
-    char *s = g_key_file_get_string(config, "server", "arg", 0);
-    int arc;
-    char **arg;
-    int len;
-    int gotvtarg = 0;
-    gboolean plymouth;
+	char *s = g_key_file_get_string(config, "server", "arg", 0);
+	int arc;
+	char **arg;
+	int len;
+	int gotvtarg = 0;
+	gboolean plymouth;
     
-    plymouth=plymouth_is_running();
-    if(plymouth) plymouth_prepare_transition();
+	plymouth=plymouth_is_running();
+	if(plymouth) plymouth_prepare_transition();
 
-    old_tty=get_active_vt();
-    if( !s ) s = g_strdup("/usr/bin/X");
-    g_shell_parse_argv(s, &arc, &arg, 0);
-    g_free(s);
-    for( len = 0; arg && arg[len]; len++ )
-    {
-        char *p = arg[len];
-        if( !strncmp(p, "vt", 2) && isdigit(p[2]) &&
-           ( !p[3] || (isdigit(p[3]) && !p[4]) ) )
-        {
-            def_tty = atoi(p + 2);
-            gotvtarg = 1;
-        }
-        else if(!strcmp(p,"-nr"))
-        {
+	old_tty=get_active_vt();
+	if( !s ) s = g_strdup("/usr/bin/X");
+	g_shell_parse_argv(s, &arc, &arg, 0);
+	g_free(s);
+	for( len = 0; arg && arg[len]; len++ )
+	{
+		char *p = arg[len];
+		if( !strncmp(p, "vt", 2) && isdigit(p[2]) &&
+		( !p[3] || (isdigit(p[3]) && !p[4]) ) )
+		{
+			def_tty = atoi(p + 2);
+			gotvtarg = 1;
+		}
+		else if(!strcmp(p,"-nr"))
+		{
 			nr_tty=1;
 		}
-    }
-    if(!gotvtarg)
-    {
-        /* support plymouth */
-        nr_tty = g_file_test("/var/spool/gdm/force-display-on-active-vt", G_FILE_TEST_EXISTS);
-        if( nr_tty || g_key_file_get_integer(config, "server", "active_vt", 0) )
-            /* use the active vt */
-            def_tty = old_tty;
-        if( nr_tty ) unlink("/var/spool/gdm/force-display-on-active-vt");
-        if(plymouth)
-        {
+	}
+	if(!gotvtarg)
+	{
+		/* support plymouth */
+		nr_tty = g_file_test("/var/spool/gdm/force-display-on-active-vt", G_FILE_TEST_EXISTS);
+		if( nr_tty || g_key_file_get_integer(config, "server", "active_vt", 0) )
+			/* use the active vt */
+			def_tty = old_tty;
+		if( nr_tty ) unlink("/var/spool/gdm/force-display-on-active-vt");
+		if(plymouth)
+		{
 			nr_tty=1;
 			plymouth_quit_with_transition();
 		}
-    }
-    else
-    {
+	}
+	else
+	{
 		if(plymouth) /* set tty and plymouth running */
 			plymouth_quit_without_transition();
 	}
-    g_strfreev(arg);
+	g_strfreev(arg);
 }
 
 void lxdm_quit_self(int code)
@@ -481,8 +491,11 @@ void log_print(char *fmt, ...)
 {
 	FILE *log;
 	va_list ap;
+	time_t t;
 	log = fopen("/var/log/lxdm.log", "a");
 	if(!log) return;
+	t=time(NULL);
+	fprintf(log,ctime(&t));
 	va_start(ap, fmt);
 	vfprintf(log, fmt, ap);
 	va_end(ap);
@@ -929,12 +942,12 @@ static void on_xserver_stop(void *data,int pid, int status)
 	if(s->greeter || !greeter)
 	{
 		s->greeter=TRUE;
-		set_active_vt(s->tty);
 		xconn_close(s->dpy);
 		s->dpy=NULL;
 		lxdm_startx(s);
 		ui_drop();
 		ui_prepare();
+		lxsession_set_active(greeter);
 	}
 	else
 	{
@@ -1151,7 +1164,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 	if( pw->pw_shell[0] == '\0' )
 	{
 		setusershell();
-		strcpy( pw->pw_shell, getusershell() );
+		strcpy(pw->pw_shell, getusershell());
 		endusershell();
 	}
 	prev=lxsession_find_user(pw->pw_uid);
@@ -1191,12 +1204,12 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 		dbus_error_init(&error);
 		d = x; n = getenv("DISPLAY");
 		if( ck_connector_open_session_with_parameters(s->ckc, &error,
-													  "unix-user", &pw->pw_uid,
+							  "unix-user", &pw->pw_uid,
 	// disable this, follow the gdm way 
-													  //"display-device", &d,
-													  "x11-display-device", &d,
-													  "x11-display", &n,
-													  NULL) )
+							  //"display-device", &d,
+							  "x11-display-device", &d,
+							  "x11-display", &n,
+							  NULL))
 		setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(s->ckc), 1);
 	}
 	#endif
@@ -1272,24 +1285,34 @@ void lxdm_do_shutdown(void)
 int lxdm_do_auto_login(void)
 {
 	struct passwd *pw;
-	char *user;
+	char *p,**users;
 	char *pass=NULL;
-	int ret;
+	int i,count,ret;
+	int success=0;
 
-	user = g_key_file_get_string(config, "base", "autologin", 0);
-	if( !user )
-		return 0;
+	p = g_key_file_get_string(config, "base", "autologin", 0);
+	if(!p) return 0;
+	users=g_strsplit(p," ",8);
+	g_free(p);
+	count=g_strv_length(users);
 
 	#ifdef ENABLE_PASSWORD
-	pass = g_key_file_get_string(config, "base", "password", 0);
+	if(count==1)
+		pass = g_key_file_get_string(config, "base", "password", 0);
 	#endif
-	ret=lxdm_auth_user(user, pass, &pw);
-	g_free(user);
+	for(i=0;i<count;i++)
+	{
+		ret=lxdm_auth_user(users[i], pass, &pw);
+		if(ret==AUTH_SUCCESS)
+		{
+			log_print("autoloign %s\n",users[i]);
+			lxdm_do_login(pw,NULL,NULL);
+			success=1;
+		}
+	}
+	g_strfreev(users);
 	g_free(pass);
-	if(ret!=AUTH_SUCCESS)
-		return 0;
-	lxdm_do_login(pw, NULL, NULL);
-	return 1;
+	return success;;
 }
 
 static void log_sigsegv(void)
@@ -1392,7 +1415,6 @@ int main(int arc, char *arg[])
 
 	set_signal();
 	lxdm_get_tty();
-	lxsession_add();
 
 	lxdm_do_auto_login();
 	if(!lxsession_get_active())
@@ -1404,3 +1426,4 @@ int main(int arc, char *arg[])
 
 	return 0;
 }
+
