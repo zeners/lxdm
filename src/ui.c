@@ -124,7 +124,7 @@ static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpo
 			if( AUTH_SUCCESS == ret && pw != NULL )
 			{
 				ui_drop();
-				lxdm_do_login(pw, session, lang);
+				lxdm_do_login(pw, session, lang,NULL);
 			}
 			else
 				write(greeter_pipe[0], "reset\n", 6);

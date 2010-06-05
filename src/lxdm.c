@@ -73,7 +73,7 @@ typedef struct{
 	pid_t child;
 	uid_t user;
 	int display;
-	char *xarg;	/* hold xserver command */
+	char *option;	/* hold option in config file */
 	xconn_t dpy;	/* hold this, or X crack */
 #if HAVE_LIBPAM
 	pam_handle_t *pamh;
@@ -189,7 +189,7 @@ static LXSession *lxsession_find_user(uid_t user)
 	return NULL;
 }
 
-static LXSession *lxsession_find_tty(int tty)
+LXSession *lxsession_find_tty(int tty)
 {
 	GSList *p;
 	for(p=session_list;p!=NULL;p=p->next)
@@ -376,6 +376,7 @@ static void lxsession_free(LXSession *s)
 		stop_pid(s->server);
 		s->server=0;
 	}
+	g_free(s->option);
 	g_free(s);
 }
 
@@ -409,6 +410,12 @@ static char *lxsession_xserver_command(LXSession *s)
 	char *p;
 	int arc;
 	char **arg;
+	
+	if(s->option)
+	{
+		p=g_key_file_get_string(config,s->option,"xarg",0);
+		if(p) return p;
+	}
 
 	p=g_key_file_get_string(config, "server", "arg", 0);
 	if(!p) p=g_strdup("/usr/bin/X");	
@@ -1004,7 +1011,16 @@ void lxdm_startx(LXSession *s)
 	}
 	if( i >= 200 )
 		exit(EXIT_FAILURE);
-	if(g_key_file_has_key(config,"base","numlock",NULL))
+	
+	if(s->option && g_key_file_has_key(config,s->option,"numlock",NULL))
+	{
+		i=g_key_file_get_integer(config,s->option,"numlock",0);
+		arg=g_strdup_printf("%s %d",LXDM_NUMLOCK_PATH,i);
+		g_spawn_command_line_async(arg,NULL);
+		g_free(arg);
+
+	}
+	else if(g_key_file_has_key(config,"base","numlock",NULL))
 	{
 		i=g_key_file_get_integer(config,"base","numlock",0);
 		arg=g_strdup_printf("%s %d",LXDM_NUMLOCK_PATH,i);
@@ -1122,7 +1138,7 @@ gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 	return TRUE;
 }
 
-void lxdm_do_login(struct passwd *pw, char *session, char *lang)
+void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 {
 	char *session_name=0,*session_exec=0;
 	gboolean alloc_session=FALSE,alloc_lang=FALSE;
@@ -1185,15 +1201,17 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 	s->greeter=FALSE;
 	s->idle=FALSE;
 	s->user=pw->pw_uid;
+	if(option)
+		s->option=g_strdup(option);
 	if(s->ckc)
 	{
 		ck_connector_unref(s->ckc);
 		s->ckc=NULL;
 	}
-	#if HAVE_LIBPAM
+#if HAVE_LIBPAM
 	setup_pam_session(s,pw,session_name);
-	#endif
-	#if HAVE_LIBCK_CONNECTOR
+#endif
+#if HAVE_LIBCK_CONNECTOR
 	if(!s->ckc)
 		s->ckc = ck_connector_new();
 	if( s->ckc != NULL )
@@ -1212,7 +1230,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 							  NULL))
 		setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(s->ckc), 1);
 	}
-	#endif
+#endif
 	s->child = pid = fork();
 	if(s->child==0)
 	{
@@ -1244,10 +1262,10 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang)
 			replace_env(env, "LC_MESSAGES=", lang);
 			replace_env(env, "LANGUAGE=", lang);
 		} 
-		#if HAVE_LIBPAM
+#if HAVE_LIBPAM
 		append_pam_environ(s->pamh,env);
 		pam_end(s->pamh,0);
-		#endif
+#endif
 		switch_user(pw, session_exec, env);
 		lxdm_quit_self(4);
 	}
@@ -1302,13 +1320,26 @@ int lxdm_do_auto_login(void)
 	#endif
 	for(i=0;i<count;i++)
 	{
-		ret=lxdm_auth_user(users[i], pass, &pw);
+		char *user,*session=NULL,*lang=NULL,*option=NULL;
+		p=users[i];
+		if(p[0]=='@')	
+		{
+			option=p+1;
+			user=g_key_file_get_string(config,option,"user",NULL);
+			session=g_key_file_get_string(config,option,"session",0);
+			lang=g_key_file_get_string(config,option,"lang",0);
+		}
+		else
+		{
+			user=g_strdup(p);
+		}
+		ret=lxdm_auth_user(user, pass, &pw);
 		if(ret==AUTH_SUCCESS)
 		{
-			log_print("autoloign %s\n",users[i]);
-			lxdm_do_login(pw,NULL,NULL);
+			lxdm_do_login(pw,session,lang,option);
 			success=1;
 		}
+		g_free(user);g_free(session);g_free(lang);
 	}
 	g_strfreev(users);
 	g_free(pass);
