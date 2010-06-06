@@ -7,11 +7,13 @@
 #include <unistd.h>
 #include <assert.h>
 #include <fcntl.h>
+#include <poll.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/ioctl.h>
 #if !defined(linux) && !defined(__NetBSD__)
 #include <sys/ucred.h>
 #endif
@@ -63,7 +65,7 @@ typedef struct{
 typedef struct{
 	int user;
 	void *data;
-	void (*func)(void *data,int user,int argc,char **argv);
+	GString *(*func)(void *data,int user,int argc,char **argv);
 }UserCmd;
 
 static GSList *child_watch_list;
@@ -76,7 +78,7 @@ typedef struct _LXComSource
 	GPollFD poll;
 }LXComSource;
 
-typedef gboolean (*LXComFunc)(gpointer data,int uid,int pid,int argc,char **argv);
+typedef GString *(*LXComFunc)(gpointer data,int uid,int pid,int argc,char **argv);
 
 static gboolean lxcom_prepare (GSource *source,gint *timeout)
 {
@@ -93,13 +95,15 @@ static gboolean lxcom_dispatch (GSource *source,GSourceFunc callback,gpointer us
 {
 	char buf[4096];
 	char ctrl[CMSG_SPACE(sizeof(struct ucred))];
+	struct sockaddr_un peer;
 	struct iovec v={buf,sizeof(buf)};
-	struct msghdr h={0,0,&v,1,ctrl,sizeof(ctrl),0};
-	struct cmsghdr  *cmptr;
+	struct msghdr h={&peer,sizeof(peer),&v,1,ctrl,sizeof(ctrl),0};
+	struct cmsghdr *cmptr;
 	int ret;
 
 	while(1)
 	{
+		peer.sun_family=0;
 		ret=recvmsg(self_server_fd,&h,0);
 
 		if(ret<0) break;
@@ -111,6 +115,7 @@ static gboolean lxcom_dispatch (GSource *source,GSourceFunc callback,gpointer us
 			int size;
 			int argc;
 			char **argv;
+			GString *res;
 
 			#ifndef __NetBSD__
 			size = sizeof(LXDM_CRED);
@@ -124,8 +129,15 @@ static gboolean lxcom_dispatch (GSource *source,GSourceFunc callback,gpointer us
                         c=(LXDM_CRED*)CMSG_DATA(cmptr);
 			if(g_shell_parse_argv(buf,&argc,&argv,NULL))
 			{
-				((LXComFunc)callback)(user_data,LXDM_PEER_UID(c),LXDM_PEER_PID(c),argc,argv);
+				res=((LXComFunc)callback)(user_data,LXDM_PEER_UID(c),LXDM_PEER_PID(c),argc,argv);
 				g_strfreev(argv);
+				if(res)
+				{
+//					if(peer.sun_family==AF_UNIX)
+					ret=sendto(self_server_fd,res->str,res->len,0,(struct sockaddr*)&peer,sizeof(peer));
+					g_string_free(res,TRUE);
+					if(ret==-1) perror("sendto");
+				}
 			}
 			break;
 		}
@@ -142,10 +154,11 @@ static GSourceFuncs lxcom_funcs =
 	NULL
 };
 
-static gboolean lxcom_func(gpointer data,int uid,int pid,int argc,char **argv)
+static GString *lxcom_func(gpointer data,int uid,int pid,int argc,char **argv)
 {
 	gboolean deal=FALSE;
 	GSList *p,*n;
+	GString *res=NULL;
 	assert(argc>0 && argv!=NULL);
 
 	do{
@@ -192,7 +205,7 @@ static gboolean lxcom_func(gpointer data,int uid,int pid,int argc,char **argv)
 		n=p->next;
 		if(item->user==uid)
 		{
-			item->func(item->data,uid,argc,argv);
+			res=item->func(item->data,uid,argc,argv);
 			deal=TRUE;
 			break;
 		}
@@ -203,13 +216,13 @@ static gboolean lxcom_func(gpointer data,int uid,int pid,int argc,char **argv)
 		n=p->next;
 		if(item->user==-1)
 		{
-			item->func(item->data,uid,argc,argv);
+			res=item->func(item->data,uid,argc,argv);
 			deal=TRUE;
 			break;
 		}
 	}
 	}while(0);	
-	return TRUE;
+	return res;
 }
 
 static void sig_handler(int sig)
@@ -296,21 +309,23 @@ void lxcom_raise_signal(int sig)
 	lxcom_write(self_client_fd,temp,strlen(temp));
 }
 
-ssize_t lxcom_send(const char *sock,const void *buf,ssize_t count)
+gboolean lxcom_send(const char *sock,const char *buf,char **res)
 {
 	int s;
 	int ret;
 	struct sockaddr_un su;
+	int count=strlen(buf)+1;
+	char *addr=NULL;
 	
 	memset(&su,0,sizeof(su));
 	su.sun_family=AF_UNIX;
-	strcpy(su.sun_path,sock);
 	s=socket(AF_UNIX,SOCK_DGRAM,0);
 	assert(s!=-1);
 	fcntl(s,F_SETFL,O_NONBLOCK|fcntl(self_server_fd,F_GETFL));
 	s=socket(AF_UNIX,SOCK_DGRAM,0);
 	assert(s!=-1);
 	fcntl(s,F_SETFL,O_NONBLOCK|fcntl(self_client_fd,F_GETFL));
+	strcpy(su.sun_path,sock);
 	ret=connect(s,(struct sockaddr*)&su,sizeof(su));
 	if(ret!=0)
 	{
@@ -318,9 +333,66 @@ ssize_t lxcom_send(const char *sock,const void *buf,ssize_t count)
 		close(s);
 		return -1;
 	}
+
+	if(res)
+	{
+#ifdef __linux__
+		su.sun_path[0]=0;
+		sprintf(su.sun_path+1,"/var/run/lxdm/lxdm-%d.sock",getpid());
+#else
+		addr=g_strdup_printf("/var/run/lxdm/lxdm-%d.sock",getpid());
+		unlink(addr);
+		strcpy(su.sun_path,addr);
+#endif
+		ret=bind(s,(struct sockaddr*)&su,sizeof(su));
+		if(ret!=0)
+		{
+			close(s);
+			g_free(addr);
+			perror("bind");
+			return FALSE;
+		}
+	}
+
 	ret=lxcom_write(s,buf,count);
+	if(ret!=count)
+	{
+		close(s);
+		if(addr) unlink(addr);
+		g_free(addr);
+		return FALSE;
+	}
+	if(res)
+	{
+		struct pollfd pf;
+		*res=NULL;
+		pf.fd=s;
+		pf.events=POLLIN;
+		pf.revents=0;
+		ret=poll(&pf,1,3000);
+		if(ret==1 && (pf.revents & POLLIN))
+		{
+			ret=ioctl(s,FIONREAD,&count);
+			if(ret==0)
+			{
+				char *p=g_malloc(count+1);
+				ret=recv(s,p,count,0);
+				if(ret>=0)
+				{
+					p[ret]=0;
+					*res=p;
+				}
+				else
+				{
+					g_free(p);
+				}
+			}
+		}
+	}
 	close(s);
-	return ret;
+	if(addr) unlink(addr);
+	g_free(addr);
+	return TRUE;
 }
 
 int lxcom_add_child_watch(int pid,void (*func)(void*,int,int),void *data)
@@ -375,7 +447,7 @@ int lxcom_set_signal_handler(int sig,void (*func)(void *,int),void *data)
 	return 0;
 }
 
-int lxcom_add_cmd_handler(int user,void (*func)(void *,int,int,char **),void *data)
+int lxcom_add_cmd_handler(int user,GString *(*func)(void *,int,int,char **),void *data)
 {
 	UserCmd *item;
 	if(!func)
@@ -425,7 +497,7 @@ void on_sigint(void *data,int sig)
 }
 
 int cmd_count;
-void on_cmd(void *data,int user,int arc,char **arg)
+GString *on_cmd(void *data,int user,int arc,char **arg)
 {
 	int i;
 	printf("%d %s: ",user,(char*)data);
@@ -438,6 +510,7 @@ void on_cmd(void *data,int user,int arc,char **arg)
 
 	if(cmd_count==2)
 		lxcom_del_cmd_handler(user);
+	return g_string_new("OK");
 }
 
 int main(int arc,char *arg[])
@@ -445,15 +518,18 @@ int main(int arc,char *arg[])
 	if(arc==1)
 	{
 		GMainLoop *loop;
-		lxcom_init("/tmp/lxdm.sock");
+		lxcom_init("/tmp/test.sock");
 		lxcom_set_signal_handler(SIGINT,on_sigint,"sigtest");
-		lxcom_add_cmd_handler(500,on_cmd,"cmdtest");
+		lxcom_add_cmd_handler(-1,on_cmd,"cmdtest");
 		loop=g_main_loop_new(NULL,0);
 		g_main_loop_run(loop);
 	}
 	else
 	{
-		lxcom_send("/tmp/lxdm.sock",arg[1],strlen(arg[1])+1);
+		gboolean ret;
+		char *res=0;
+		ret=lxcom_send("/tmp/test.sock",arg[1],&res);
+		if(ret && res) printf("%s\n",res);
 	}
 	return 0;
 }

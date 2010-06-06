@@ -1386,16 +1386,55 @@ static void lxdm_signal_handler(void *data,int sig)
 	}
 }
 
-static void lxdm_user_cmd(void *data,int user,int arc,char **arg)
+GKeyFile *lxdm_user_list(void)
 {
+	struct passwd *pw;
+	GKeyFile *kf;
+	char *face;
+	kf=g_key_file_new();
+	g_key_file_set_comment(kf,NULL,NULL,"lxdm user list",NULL);
+	while((pw=getpwent())!=NULL)
+	{
+		 if(strstr(pw->pw_shell, "nologin"))
+		 	continue;
+		 if(strncmp(pw->pw_dir,"/home/",6))
+		 	continue;
+		 g_key_file_set_string(kf,pw->pw_name,NULL,NULL);
+		 if(pw->pw_gecos)
+		 	g_key_file_set_string(kf,pw->pw_name,"gecos",pw->pw_gecos);
+		 if(lxsession_find_user(pw->pw_uid))
+		 	g_key_file_set_boolean(kf,pw->pw_name,"login",TRUE);
+		 face=g_strdup_printf("%s/.face",pw->pw_dir);
+		 if(access(face,R_OK))
+		 	g_key_file_set_string(kf,pw->pw_name,"face",face);
+		 g_free(face);
+	}
+	endpwent();
+	return kf;
+}
+
+static GString *lxdm_user_cmd(void *data,int user,int arc,char **arg)
+{
+	GString *res=NULL;
 	log_print("user %d session %p cmd %s\n",user , lxsession_find_user(user),arg[0]);
 	if(user!=0 && lxsession_find_user(user)==NULL)
-		return;
+		return NULL;
 	if(!strcmp(arg[0],"USER_SWITCH"))
 	{
 		log_print("start greeter\n");
 		lxsession_greeter();
 	}
+	else if(!strcmp(arg[0],"USER_LIST"))
+	{
+		GKeyFile *kf=lxdm_user_list();
+		gsize len;
+		char *p=g_key_file_to_data(kf,&len,NULL);
+		if(p)
+		{
+			res=g_string_new_len(p,len);
+		}
+	}
+	return res;
 }
 
 void set_signal(void)
@@ -1423,9 +1462,7 @@ int main(int arc, char *arg[])
 			daemonmode=1;
 		else if(!strcmp(arg[i],"-c") && i+1<arc)
 		{
-			int count=strlen(arg[i+1])+1;
-			i=lxcom_send("/tmp/lxdm.sock",arg[i+1],count);
-			return (i==count)?0:-1;
+			return lxcom_send("/tmp/lxdm.sock",arg[i+1],NULL)?0:-1;			
 		}
 	}
 	if( getuid() != 0 )
