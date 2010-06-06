@@ -29,9 +29,11 @@ void numlock(Display *c,int onoff)
 int main(int arc,char *arg[])
 {
 	Display *c;
-	if(arc!=2) return;
+	if(arc!=2)
+		return -1;
 	c=XOpenDisplay(0);
-	if(!c) return;
+	if(!c)
+		return -1;
 	if(!strcmp(arg[1],"on") || !strcmp(arg[1],"1"))
 		numlock(c,1);
 	else
