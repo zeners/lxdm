@@ -1,5 +1,6 @@
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
+#include <string.h> // strcmp
 
 void numlock(Display *c,int onoff)
 {
