@@ -397,7 +397,7 @@ static void plymouth_quit_with_transition(void)
 
 static void plymouth_quit_without_transition(void)
 {
-	g_spawn_command_line_sync("/bin/plymouth quit --retain-splash",NULL,NULL,NULL,NULL);
+	g_spawn_command_line_sync("/bin/plymouth quit",NULL,NULL,NULL,NULL);
 }
 
 static void plymouth_prepare_transition(void)
