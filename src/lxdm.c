@@ -1400,12 +1400,12 @@ GKeyFile *lxdm_user_list(void)
 		 if(strncmp(pw->pw_dir,"/home/",6))
 		 	continue;
 		 g_key_file_set_string(kf,pw->pw_name,NULL,NULL);
-		 if(pw->pw_gecos)
+		 if(pw->pw_gecos && pw->pw_gecos[0])
 		 	g_key_file_set_string(kf,pw->pw_name,"gecos",pw->pw_gecos);
 		 if(lxsession_find_user(pw->pw_uid))
 		 	g_key_file_set_boolean(kf,pw->pw_name,"login",TRUE);
 		 face=g_strdup_printf("%s/.face",pw->pw_dir);
-		 if(access(face,R_OK))
+		 if(!access(face,R_OK))
 		 	g_key_file_set_string(kf,pw->pw_name,"face",face);
 		 g_free(face);
 	}
@@ -1459,10 +1459,20 @@ int main(int arc, char *arg[])
 	for(i=1;i<arc;i++)
 	{
 		if(!strcmp(arg[i],"-d"))
+		{
 			daemonmode=1;
+		}
 		else if(!strcmp(arg[i],"-c") && i+1<arc)
 		{
 			return lxcom_send("/tmp/lxdm.sock",arg[i+1],NULL)?0:-1;			
+		}
+		else if(!strcmp(arg[i],"-w") && i+1<arc)
+		{
+			char *res=NULL;
+			lxcom_send("/tmp/lxdm.sock",arg[i+1],&res);
+			if(res) printf("%s\n",res);
+			g_free(res);
+			return res?0:-1;
 		}
 	}
 	if( getuid() != 0 )
