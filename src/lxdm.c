@@ -1008,12 +1008,14 @@ void lxdm_startx(LXSession *s)
 	log_print("add xserver watch\n");
 	for( i = 0; i < 100; i++ )
 	{
+		if(lxcom_last_sig==SIGINT || lxcom_last_sig==SIGTERM)
+			break;
 		if((s->dpy=xconn_open(display))!=NULL)
 			break;
 		g_usleep(50 * 1000);
 		//log_print("retry %d\n",i);
 	}
-	if( i >= 200 )
+	if(s->dpy==NULL)
 		exit(EXIT_FAILURE);
 	
 	if(s->option && g_key_file_has_key(config,s->option,"numlock",NULL))

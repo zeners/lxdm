@@ -225,8 +225,10 @@ static GString *lxcom_func(gpointer data,int uid,int pid,int argc,char **argv)
 	return res;
 }
 
+int lxcom_last_sig;
 static void sig_handler(int sig)
 {
+	lxcom_last_sig=sig;
 	lxcom_raise_signal(sig);
 }
 
