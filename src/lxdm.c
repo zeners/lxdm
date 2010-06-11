@@ -850,6 +850,11 @@ void append_pam_environ(pam_handle_t *pamh,char **env)
 void switch_user(struct passwd *pw, char *run, char **env)
 {
     int fd;
+    
+    setenv("USER",pw->pw_name,1);
+    setenv("LOGNAME",pw->pw_name,1);
+    setenv("SHELL",pw->pw_shell,1);
+    setenv("HOME",pw->pw_dir,1);
 
     g_spawn_command_line_sync ("/etc/lxdm/PreLogin",NULL,NULL,NULL,NULL);
 
@@ -1516,4 +1521,3 @@ int main(int arc, char *arg[])
 
 	return 0;
 }
-
