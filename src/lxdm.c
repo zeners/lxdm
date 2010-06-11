@@ -601,38 +601,37 @@ static void replace_env(char** env, const char* name, const char* new_val)
 #ifndef DISABLE_XAUTH
 void create_server_auth(LXSession *s)
 {
-    GRand *h;
-    int i;
-    char *authfile;
+	GRand *h;
+	int i;
+	char *authfile;
 
-    h = g_rand_new();
-    const char *digits = "0123456789abcdef";
-    int r,hex=0;
-    for( i = 0; i < 31; i++ )
-    {
-        r = g_rand_int(h) % 16;
-        s->mcookie[i] = digits[r];
-        if( r > 9 )
-            hex++;
-    }
-    if( (hex % 2) == 0 )
-        r = g_rand_int(h) % 10;
-    else
-        r = g_rand_int(h) % 5 + 10;
-    s->mcookie[31] = digits[r];
-    s->mcookie[32] = 0;
-    g_rand_free(h);
+	h = g_rand_new();
+	const char *digits = "0123456789abcdef";
+	int r,hex=0;
+	for( i = 0; i < 31; i++ )
+	{
+		r = g_rand_int(h) % 16;
+		s->mcookie[i] = digits[r];
+		if( r > 9 )
+			hex++;
+	}
+	if( (hex % 2) == 0 )
+		r = g_rand_int(h) % 10;
+	else
+        	r = g_rand_int(h) % 5 + 10;
+	s->mcookie[31] = digits[r];
+	s->mcookie[32] = 0;
+	g_rand_free(h);
 
-	mkdir("/var/run/lxdm",0700);
 	authfile = g_strdup_printf("/var/run/lxdm/lxdm-:%d.auth",s->display);
 
-    setenv("XAUTHORITY",authfile,1);
-    remove(authfile);
-    char *tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
+	setenv("XAUTHORITY",authfile,1);
+	remove(authfile);
+	char *tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
                           authfile, getenv("DISPLAY"), s->mcookie);
-    g_spawn_command_line_sync(tmp,NULL,NULL,NULL,NULL);
-    g_free(tmp);
-    g_free(authfile);
+	g_spawn_command_line_sync(tmp,NULL,NULL,NULL,NULL);
+	g_free(tmp);
+	g_free(authfile);
 }
 
 void create_client_auth(char *home,char **env)
@@ -1464,12 +1463,12 @@ int main(int arc, char *arg[])
 		}
 		else if(!strcmp(arg[i],"-c") && i+1<arc)
 		{
-			return lxcom_send("/tmp/lxdm.sock",arg[i+1],NULL)?0:-1;			
+			return lxcom_send("/var/run/lxdm/lxdm.sock",arg[i+1],NULL)?0:-1;			
 		}
 		else if(!strcmp(arg[i],"-w") && i+1<arc)
 		{
 			char *res=NULL;
-			lxcom_send("/tmp/lxdm.sock",arg[i+1],&res);
+			lxcom_send("/var/run/lxdm/lxdm.sock",arg[i+1],&res);
 			if(res) printf("%s\n",res);
 			g_free(res);
 			return res?0:-1;
@@ -1488,7 +1487,20 @@ int main(int arc, char *arg[])
 	g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_NONE, NULL);
 
 	get_lock();
-	lxcom_init("/tmp/lxdm.sock");
+	
+	if(0!=mkdir("/var/run/lxdm",0755))
+	{
+		if(errno==EEXIST)
+		{
+			chmod("/var/run/lxdm",0755);
+		}
+		else
+		{
+			log_print("mkdir /var/run/lxdm fail\n");
+			exit(-1);
+		}
+	}
+	lxcom_init("/var/run/lxdm/lxdm.sock");
 	atexit(exit_cb);
 
 	set_signal();
