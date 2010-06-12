@@ -10,7 +10,7 @@ int lxcom_set_signal_handler(int sig,void (*func)(void *,int),void *data);
 int lxcom_add_cmd_handler(int user,GString * (*func)(void *,int,int,char **),void *data);
 int lxcom_del_cmd_handler(int user);
 
-extern int lxcom_last_sig;
+extern volatile sig_atomic_t lxcom_last_sig;
 
 #endif/*_LXCOM_H_*/
 

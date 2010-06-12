@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <signal.h>
+#include <errno.h>
 
 #include <sys/wait.h>
 
@@ -39,13 +40,21 @@ static int greeter_pipe[2];
 static GIOChannel *greeter_io;
 static guint io_id;
 
+static void xwrite(int fd,const void *buf,size_t size)
+{
+	int ret;
+	do{
+		ret=write(fd,buf,size);
+	}while(ret==-1 && errno==EINTR);
+}
+
 void ui_drop(void)
 {
 	/* if greeter, do quit */
 	if( greeter > 0 )
 	{
 		lxcom_del_child_watch(greeter);
-		write(greeter_pipe[0], "exit\n", 5);
+		xwrite(greeter_pipe[0], "exit\n", 5);
 		g_source_remove(io_id);
 		io_id = 0;
 		g_io_channel_unref(greeter_io);
@@ -127,7 +136,7 @@ static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpo
 				lxdm_do_login(pw, session, lang,NULL);
 			}
 			else
-				write(greeter_pipe[0], "reset\n", 6);
+				xwrite(greeter_pipe[0], "reset\n", 6);
 		}
 		g_free(user);
 		g_free(pass);

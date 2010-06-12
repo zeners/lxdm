@@ -365,6 +365,7 @@ static void lxsession_free(LXSession *s)
 	if(!s)
 		return;
 	session_list=g_slist_remove(session_list,s);
+	s->server=-1;
 	lxsession_stop(s);
 	if(s->server)
 	{
@@ -1405,7 +1406,7 @@ GKeyFile *lxdm_user_list(void)
 		 	continue;
 		 if(strncmp(pw->pw_dir,"/home/",6))
 		 	continue;
-		 g_key_file_set_string(kf,pw->pw_name,NULL,NULL);
+		 g_key_file_set_string(kf,pw->pw_name,"name",pw->pw_name);
 		 if(pw->pw_gecos && pw->pw_gecos[0])
 		 	g_key_file_set_string(kf,pw->pw_name,"gecos",pw->pw_gecos);
 		 if(lxsession_find_user(pw->pw_uid))
@@ -1439,6 +1440,7 @@ static GString *lxdm_user_cmd(void *data,int user,int arc,char **arg)
 		{
 			res=g_string_new_len(p,len);
 		}
+		g_key_file_free(kf);
 	}
 	return res;
 }
@@ -1447,12 +1449,13 @@ void set_signal(void)
 {
 	lxcom_set_signal_handler(SIGQUIT,lxdm_signal_handler,0);
 	lxcom_set_signal_handler(SIGTERM,lxdm_signal_handler,0);
-	lxcom_set_signal_handler(SIGKILL,lxdm_signal_handler,0);
 	lxcom_set_signal_handler(SIGINT,lxdm_signal_handler,0);
 	lxcom_set_signal_handler(SIGHUP,lxdm_signal_handler,0);
 	lxcom_set_signal_handler(SIGPIPE,lxdm_signal_handler,0);
-	lxcom_set_signal_handler(SIGUSR1,lxdm_signal_handler,0);
 	lxcom_set_signal_handler(SIGALRM,lxdm_signal_handler,0);
+	signal(SIGTTIN,SIG_IGN);
+	signal(SIGTTOU,SIG_IGN);
+	signal(SIGUSR1,SIG_IGN);
 	signal(SIGSEGV, sigsegv_handler);
 }
 
@@ -1520,6 +1523,8 @@ int main(int arc, char *arg[])
 	lxcom_add_cmd_handler(-1,lxdm_user_cmd,NULL);
 
 	ui_main();
+
+	g_key_file_free(config);
 
 	return 0;
 }

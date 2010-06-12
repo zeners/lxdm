@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <signal.h>
+#include <errno.h>
 #include <unistd.h>
 #include <assert.h>
 #include <fcntl.h>
@@ -133,8 +134,9 @@ static gboolean lxcom_dispatch (GSource *source,GSourceFunc callback,gpointer us
 				g_strfreev(argv);
 				if(res)
 				{
-//					if(peer.sun_family==AF_UNIX)
-					ret=sendto(self_server_fd,res->str,res->len,0,(struct sockaddr*)&peer,sizeof(peer));
+					do{
+						ret=sendto(self_server_fd,res->str,res->len,0,(struct sockaddr*)&peer,sizeof(peer));
+					}while(ret==-1 && errno==EINTR);
 					g_string_free(res,TRUE);
 					if(ret==-1) perror("sendto");
 				}
@@ -177,7 +179,7 @@ static GString *lxcom_func(gpointer data,int uid,int pid,int argc,char **argv)
 					n=p->next;
 					if(waitpid(item->pid,&status,WNOHANG)>0)
 					{
-						child_watch_list=g_slist_remove_link(child_watch_list,p);
+						child_watch_list=g_slist_delete_link(child_watch_list,p);
 						item->func(item->data,item->pid,status);
 						g_free(item);
 					}
@@ -225,7 +227,7 @@ static GString *lxcom_func(gpointer data,int uid,int pid,int argc,char **argv)
 	return res;
 }
 
-int lxcom_last_sig;
+volatile sig_atomic_t lxcom_last_sig;
 static void sig_handler(int sig)
 {
 	lxcom_last_sig=sig;
@@ -291,6 +293,8 @@ static ssize_t lxcom_write(int s,const void *buf,size_t count)
 #if !defined(linux) && !defined(__NetBSD__)
         char ctrl[CMSG_SPACE(sizeof(LXDM_CRED))];
         struct cmsghdr  *cmptr;
+	char *p;
+	int i;
 
         msg.msg_control    = ctrl;
         msg.msg_controllen = sizeof(ctrl);
@@ -299,16 +303,21 @@ static ssize_t lxcom_write(int s,const void *buf,size_t count)
         cmptr->cmsg_len   = CMSG_LEN(sizeof(LXDM_CRED));
         cmptr->cmsg_level = SOL_SOCKET;
         cmptr->cmsg_type  = SCM_CREDS;
-        memset(CMSG_DATA(cmptr), 0, sizeof(LXDM_CRED));
+	p=(char*)CMSG_DATA(cmptr);
+	for(i=0;i<sizeof(LXDM_CRED);i++)
+		p[i]=0;
 #endif
 	return sendmsg(s,&msg,0);
 }
 
 void lxcom_raise_signal(int sig)
 {
-	char temp[32];
-	sprintf(temp,"SIGNAL %d",sig);
-	lxcom_write(self_client_fd,temp,strlen(temp));
+	char temp[32]="SIGNAL ";
+	int pos=7,val;
+	val=(sig/10)%10;if(val) temp[pos++]='0'+val;
+	val=sig%10;temp[pos++]='0'+val;
+	temp[pos]=0;
+	lxcom_write(self_client_fd,temp,sizeof(temp));
 }
 
 gboolean lxcom_send(const char *sock,const char *buf,char **res)
@@ -418,7 +427,7 @@ int lxcom_del_child_watch(int pid)
 		ChildWatch *item=p->data;
 		if(item->pid==pid)
 		{
-			child_watch_list=g_slist_remove_link(child_watch_list,p);
+			child_watch_list=g_slist_delete_link(child_watch_list,p);
 			g_free(item);
 			return 0;
 		}

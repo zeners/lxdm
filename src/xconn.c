@@ -183,6 +183,7 @@ static xcb_window_t xconn_get_root(xconn_t c)
 
 void xconn_clean(xconn_t c)
 {
+#if 0
 	xcb_query_tree_cookie_t wintree;
 	xcb_query_tree_reply_t *rep;
 	xcb_window_t *children;
@@ -199,6 +200,7 @@ void xconn_clean(xconn_t c)
 		xcb_kill_client(c->c,children[i]);
 	free(rep);
 	xcb_flush(c->c);
+#endif
 }
 
 #endif
