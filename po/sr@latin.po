@@ -1,0 +1,56 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-25 04:46+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../data/lxdm.glade.h:1
+msgid "Desktop:"
+msgstr "Radna površ:"
+
+#: ../data/lxdm.glade.h:2
+msgid "Keyboard Layout:"
+msgstr "Raspored na tastaturi:"
+
+#: ../data/lxdm.glade.h:3
+msgid "Language:"
+msgstr "Jezik:"
+
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:130 ../src/greeter.c:171
+msgid "User:"
+msgstr "Korisnik:"
+
+#: ../src/gdm/gdm-languages.c:610
+msgid "Unspecified"
+msgstr "Neodređeno"
+
+#: ../src/greeter.c:101
+msgid "Password:"
+msgstr "Lozinka:"
+
+#: ../src/greeter.c:223 ../src/lang.c:102
+msgid "Default"
+msgstr "Podrazumevano"
+
+#: ../src/greeter.c:440
+msgid "_Reboot"
+msgstr "_Restart"
+
+#: ../src/greeter.c:444
+msgid "_Shutdown"
+msgstr "_Ugasi"
+
+#: ../src/lang.c:116
+msgid "More ..."
+msgstr "Više ..."
