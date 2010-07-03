@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 16:42+0200\n"
+"POT-Creation-Date: 2010-07-03 07:38+0000\n"
 "PO-Revision-Date: 2010-02-17 15:23+0200\n"
 "Last-Translator: Matej <paxmanpwnz@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,8 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sl\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
-"%100==4 ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 "X-Generator: Pootle 2.0.1\n"
 
 #: ../data/lxdm.glade.h:1
@@ -31,7 +30,7 @@ msgstr "Razpored tipk:"
 msgid "Language:"
 msgstr "Jezik:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:130 ../src/greeter.c:171
 msgid "User:"
 msgstr "Uporabnik:"
 
@@ -39,22 +38,22 @@ msgstr "Uporabnik:"
 msgid "Unspecified"
 msgstr "Nedoločeno"
 
-#: ../src/greeter.c:100
+#: ../src/greeter.c:101
 msgid "Password:"
 msgstr "Geslo:"
 
-#: ../src/greeter.c:222 ../src/lang.c:102
+#: ../src/greeter.c:223 ../src/lang.c:102
 msgid "Default"
 msgstr "Privzeto"
 
-#: ../src/greeter.c:439
+#: ../src/greeter.c:440
 msgid "_Reboot"
 msgstr "_Ponovni zagon"
 
-#: ../src/greeter.c:443
+#: ../src/greeter.c:444
 msgid "_Shutdown"
 msgstr "_Izklop"
 
 #: ../src/lang.c:116
 msgid "More ..."
-msgstr ""
+msgstr "Več ..."
