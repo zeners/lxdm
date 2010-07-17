@@ -353,6 +353,10 @@ static void lxsession_stop(LXSession *s)
 		DBusError error;
 		dbus_error_init(&error);
 		ck_connector_close_session(s->ckc, &error);
+		if(dbus_error_is_set(&error))
+		{
+			dbus_error_free(&error);
+		}
 		ck_connector_unref(s->ckc);
 		s->ckc=NULL;
 	}
@@ -365,7 +369,6 @@ static void lxsession_free(LXSession *s)
 	if(!s)
 		return;
 	session_list=g_slist_remove(session_list,s);
-	s->server=-1;
 	lxsession_stop(s);
 	if(s->server)
 	{
@@ -411,6 +414,7 @@ static char *lxsession_xserver_command(LXSession *s)
 	char *p;
 	int arc;
 	char **arg;
+	int i;
 	
 	if(s->option)
 	{
@@ -422,6 +426,11 @@ static char *lxsession_xserver_command(LXSession *s)
 	if(!p) p=g_strdup("/usr/bin/X");	
 	g_shell_parse_argv(p, &arc, &arg, 0);
 	g_free(p);
+	for(i=1;i<arc;i++)
+	{
+		g_free(arg[i]);
+		arg[i]=0;
+	}
 	arg = g_renew(char *, arg, arc + 10);
 	arc=1;
 	if(nr_tty)
@@ -1039,11 +1048,13 @@ void lxdm_startx(LXSession *s)
 static void exit_cb(void)
 {
 	log_print("exit cb\n");
+	ui_drop();
 	while(session_list)
 		lxsession_free(session_list->data);
 	log_print("free session\n");
 	put_lock();
 	set_active_vt(old_tty);
+	g_key_file_free(config);
 }
 
 static int get_run_level(void)
@@ -1523,8 +1534,6 @@ int main(int arc, char *arg[])
 	lxcom_add_cmd_handler(-1,lxdm_user_cmd,NULL);
 
 	ui_main();
-
-	g_key_file_free(config);
 
 	return 0;
 }
