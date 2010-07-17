@@ -1509,13 +1509,13 @@ int main(int arc, char *arg[])
 	if( daemonmode )
 	{
 		(void)daemon(1, 1);
-		log_init();
 	}
+	log_init();
 
 	if( debugmode )
 	{
-	/* turn of debug output */
-	g_log_set_handler(NULL, G_LOG_LEVEL_DEBUG, log_ignore, NULL);
+		/* turn of debug output */
+		g_log_set_handler(NULL, G_LOG_LEVEL_DEBUG, log_ignore, NULL);
 	}
 
 	config = g_key_file_new();
