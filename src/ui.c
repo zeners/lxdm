@@ -119,7 +119,7 @@ static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpo
 	else if( !strncmp(str, "shutdown", 6) )
 		lxdm_do_shutdown();
 	else if( !strncmp(str, "log ", 4) )
-		log_print(str + 4);
+		g_message(str + 4);
 	else if( !strncmp(str, "login ", 6) )
 	{
 		char *user = greeter_param(str, "user");

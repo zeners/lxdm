@@ -44,6 +44,7 @@
 #include <time.h>
 #include <sys/wait.h>
 #include <glib.h>
+#include <glib/gstdio.h>
 
 #include <sys/vt.h>
 #include <sys/ioctl.h>
@@ -64,6 +65,8 @@
 #include "lxdm.h"
 #include "lxcom.h"
 #include "xconn.h"
+
+#define LOGFILE "/var/log/lxdm.log"
 
 typedef struct{
 	gboolean idle;
@@ -284,7 +287,7 @@ static LXSession *lxsession_add(void)
 	s->idle=TRUE;
 	if(!s->tty || s->display<0)
 	{
-		log_print("alloc tty s->tty, display %d fail\n",s->tty,s->display);
+		g_message("alloc tty s->tty, display %d fail\n",s->display);
 		g_free(s);
 		return NULL;
 	}
@@ -300,28 +303,28 @@ static LXSession *lxsession_greeter(void)
 	s=lxsession_find_greeter();
 	if(s)
 	{
-		log_print("find prev greeter\n");
+		g_message("find prev greeter\n");
 		lxsession_set_active(s);
 		return s;
 	}
-	log_print("find greeter %p\n",s);
+	g_message("find greeter %p\n",s);
 	s=lxsession_find_idle();
-	log_print("find idle %p\n",s);
+	g_message("find idle %p\n",s);
 	if(!s) s=lxsession_add();
-	log_print("add %p\n",s);
+	g_message("add %p\n",s);
 	if(!s)
 	{
-		log_print("add new fail\n");
+		g_warning("add new fail\n");
 		return NULL;
 	}
 	s->greeter=TRUE;
 	s->idle=FALSE;
 	sprintf(temp,":%d",s->display);
 	setenv("DISPLAY",temp,1);
-	log_print("prepare greeter on %s\n",temp);
+	g_message("prepare greeter on %s\n",temp);
 	ui_prepare();
 	lxsession_set_active(s);
-	log_print("start greeter on %s\n",temp);
+	g_message("start greeter on %s\n",temp);
 	return s;
 }
 
@@ -500,30 +503,26 @@ void lxdm_get_tty(void)
 
 void lxdm_quit_self(int code)
 {
-	log_print("quit code %d\n",code);
+	g_message("quit code %d\n",code);
 	exit(code);
 }
 
-void log_print(char *fmt, ...)
+static void log_init(void)
 {
-	FILE *log;
-	va_list ap;
-	time_t t;
-	log = fopen("/var/log/lxdm.log", "a");
-	if(!log) return;
-	t=time(NULL);
-	fprintf(log,ctime(&t));
-	va_start(ap, fmt);
-	vfprintf(log, fmt, ap);
-	va_end(ap);
-	fclose(log);
+	int fd_log;
+
+	g_unlink(LOGFILE ".old");
+	g_rename(LOGFILE, LOGFILE ".old");
+	fd_log = open(LOGFILE, O_CREAT|O_APPEND|O_TRUNC|O_WRONLY|O_EXCL, 0640);
+	if(fd_log == -1) return;
+	dup2(fd_log, 1);
+	dup2(fd_log, 2);
 }
 
-#ifdef LXDM_DEBUG
-#define dbg_printf log_print
-#else
-#define dbg_printf(fmt,...)
-#endif
+static void log_ignore(const gchar *log_domain, GLogLevelFlags log_level,
+                       const gchar *message, gpointer user_data)
+{
+}
 
 GSList *do_scan_xsessions(void)
 {
@@ -710,30 +709,30 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
 #endif
     if( !user )
     {
-        dbg_printf("user==NULL\n");
+        g_debug("user==NULL\n");
         return AUTH_ERROR;
     }
     if( !user[0] )
     {
-        dbg_printf("user[0]==0\n");
+        g_debug("user[0]==0\n");
         return AUTH_BAD_USER;
     }
     pw = getpwnam(user);
     endpwent();
     if( !pw )
     {
-        dbg_printf("user %s not found\n",user);
+        g_debug("user %s not found\n",user);
         return AUTH_BAD_USER;
     }
     if( !pass )
     {
         *ppw = pw;
-        dbg_printf("user %s auth ok\n",user);
+        g_debug("user %s auth ok\n",user);
         return AUTH_SUCCESS;
     }
     if(strstr(pw->pw_shell, "nologin"))
     {
-        dbg_printf("user %s have nologin shell\n");
+        g_debug("user %s have nologin shell\n",user);
         return AUTH_PRIV;
     }
 #if !HAVE_LIBPAM
@@ -747,19 +746,19 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         if( !pass[0] )
         {
             *ppw = pw;
-            dbg_printf("user %s auth with no password ok\n",user);
+            g_debug("user %s auth with no password ok\n",user);
             return AUTH_SUCCESS;
         }
         else
         {
-            dbg_printf("user %s password not match\n");
+            g_debug("user %s password not match\n",user);
             return AUTH_FAIL;
         }
     }
     enc = crypt(pass, real);
     if( strcmp(real, enc) )
     {
-        dbg_printf("user %s password not match\n");
+        g_debug("user %s password not match\n",user);
         return AUTH_FAIL;
     }
 #else
@@ -769,14 +768,14 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
     if(!s) s=lxsession_add();
     if(!s)
     {
-        log_print("lxsession_add fail\n");
+        g_critical("lxsession_add fail\n");
         exit(0);
     }
     if(s->pamh) pam_end(s->pamh,0);
     if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &s->pamh))
     {
         s->pamh=NULL;
-        dbg_printf("user %s start pam fail\n",user);
+        g_debug("user %s start pam fail\n",user);
         return AUTH_FAIL;
     }
     else
@@ -787,14 +786,14 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
 		user_pass[0]=0;user_pass[1]=0;
 		if(ret!=PAM_SUCCESS)
         {
-            dbg_printf("user %s auth fail with %d\n",user,ret);
+            g_debug("user %s auth fail with %d\n",user,ret);
             return AUTH_FAIL;
         }
 		//ret=pam_setcred(s->pamh, PAM_ESTABLISH_CRED);
     }
 #endif
     *ppw = pw;
-    dbg_printf("user %s auth ok\n",pw->pw_name);
+    g_debug("user %s auth ok\n",pw->pw_name);
     return AUTH_SUCCESS;
 }
 
@@ -825,7 +824,7 @@ void setup_pam_session(LXSession *s,struct passwd *pw,char *session_name)
     }
     err = pam_open_session(s->pamh, 0); /* FIXME pam session failed */
     if( err != PAM_SUCCESS )
-        log_print( "pam open session error \"%s\"\n", pam_strerror(s->pamh, err));
+        g_warning( "pam open session error \"%s\"\n", pam_strerror(s->pamh, err));
 }
 
 void append_pam_environ(pam_handle_t *pamh,char **env)
@@ -921,7 +920,7 @@ void get_lock(void)
     fp = fopen(lockfile, "w");
     if( !fp )
     {
-        log_print("open lock file %s fail\n",lockfile);
+        g_critical("open lock file %s fail\n",lockfile);
         lxdm_quit_self(0);
     }
     fprintf( fp, "%d", getpid() );
@@ -954,7 +953,7 @@ static void on_xserver_stop(void *data,int pid, int status)
 	LXSession *s=data;
 	LXSession *greeter;
 
-	log_print("xserver stop, restart. return status %x\n",status);
+	g_message("xserver stop, restart. return status %x\n",status);
 
 	stop_pid(pid);
 	s->server = -1;
@@ -1001,12 +1000,12 @@ void lxdm_startx(LXSession *s)
 	{
 	case 0:
 		execvp(args[0], args);
-		log_print("exec %s fail\n",args[0]);
+		g_critical("exec %s fail\n",args[0]);
 		lxdm_quit_self(0);
 		break;
 	case -1:
 	/* fatal error, should not restart self */
-		log_print("fork proc fail\n");
+		g_critical("fork proc fail\n");
 		lxdm_quit_self(0);
 		break;
 	default:
@@ -1015,7 +1014,7 @@ void lxdm_startx(LXSession *s)
 	g_strfreev(args);
 	lxcom_add_child_watch(s->server, on_xserver_stop, s);
 
-	log_print("add xserver watch\n");
+	g_message("add xserver watch\n");
 	for( i = 0; i < 100; i++ )
 	{
 		if(lxcom_last_sig==SIGINT || lxcom_last_sig==SIGTERM)
@@ -1023,7 +1022,7 @@ void lxdm_startx(LXSession *s)
 		if((s->dpy=xconn_open(display))!=NULL)
 			break;
 		g_usleep(50 * 1000);
-		//log_print("retry %d\n",i);
+		//g_message("retry %d\n",i);
 	}
 	if(s->dpy==NULL)
 		exit(EXIT_FAILURE);
@@ -1047,11 +1046,11 @@ void lxdm_startx(LXSession *s)
 
 static void exit_cb(void)
 {
-	log_print("exit cb\n");
+	g_message("exit cb\n");
 	ui_drop();
 	while(session_list)
 		lxsession_free(session_list->data);
-	log_print("free session\n");
+	g_message("free session\n");
 	put_lock();
 	set_active_vt(old_tty);
 	g_key_file_free(config);
@@ -1072,7 +1071,7 @@ static int get_run_level(void)
 	}
 	res=ut->ut_pid & 0xff;
 	endutent();
-	//log_print("runlevel %c\n",res);
+	//g_message("runlevel %c\n",res);
 	return res;
 }
 
@@ -1090,7 +1089,7 @@ static void on_session_stop(void *data,int pid, int status)
 			g_spawn_command_line_sync("/etc/lxdm/PreShutdown",0,0,0,0);
 		else
 			g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
-		log_print("run level %c\n",level);
+		g_message("run level %c\n",level);
 		lxdm_quit_self(0);
 	}
 	if(s!=lxsession_greeter())
@@ -1189,11 +1188,11 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 		if(alloc_lang)
 			g_free(lang);
 		ui_prepare();
-		dbg_printf("get session %s info fail\n",session);
+		g_debug("get session %s info fail\n",session);
 		return;
 	}
 
-	dbg_printf("login user %s session %s lang %s\n",pw->pw_name,session_exec,lang);
+	g_debug("login user %s session %s lang %s\n",pw->pw_name,session_exec,lang);
 
 	if( pw->pw_shell[0] == '\0' )
 	{
@@ -1213,7 +1212,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 	if(!s) s=lxsession_add();
 	if(!s)
 	{
-		log_print("lxsession_add fail\n");
+		g_critical("lxsession_add fail\n");
 		exit(0);
 	}
 	s->greeter=FALSE;
@@ -1368,15 +1367,16 @@ static void log_sigsegv(void)
 {
 	void *array[40];
 	size_t size;
-	int fd;
-
-	fd=open("/var/log/lxdm.log",O_WRONLY|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
-	if(fd==-1) return;
+	char **bt_strs;
+	size_t i;
 
 	size=backtrace(array,40);
-	backtrace_symbols_fd(array,size,fd);
+	bt_strs=backtrace_symbols(array, size);
 
-	close(fd);
+	for (i=0; i<size; i++)
+	    fprintf(stderr, "%s\n", bt_strs[i]);
+
+	free(bt_strs);
 }
 
 static void sigsegv_handler(int sig)
@@ -1396,7 +1396,7 @@ static void lxdm_signal_handler(void *data,int sig)
 	switch(sig){
 	case SIGTERM:
 	case SIGINT:
-		log_print("QUIT BY SIGNAL\n");
+		g_critical("QUIT BY SIGNAL\n");
 		lxdm_quit_self(0);
 		break;
 	default:
@@ -1434,12 +1434,12 @@ GKeyFile *lxdm_user_list(void)
 static GString *lxdm_user_cmd(void *data,int user,int arc,char **arg)
 {
 	GString *res=NULL;
-	log_print("user %d session %p cmd %s\n",user , lxsession_find_user(user),arg[0]);
+	g_message("user %d session %p cmd %s\n",user , lxsession_find_user(user),arg[0]);
 	if(user!=0 && lxsession_find_user(user)==NULL)
 		return NULL;
 	if(!strcmp(arg[0],"USER_SWITCH"))
 	{
-		log_print("start greeter\n");
+		g_message("start greeter\n");
 		lxsession_greeter();
 	}
 	else if(!strcmp(arg[0],"USER_LIST"))
@@ -1473,6 +1473,7 @@ void set_signal(void)
 int main(int arc, char *arg[])
 {
 	int daemonmode = 0;
+	gboolean debugmode = FALSE;
 	int i;
 
 
@@ -1481,6 +1482,10 @@ int main(int arc, char *arg[])
 		if(!strcmp(arg[i],"-d"))
 		{
 			daemonmode=1;
+		}
+		else if(!strcmp(arg[i],"-D"))
+		{
+			debugmode=TRUE;
 		}
 		else if(!strcmp(arg[i],"-c") && i+1<arc)
 		{
@@ -1497,12 +1502,21 @@ int main(int arc, char *arg[])
 	}
 	if( getuid() != 0 )
 	{
-		printf("only root is allowed to use this program\n");
+		fprintf(stderr, "only root is allowed to use this program\n");
 		exit(EXIT_FAILURE);
 	}
 
 	if( daemonmode )
+	{
 		(void)daemon(1, 1);
+		log_init();
+	}
+
+	if( debugmode )
+	{
+	/* turn of debug output */
+	g_log_set_handler(NULL, G_LOG_LEVEL_DEBUG, log_ignore, NULL);
+	}
 
 	config = g_key_file_new();
 	g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_NONE, NULL);
@@ -1517,7 +1531,7 @@ int main(int arc, char *arg[])
 		}
 		else
 		{
-			log_print("mkdir /var/run/lxdm fail\n");
+			g_critical("mkdir /var/run/lxdm fail\n");
 			exit(-1);
 		}
 	}
