@@ -87,6 +87,7 @@ typedef struct{
 #ifndef DISABLE_XAUTH
 	char mcookie[33];
 #endif
+	char **env;
 }LXSession;
 
 GKeyFile *config;
@@ -291,6 +292,7 @@ static LXSession *lxsession_add(void)
 		g_free(s);
 		return NULL;
 	}
+	s->env=NULL;
 	session_list=g_slist_prepend(session_list,s);
 	lxdm_startx(s);
 	return s;
@@ -384,6 +386,7 @@ static void lxsession_free(LXSession *s)
 		s->server=0;
 	}
 	g_free(s->option);
+	g_strfreev(s->env);
 	g_free(s);
 }
 
@@ -1096,7 +1099,8 @@ static void on_session_stop(void *data,int pid, int status)
 	{
 		lxsession_free(s);
 	}
-	g_spawn_command_line_async("/etc/lxdm/PostLogout",NULL);
+	gchar *argv[] = { "/etc/lxdm/PostLogout", NULL };
+	g_spawn_async(NULL, argv, s->env, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
 }
 
 gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
@@ -1248,37 +1252,39 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 		setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(s->ckc), 1);
 	}
 #endif
+	char** env, *path;
+	int n_env,i;
+	n_env  = g_strv_length(environ);
+	/* copy all environment variables and override some of them */
+	env = g_new(char*, n_env + 1 + 13);
+	for( i = 0; i < n_env; ++i )
+		env[i] = g_strdup(environ[i]);
+	env[i] = NULL;
+
+	replace_env(env, "HOME=", pw->pw_dir);
+	replace_env(env, "SHELL=", pw->pw_shell);
+	replace_env(env, "USER=", pw->pw_name);
+	replace_env(env, "LOGNAME=", pw->pw_name);
+
+	/* override $PATH if needed */
+	path = g_key_file_get_string(config, "base", "path", 0);
+	if( G_UNLIKELY(path) && path[0] ) /* if PATH is specified in config file */
+		replace_env(env, "PATH=", path); /* override current $PATH with config value */
+	else /* don't use the global env, they are bad for user */
+		replace_env(env, "PATH=", "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"); /* set proper default */
+	g_free(path);
+	/* optionally override $LANG, $LC_MESSAGES, and $LANGUAGE */
+	if( lang && lang[0] )
+	{
+		replace_env(env, "LANG=", lang);
+		replace_env(env, "LC_MESSAGES=", lang);
+		replace_env(env, "LANGUAGE=", lang);
+	}
+	s->env = env;
+
 	s->child = pid = fork();
 	if(s->child==0)
 	{
-		char** env, *path;
-		int n_env,i;
-		n_env  = g_strv_length(environ);
-		/* copy all environment variables and override some of them */
-		env = g_new(char*, n_env + 1 + 13);
-		for( i = 0; i < n_env; ++i )
-			env[i] = g_strdup(environ[i]);
-		env[i] = NULL;
-
-		replace_env(env, "HOME=", pw->pw_dir);
-		replace_env(env, "SHELL=", pw->pw_shell);
-		replace_env(env, "USER=", pw->pw_name);
-		replace_env(env, "LOGNAME=", pw->pw_name);
-
-		/* override $PATH if needed */
-		path = g_key_file_get_string(config, "base", "path", 0);
-		if( G_UNLIKELY(path) && path[0] ) /* if PATH is specified in config file */
-			replace_env(env, "PATH=", path); /* override current $PATH with config value */
-		else /* don't use the global env, they are bad for user */
-			replace_env(env, "PATH=", "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"); /* set proper default */
-		g_free(path);
-		/* optionally override $LANG, $LC_MESSAGES, and $LANGUAGE */
-		if( lang && lang[0] )
-		{
-			replace_env(env, "LANG=", lang);
-			replace_env(env, "LC_MESSAGES=", lang);
-			replace_env(env, "LANGUAGE=", lang);
-		} 
 #if HAVE_LIBPAM
 		append_pam_environ(s->pamh,env);
 		pam_end(s->pamh,0);
