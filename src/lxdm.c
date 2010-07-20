@@ -774,26 +774,32 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         g_critical("lxsession_add fail\n");
         exit(0);
     }
-    if(s->pamh) pam_end(s->pamh,0);
-    if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &s->pamh))
-    {
-        s->pamh=NULL;
-        g_debug("user %s start pam fail\n",user);
-        return AUTH_FAIL;
-    }
-    else
-    {
+	if(s->pamh) pam_end(s->pamh,0);
+	if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &s->pamh))
+	{
+		s->pamh=NULL;
+		g_debug("user %s start pam fail\n",user);
+		return AUTH_FAIL;
+	}
+	else
+	{
 		int ret;
-        user_pass[0]=user;user_pass[1]=pass;
-        ret=pam_authenticate(s->pamh,PAM_SILENT);
+		user_pass[0]=user;user_pass[1]=pass;
+		ret=pam_authenticate(s->pamh,PAM_SILENT);
 		user_pass[0]=0;user_pass[1]=0;
 		if(ret!=PAM_SUCCESS)
-        {
-            g_debug("user %s auth fail with %d\n",user,ret);
-            return AUTH_FAIL;
-        }
+		{
+			g_debug("user %s auth fail with %d\n",user,ret);
+			return AUTH_FAIL;
+		}
+		ret=pam_acct_mgmt(s->pamh,PAM_SILENT);
+		if(ret!=PAM_SUCCESS)
+		{
+			g_debug("user %s acct mgmt fail with %d\n",user,ret);
+			return AUTH_FAIL;
+		}
 		//ret=pam_setcred(s->pamh, PAM_ESTABLISH_CRED);
-    }
+	}
 #endif
     *ppw = pw;
     g_debug("user %s auth ok\n",pw->pw_name);
