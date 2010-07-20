@@ -6,6 +6,7 @@ greeter=@FULL_LIBEXECDIR@/lxdm-greeter-gtk
 
 [server]
 # arg=/usr/bin/X -nr vt1
+# tcp_listen=1
 
 [display]
 gtk_theme=Clearlooks
