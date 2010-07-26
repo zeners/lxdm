@@ -871,20 +871,22 @@ void append_pam_environ(pam_handle_t *pamh,char **env)
 
 static void close_left_fds(void)
 {
+	struct dirent **list;
 	char path[256];
-	DIR *d;
-	struct dirent *entry;
+	int n;
+
 	snprintf(path,sizeof(path),"/proc/%d/fd",getpid());
-	d=opendir(path);
-	if(!d) return;
-	while((entry=readdir(d))!=NULL)
+	n=scandir(path,&list,0,0);
+	if(n<0) return;
+	while(n--)
 	{
-		int fd=atoi(entry->d_name);
+		int fd=atoi(list[n]->d_name);
+		free(list[n]);
 		if(fd<=STDERR_FILENO)
 			continue;
 		close(fd);
 	}
-	closedir(d);
+	free(list);
 }
 
 void switch_user(struct passwd *pw, char *run, char **env)
