@@ -176,26 +176,41 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
 
 static void load_sessions()
 {
-    GtkListStore* list;
-    GtkTreeIter it, active_it = {0};
-    char* last;
-    char *path, *file_name, *name, *exec;
-    GKeyFile* kf;
-    GDir* dir = g_dir_open(XSESSIONS_DIR, 0, NULL);
-    if( !dir )
-        return;
+	GtkListStore* list;
+	GtkTreeIter it, active_it = {0};
+	char* last;
+	char *path, *file_name, *name, *exec;
+	GKeyFile* kf;
+	GDir* dir = g_dir_open(XSESSIONS_DIR, 0, NULL);
+	if( !dir )
+		return;
 
-    last = g_key_file_get_string(var_config, "base", "last_session", NULL);
+	last = g_key_file_get_string(var_config, "base", "last_session", NULL);
 
-    list = gtk_list_store_new(N_SESSION_COLS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-    kf = g_key_file_new();
-    while( ( file_name = (char*)g_dir_read_name(dir) ) != NULL )
-    {
-        path = g_build_filename(XSESSIONS_DIR, file_name, NULL);
-        if( g_key_file_load_from_file(kf, path, 0, NULL) )
-        {
-            name = g_key_file_get_locale_string(kf, "Desktop Entry", "Name", NULL, NULL);
-            //exec = g_key_file_get_string(kf, "Desktop Entry", "Exec", NULL);
+	list = gtk_list_store_new(N_SESSION_COLS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+	kf = g_key_file_new();
+	while( ( file_name = (char*)g_dir_read_name(dir) ) != NULL )
+	{
+		path = g_build_filename(XSESSIONS_DIR, file_name, NULL);
+		if( g_key_file_load_from_file(kf, path, 0, NULL) )
+		{
+			name = g_key_file_get_locale_string(kf, "Desktop Entry", "Name", NULL, NULL);
+			if(!name || !name[0])
+			{
+				g_free(name);
+				g_free(path);
+				continue;
+			}
+            exec = g_key_file_get_string(kf, "Desktop Entry", "Exec", NULL);
+			if(!exec || !exec[0])
+			{
+				/* bad session config file */
+				g_free(exec);
+				g_free(name);
+				g_free(path);
+				continue;
+			}
+			g_free(exec); /* we just test it, and not use it */
             exec=g_strdup(path);
 
             if( !strcmp(name, "LXDE") )
@@ -215,26 +230,26 @@ static void load_sessions()
         }
         g_free(path);
     }
-    g_dir_close(dir);
-    g_key_file_free(kf);
+	g_dir_close(dir);
+	g_key_file_free(kf);
 
-    gtk_list_store_prepend(list, &it);
-    gtk_list_store_set(list, &it,
-                       COL_SESSION_NAME, _("Default"),
-                       COL_SESSION_EXEC, "",
-                       COL_SESSION_DESKTOP_FILE, "__default__", -1);
-    if( last && g_strcmp0(file_name, last) == 0 )
-        active_it = it;
+	gtk_list_store_prepend(list, &it);
+	gtk_list_store_set(list, &it,
+					   COL_SESSION_NAME, _("Default"),
+					   COL_SESSION_EXEC, "",
+					   COL_SESSION_DESKTOP_FILE, "__default__", -1);
+	if( last && g_strcmp0(file_name, last) == 0 )
+		active_it = it;
 
-    g_free(last);
-    gtk_combo_box_set_model( GTK_COMBO_BOX(sessions), GTK_TREE_MODEL(list) );
-    gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(sessions), 0);
-    if( active_it.stamp )
-        gtk_combo_box_set_active_iter(GTK_COMBO_BOX(sessions), &active_it);
-    else
-        gtk_combo_box_set_active(GTK_COMBO_BOX(sessions), 0);
+	g_free(last);
+	gtk_combo_box_set_model( GTK_COMBO_BOX(sessions), GTK_TREE_MODEL(list) );
+	gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(sessions), 0);
+	if( active_it.stamp )
+		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(sessions), &active_it);
+	else
+		gtk_combo_box_set_active(GTK_COMBO_BOX(sessions), 0);
 
-    g_object_unref(list);
+	g_object_unref(list);
 }
 
 static void load_lang_cb(void *arg, char *lang, char *desc)

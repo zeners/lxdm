@@ -42,6 +42,7 @@
 #include <errno.h>
 #include <signal.h>
 #include <time.h>
+#include <dirent.h>
 #include <sys/wait.h>
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -868,6 +869,24 @@ void append_pam_environ(pam_handle_t *pamh,char **env)
 
 #endif
 
+static void close_left_fds(void)
+{
+	char path[256];
+	DIR *d;
+	struct dirent *entry;
+	snprintf(path,sizeof(path),"/proc/%d/fd",getpid());
+	d=opendir(path);
+	if(!d) return;
+	while((entry=readdir(d))!=NULL)
+	{
+		int fd=atoi(entry->d_name);
+		if(fd<=STDERR_FILENO)
+			continue;
+		close(fd);
+	}
+	closedir(d);
+}
+
 void switch_user(struct passwd *pw, char *run, char **env)
 {
     int fd;
@@ -892,9 +911,18 @@ void switch_user(struct passwd *pw, char *run, char **env)
 #ifndef DISABLE_XAUTH
     create_client_auth(pw->pw_dir,env);
 #endif
-    g_spawn_command_line_async ("/etc/lxdm/PostLogin",NULL);
-    execle("/etc/lxdm/Xsession", "/etc/lxdm/Xsession", run, NULL, env);
-    exit(EXIT_FAILURE);
+
+	/* reset signal */
+	signal(SIGCHLD, SIG_DFL);
+	signal(SIGTERM, SIG_DFL);
+	signal(SIGPIPE, SIG_DFL);
+	signal(SIGALRM, SIG_DFL);
+	signal(SIGHUP, SIG_DFL);
+	close_left_fds();
+
+	g_spawn_command_line_async ("/etc/lxdm/PostLogin",NULL);
+	execle("/etc/lxdm/Xsession", "/etc/lxdm/Xsession", run, NULL, env);
+	exit(EXIT_FAILURE);
 }
 
 void get_lock(void)
@@ -913,21 +941,21 @@ void get_lock(void)
         ret = fscanf(fp, "%d", &pid);
         fclose(fp);
         if(ret == 1 && pid!=getpid())
-	{
-            if(kill(pid, 0) == 0 || (ret == -1 && errno == EPERM))
-            {
-                /* we should only quit if the pid running is lxdm */
+		{
+				if(kill(pid, 0) == 0 || (ret == -1 && errno == EPERM))
+				{
+					/* we should only quit if the pid running is lxdm */
 #ifdef __linux__
-                char path[64],buf[128];
-                sprintf(path,"/proc/%d/exe",pid);
-                ret=readlink(path,buf,128);
-                if(ret<128 && ret>0 && strstr(buf,"lxdm-binary"))
-                    lxdm_quit_self(1);
+					char path[64],buf[128];
+					sprintf(path,"/proc/%d/exe",pid);
+					ret=readlink(path,buf,128);
+					if(ret<128 && ret>0 && strstr(buf,"lxdm-binary"))
+						lxdm_quit_self(1);
 #else
-                lxdm_quit_self(1);
+					lxdm_quit_self(1);
 #endif	
-            }
-	}
+				}
+		}
     }
     fp = fopen(lockfile, "w");
     if( !fp )
