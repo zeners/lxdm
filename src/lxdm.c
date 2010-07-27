@@ -445,11 +445,8 @@ static char *lxsession_xserver_command(LXSession *s)
 	arg[arc++] = g_strdup_printf(":%d",s->display);
 	if(s->tty>0)
 		arg[arc++] = g_strdup_printf("vt%02d", s->tty);
-	if(g_key_file_get_integer(config,"server","tcp_listen",0)!=1)
-	{
-		arg[arc++] = g_strdup("-nolisten");
-		arg[arc++] = g_strdup("tcp");
-	}
+	arg[arc++] = g_strdup("-nolisten");
+	arg[arc++] = g_strdup("tcp");
 	arg[arc] = NULL;
 	p=g_strjoinv(" ", arg);
 	g_strfreev(arg);
