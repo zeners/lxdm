@@ -92,7 +92,7 @@ static void on_screen_size_changed(GdkScreen* scr, GtkWindow* win)
     gtk_window_resize( win, gdk_screen_get_width(scr), gdk_screen_get_height(scr) );
 }
 
-static void on_entry_activate(GtkEntry* entry, gpointer user_data)
+static void on_entry_activate(GtkEntry* entry)
 {
     char* tmp;
     if( !user )
@@ -100,7 +100,7 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
         user = g_strdup( gtk_entry_get_text( GTK_ENTRY(entry) ) );
         gtk_entry_set_text(GTK_ENTRY(entry), "");
         gtk_label_set_text( GTK_LABEL(prompt), _("Password:") );
-        if( strchr(user, ' ') )
+        if(strchr(user, ' '))
         {
             g_free(user);
             user = NULL;
@@ -510,6 +510,99 @@ static gboolean on_timeout(GtkLabel* label)
     return TRUE;
 }
 
+static void on_user_select(GtkIconView *iconview)
+{
+	GList *list=gtk_icon_view_get_selected_items(iconview);
+	GtkTreeIter iter;
+	GtkTreeModel *model=gtk_icon_view_get_model(iconview);
+	char *name;
+	if(!list) return;
+	gtk_tree_model_get_iter(model,&iter,list->data);
+	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free (list);
+	gtk_tree_model_get(model,&iter,2,&name,-1);
+	gtk_widget_hide(user_list);
+	gtk_entry_set_text(GTK_ENTRY(login_entry),name);
+	g_free(name);
+	on_entry_activate(GTK_ENTRY(login_entry));
+	gtk_widget_show(login_entry);
+	gtk_widget_grab_focus(login_entry);
+}
+
+static gboolean load_user_list(GtkWidget *widget)
+{
+	GtkListStore *model;
+	GKeyFile *kf;
+	char *res=NULL;
+	char **users;
+	gsize count;
+	int i;
+	lxcom_send("/var/run/lxdm/lxdm.sock","USER_LIST",&res);
+	if(!res)
+	{
+		printf("log USER_LIST fail\n");
+		return FALSE;
+	}
+	kf=g_key_file_new();
+	if(!g_key_file_load_from_data(kf,res,-1,0,NULL))
+	{
+		g_key_file_free(kf);
+		g_free(res);
+		printf("log USER_LIST data bad\n");
+		return FALSE;
+	}
+	g_free(res);
+	
+	gtk_icon_view_set_selection_mode(GTK_ICON_VIEW(widget),GTK_SELECTION_SINGLE);
+	gtk_icon_view_set_pixbuf_column(GTK_ICON_VIEW(widget),0);
+	gtk_icon_view_set_markup_column(GTK_ICON_VIEW(widget),1);
+	gtk_icon_view_set_orientation(GTK_ICON_VIEW(widget),GTK_ORIENTATION_HORIZONTAL);
+	model=gtk_list_store_new(5,GDK_TYPE_PIXBUF,G_TYPE_STRING,
+			G_TYPE_STRING,G_TYPE_STRING,G_TYPE_BOOLEAN);
+	gtk_icon_view_set_model(GTK_ICON_VIEW(widget),GTK_TREE_MODEL(model));
+	g_signal_connect(G_OBJECT(widget),"item-activated",G_CALLBACK(on_user_select),NULL);
+	g_signal_connect(G_OBJECT(widget),"selection-changed",G_CALLBACK(on_user_select),NULL);
+	
+	users=g_key_file_get_groups(kf,&count);
+	if(!users || count<=0)
+	{
+		g_key_file_free(kf);
+		printf("USER_LIST 0 user\n");
+		return FALSE;
+	}
+	for(i=0;i<count;i++)
+	{
+		GtkTreeIter iter;
+		char *gecos,*face_path,*display;
+		gboolean login;
+		GdkPixbuf *face=NULL;
+		gtk_list_store_append(model,&iter);
+		gecos=g_key_file_get_string(kf,users[i],"gecos",0);
+		face_path=g_key_file_get_string(kf,users[i],"face",0);
+		login=g_key_file_get_boolean(kf,users[i],"login",0);
+		if(face_path)
+			face=gdk_pixbuf_new_from_file_at_scale(face_path,48,48,TRUE,NULL);
+		if(!face)
+		{
+			/* TODO: load some default face */
+		}
+		display=g_strdup_printf("<span font_size=\"x-large\">%s</span>%s%s%s%s",
+			gecos?gecos:user,
+			(gecos&&strcmp(gecos,users[i]))?"(":"",
+			(gecos&&strcmp(gecos,users[i]))?users[i]:"",
+			(gecos&&strcmp(gecos,users[i]))?")":"",
+			login?_("\n<i>logined</i>"):"");
+		gtk_list_store_set(model,&iter,0,face,1,display,2,users[i],3,gecos,4,login,-1);
+		if(face) g_object_unref(G_OBJECT(face));
+		g_free(display);
+		g_free(gecos);
+		g_free(face_path);
+	}
+	g_strfreev(users);
+	g_key_file_free(kf);
+	return TRUE;
+}
+
 static void create_win()
 {
     GtkBuilder* builder;
@@ -583,23 +676,36 @@ static void create_win()
         load_langs();
     }
 
-    if( (w = (GtkWidget*)gtk_builder_get_object(builder, "time"))!=NULL )
-    {
-        guint timeout = g_timeout_add(1000, (GSourceFunc)on_timeout, w);
-        g_signal_connect_swapped(w, "destroy",
-            G_CALLBACK(g_source_remove), GUINT_TO_POINTER(timeout));
-        on_timeout((GtkLabel*)w);
-    }
+	if( (w = (GtkWidget*)gtk_builder_get_object(builder, "time"))!=NULL )
+	{
+		guint timeout = g_timeout_add(1000, (GSourceFunc)on_timeout, w);
+		g_signal_connect_swapped(w, "destroy",
+			G_CALLBACK(g_source_remove), GUINT_TO_POINTER(timeout));
+		on_timeout((GtkLabel*)w);
+	}
 
-    exit_btn = (GtkWidget*)gtk_builder_get_object(builder, "exit");
-    load_exit();
+	exit_btn = (GtkWidget*)gtk_builder_get_object(builder, "exit");
+	load_exit();
 
-    g_object_unref(builder);
+	g_object_unref(builder);
 
-    gtk_window_set_default_size( GTK_WINDOW(win), gdk_screen_get_width(scr), gdk_screen_get_height(scr) );
-    gtk_window_present( GTK_WINDOW(win) );
-    gtk_widget_realize(login_entry);
-    gtk_widget_grab_focus(login_entry);
+	gtk_window_set_default_size( GTK_WINDOW(win), gdk_screen_get_width(scr), gdk_screen_get_height(scr) );
+	gtk_window_present( GTK_WINDOW(win) );
+	gtk_widget_realize(login_entry);
+    
+	if(user_list && load_user_list(user_list))
+	{
+		gtk_widget_hide(login_entry);
+	}
+	else
+	{
+		if(user_list)
+		{
+			gtk_widget_hide(user_list);
+			user_list=NULL;
+		}
+		gtk_widget_grab_focus(login_entry);
+	}
 }
 
 int set_background(void)
@@ -667,8 +773,17 @@ static gboolean on_lxdm_command(GIOChannel *source, GIOCondition condition, gpoi
     else if( !strncmp(str, "reset", 5) )
     {
         gtk_widget_show(prompt);
-        gtk_widget_show(login_entry);
-        gtk_widget_grab_focus(login_entry);
+        if(user_list)
+        {
+			gtk_widget_hide(login_entry);
+			gtk_icon_view_unselect_all(GTK_ICON_VIEW(user_list));
+			gtk_widget_show(user_list);
+		}
+        else
+        {
+			gtk_widget_show(login_entry);
+        	gtk_widget_grab_focus(login_entry);
+		}
     }
     g_free(str);
     return TRUE;

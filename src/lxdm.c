@@ -1546,9 +1546,14 @@ GKeyFile *lxdm_user_list(void)
 
 static GString *lxdm_user_cmd(void *data,int user,int arc,char **arg)
 {
+	LXSession *s=NULL;
 	GString *res=NULL;
-	g_message("user %d session %p cmd %s\n",user , lxsession_find_user(user),arg[0]);
-	if(user!=0 && lxsession_find_user(user)==NULL)
+	s=lxsession_find_user(user);
+	if(!s && user==ui_greeter_user())
+		s=lxsession_find_greeter();
+	g_message("greeter %d session %p\n",ui_greeter_user(),lxsession_find_greeter());
+	g_message("user %d session %p cmd %s\n",user,s,arg[0]);
+	if(user!=0 && s==NULL)
 		return NULL;
 	if(!strcmp(arg[0],"USER_SWITCH"))
 	{

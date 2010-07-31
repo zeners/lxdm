@@ -39,6 +39,7 @@ static pid_t greeter = -1;
 static int greeter_pipe[2];
 static GIOChannel *greeter_io;
 static guint io_id;
+static int user;
 
 static void xwrite(int fd,const void *buf,size_t size)
 {
@@ -63,6 +64,7 @@ void ui_drop(void)
 		close(greeter_pipe[0]);
 		waitpid(greeter, 0, 0) ;
 		greeter=-1;
+		user=-1;
 	}
 	if(io_id>0)
 	{
@@ -75,15 +77,16 @@ void ui_drop(void)
 	}
 }
 
-static void greeter_setup(gpointer user)
+static void greeter_setup(void *userdata)
 {
-	struct passwd *pw;
-	pw=getpwnam("lxdm");
-	endpwent();
-	if(!pw) return;
+	struct passwd *pw=userdata;
+	if(!pw)
+	{
+		return;
+	}
 	initgroups(pw->pw_name, pw->pw_gid);
 	setgid(pw->pw_gid);
-	setuid(pw->pw_uid);	
+	setuid(pw->pw_uid);
 }
 
 static gchar *greeter_param(char *str, char *name)
@@ -161,6 +164,11 @@ static void on_greeter_exit(void *data,int pid, int status)
 	greeter = -1;
 }
 
+int ui_greeter_user(void)
+{
+	return user;
+}
+
 void ui_prepare(void)
 {
 	char *p;
@@ -174,9 +182,11 @@ void ui_prepare(void)
 	{
 		char **argv;
 		gboolean ret;
+		struct passwd *pw;
 		g_shell_parse_argv(p, NULL, &argv, NULL);
+		pw=getpwnam("lxdm");endpwent();
 		ret = g_spawn_async_with_pipes(NULL, argv, NULL,
-				   G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD, greeter_setup, 0,
+				   G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,greeter_setup, pw,
 				   &greeter, greeter_pipe + 0, greeter_pipe + 1, NULL, NULL);
 		g_strfreev(argv);
 		if( ret == TRUE )
@@ -186,6 +196,7 @@ void ui_prepare(void)
 			io_id = g_io_add_watch(greeter_io, G_IO_IN | G_IO_HUP | G_IO_ERR,
 								   on_greeter_input, NULL);
 			lxcom_add_child_watch(greeter, on_greeter_exit, 0);
+			user=pw?pw->pw_uid:0;
 			return;
 		}
 	}

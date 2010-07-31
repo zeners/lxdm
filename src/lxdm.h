@@ -46,6 +46,7 @@ enum AuthResult
 void ui_drop(void);
 int ui_main(void);
 void ui_prepare(void);
+int ui_greeter_user(void);
 
 typedef struct{
 	char *name;
