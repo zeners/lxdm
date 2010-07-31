@@ -45,10 +45,8 @@ enum {
     N_LANG_COLS
 };
 
-#define VCONFIG_PATH "/var/lib/lxdm"
 #define VCONFIG_FILE "/var/lib/lxdm/lxdm.conf"
 
-static gboolean config_changed = FALSE;
 static GKeyFile *config;
 static GKeyFile * var_config;
 static GtkWidget* win;
@@ -144,7 +142,6 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
         if( g_strcmp0(tmp, session_desktop_file) )
         {
             g_key_file_set_string(var_config, "base", "last_session", session_desktop_file);
-            config_changed = TRUE;
         }
         g_free(tmp);
 
@@ -152,7 +149,6 @@ static void on_entry_activate(GtkEntry* entry, gpointer user_data)
         if( g_strcmp0(tmp, session_lang) )
         {
             g_key_file_set_string(var_config, "base", "last_lang", session_lang);
-            config_changed = TRUE;
         }
         g_free(tmp);
 
@@ -221,9 +217,10 @@ static void load_sessions()
                                COL_SESSION_NAME, name,
                                COL_SESSION_EXEC, exec,
                                COL_SESSION_DESKTOP_FILE, file_name, -1);
-
-            if( last && g_strcmp0(file_name, last) == 0 )
+            if( last && g_strcmp0(path, last) == 0 )
+            {
                 active_it = it;
+			}
 
             g_free(name);
             g_free(exec);
@@ -238,7 +235,7 @@ static void load_sessions()
 					   COL_SESSION_NAME, _("Default"),
 					   COL_SESSION_EXEC, "",
 					   COL_SESSION_DESKTOP_FILE, "__default__", -1);
-	if( last && g_strcmp0(file_name, last) == 0 )
+	if( last && g_strcmp0("__default__", last) == 0 )
 		active_it = it;
 
 	g_free(last);
@@ -262,7 +259,6 @@ static void load_lang_cb(void *arg, char *lang, char *desc)
     p=strchr(lang2,'.');
     if(p) *p=0;
 
-    //temp=g_strdup_printf("\xe2\x80\x8e%s\t\t\xe2\x80\xab%s",lang,desc);
     if(lang2[0] && lang2[0]!='~')
         temp=g_strdup_printf("%s\t%s",lang2,desc?desc:"");
     else
@@ -295,7 +291,6 @@ static void on_menu_lang_select(GtkMenuItem *item,gpointer user_data)
 	GtkTreeModel *list;
 	int active=-1;
 	char *temp;
-	GPtrArray *array;
 	if(!sel || !sel[0]) return;
 	
 	list=gtk_combo_box_get_model(GTK_COMBO_BOX(lang));
@@ -323,26 +318,6 @@ static void on_menu_lang_select(GtkMenuItem *item,gpointer user_data)
                        COL_LANG_DISPNAME, temp,
                        COL_LANG, sel, -1);
 	gtk_combo_box_set_active_iter(GTK_COMBO_BOX(lang),&iter);
-
-	array=g_ptr_array_new();
-	res=gtk_tree_model_get_iter_first(GTK_TREE_MODEL(list),&iter);
-	while(res==TRUE)
-	{
-		gtk_tree_model_get(GTK_TREE_MODEL(list),&iter,1,&temp,-1);
-		if(!temp || !temp[0] || temp[0]=='~')
-		{
-			g_free(temp);
-		}
-		else
-		{
-			g_ptr_array_add(array,temp);
-		}
-		res=gtk_tree_model_iter_next(GTK_TREE_MODEL(list),&iter);
-	}
-	g_key_file_set_string_list(var_config,"base","last_langs",(void*)array->pdata,array->len);
-	config_changed=TRUE;
-	g_ptr_array_foreach(array,(GFunc)g_free,0);
-	g_ptr_array_free(array,TRUE);
 }
 
 static void load_menu_lang_cb(void *arg, char *lang, char *desc)
@@ -383,7 +358,7 @@ static void on_lang_changed(GtkComboBox *widget)
 {
 	GtkTreeIter it;
 	if( gtk_combo_box_get_active_iter(widget, &it) )
-        {
+	{
 		GtkListStore *list=(GtkListStore*)gtk_combo_box_get_model(GTK_COMBO_BOX(lang));
 		char *lang=NULL;
 		gtk_tree_model_get(GTK_TREE_MODEL(list), &it, 1, &lang, -1);
@@ -393,12 +368,7 @@ static void on_lang_changed(GtkComboBox *widget)
 			show_all_languages();
 		}
 		g_free(lang);
-        }
-        else
-        {
-            return;
-        }
-
+	}
 }
 
 static void load_langs()
@@ -619,7 +589,6 @@ static void create_win()
     gtk_window_set_default_size( GTK_WINDOW(win), gdk_screen_get_width(scr), gdk_screen_get_height(scr) );
     gtk_window_present( GTK_WINDOW(win) );
     gtk_widget_realize(login_entry);
-    //gdk_keyboard_grab(login_entry->window,FALSE,GDK_CURRENT_TIME);
     gtk_widget_grab_focus(login_entry);
 }
 
@@ -667,7 +636,6 @@ int set_background(void)
         if( bg[0] == '#' )
             gdk_color_parse(bg, &bg_color);
     }
-        //gdk_window_set_background(win,&screen);
     g_free(bg);
     g_free(style);
     return 0;
@@ -803,16 +771,6 @@ int main(int arc, char *arg[])
 
     gtk_main();
 
-    if( config_changed )
-    {
-        gsize len;
-        char* data = g_key_file_to_data(var_config, &len, NULL);
-#ifdef VCONFIG_PATH
-	mkdir(VCONFIG_PATH,0700);
-#endif
-        g_file_set_contents(VCONFIG_FILE, data, len, NULL);
-        g_free(data);
-    }
     g_key_file_free(config);
     g_key_file_free(var_config);
 

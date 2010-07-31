@@ -924,7 +924,7 @@ void switch_user(struct passwd *pw, char *run, char **env)
 	exit(EXIT_FAILURE);
 }
 
-void get_lock(void)
+static void get_lock(void)
 {
     FILE *fp;
     char *lockfile;
@@ -967,7 +967,7 @@ void get_lock(void)
     g_free(lockfile);
 }
 
-void put_lock(void)
+static void put_lock(void)
 {
     FILE *fp;
     char *lockfile;
@@ -1195,12 +1195,82 @@ gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 	return TRUE;
 }
 
+static void lxdm_save_login(char *session,char *lang)
+{
+	char *old;
+	GKeyFile *var;
+	int dirty=0;
+	if(!session || !session[0])
+		session="__default__";
+	if(!lang)
+		lang="";
+	var=g_key_file_new();
+	g_key_file_set_list_separator(var, ' ');
+	g_key_file_load_from_file(var,"/var/lib/lxdm/lxdm.conf",0,NULL);
+	old=g_key_file_get_string(var,"base","last_session",0);
+	if(0!=g_strcmp0(old,session))
+	{
+		g_key_file_set_string(var,"base","last_session",session);
+		dirty++;
+	}
+	g_free(old);
+	old=g_key_file_get_string(var,"base","last_lang",0);
+	if(0!=g_strcmp0(old,lang))
+	{
+		g_key_file_set_string(var,"base","last_lang",lang);
+		dirty++;
+	}
+	g_free(old);
+	if(lang[0])
+	{
+		char **list;
+		gsize len;
+		list=g_key_file_get_string_list(var,"base","last_langs",&len,NULL);
+		if(!list)
+		{
+			list=g_new0(char*,2);
+			list[0]=g_strdup(lang);
+			g_key_file_set_string_list(var,"base","last_langs",(void*)list,1);
+			g_strfreev(list);
+			dirty++;
+		}
+		else
+		{
+			int i;
+			for(i=0;i<len;i++)
+			{
+				if(!strcmp(list[i],lang)) break;
+			}
+			if(i==len)
+			{
+				list=g_renew(char*,list,len+2);
+				list[len]=g_strdup(lang);
+				list[len+1]=NULL;
+				g_key_file_set_string_list(var,"base","last_langs",(void*)list,len+1);
+				dirty++;
+			}
+			g_strfreev(list);
+		}
+	}
+	if(dirty)
+	{
+		gsize len;
+        char* data = g_key_file_to_data(var, &len, NULL);
+		mkdir("/var/lib/lxdm",0700);
+        g_file_set_contents("/var/lib/lxdm/lxdm.conf", data, len, NULL);
+        g_free(data);
+	}
+	g_key_file_free(var);
+}
+
 void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 {
 	char *session_name=0,*session_exec=0;
 	gboolean alloc_session=FALSE,alloc_lang=FALSE;
 	int pid;
 	LXSession *s,*prev;
+	
+	lxdm_save_login(session,lang);
 
 	if(!session ||!session[0] || !lang || !lang[0])
 	{
