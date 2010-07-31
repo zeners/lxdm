@@ -1256,7 +1256,8 @@ static void lxdm_save_login(char *session,char *lang)
 	{
 		gsize len;
         char* data = g_key_file_to_data(var, &len, NULL);
-		mkdir("/var/lib/lxdm",0700);
+		mkdir("/var/lib/lxdm",0755);
+		chmod("/var/lib/lxdm",0755);
         g_file_set_contents("/var/lib/lxdm/lxdm.conf", data, len, NULL);
         g_free(data);
 	}

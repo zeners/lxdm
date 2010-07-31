@@ -77,6 +77,13 @@ void ui_drop(void)
 
 static void greeter_setup(gpointer user)
 {
+	struct passwd *pw;
+	pw=getpwnam("lxdm");
+	endpwent();
+	if(!pw) return;
+	initgroups(pw->pw_name, pw->pw_gid);
+	setgid(pw->pw_gid);
+	setuid(pw->pw_uid);	
 }
 
 static gchar *greeter_param(char *str, char *name)

@@ -46,6 +46,7 @@ lxdm_greeter_gtk_SOURCES = \
 	lang.c lang.h \
 	gdm/gdm-languages.c gdm/gdm-languages.h \
 	gdm/locarchive.h \
+	lxcom.c lxcom.h \
 	$(NULL)
 
 lxdm_greeter_gdk_CFLAGS = \

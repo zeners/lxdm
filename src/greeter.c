@@ -32,6 +32,8 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
+#include "lxcom.h"
+
 enum {
     COL_SESSION_NAME,
     COL_SESSION_EXEC,
@@ -53,6 +55,7 @@ static GtkWidget* win;
 static GtkWidget* prompt;
 static GtkWidget* login_entry;
 static GtkWidget* prompt;
+static GtkWidget* user_list;
 
 static GtkWidget* sessions;
 static GtkWidget* lang;
@@ -537,6 +540,13 @@ static void create_win()
 
     scr = gtk_widget_get_screen(win);
     g_signal_connect(scr, "size-changed", G_CALLBACK(on_screen_size_changed), win);
+    
+    user_list=(GtkWidget*)gtk_builder_get_object(builder,"user_list");
+    if(user_list)
+    {
+		//TODO: load user list, connect select_changed,activate signal
+		// Use GtkIconView may enough
+	}
 
     prompt = (GtkWidget*)gtk_builder_get_object(builder, "prompt");
     login_entry = (GtkWidget*)gtk_builder_get_object(builder, "login_entry");
