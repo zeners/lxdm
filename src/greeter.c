@@ -587,7 +587,7 @@ static gboolean load_user_list(GtkWidget *widget)
 			/* TODO: load some default face */
 		}
 		display=g_strdup_printf("<span font_size=\"x-large\">%s</span>%s%s%s%s",
-			gecos?gecos:user,
+			gecos?gecos:users[i],
 			(gecos&&strcmp(gecos,users[i]))?"(":"",
 			(gecos&&strcmp(gecos,users[i]))?users[i]:"",
 			(gecos&&strcmp(gecos,users[i]))?")":"",
