@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LXDE\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 16:42+0200\n"
+"POT-Creation-Date: 2010-08-01 13:37+0200\n"
 "PO-Revision-Date: 2010-01-24 11:10-0800\n"
 "Last-Translator: alexxed <alexxed@gmail.com>\n"
 "Language-Team: Romanian <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgstr "Mapare de tastatură:"
 msgid "Language:"
 msgstr "Limbă:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:131 ../src/greeter.c:170
 msgid "User:"
 msgstr "Utilizator:"
 
@@ -33,21 +33,27 @@ msgstr "Utilizator:"
 msgid "Unspecified"
 msgstr "Nespecificat"
 
-#: ../src/greeter.c:100
+#: ../src/greeter.c:102
 msgid "Password:"
 msgstr "Parolă:"
 
-#: ../src/greeter.c:222 ../src/lang.c:102
+#: ../src/greeter.c:238 ../src/lang.c:102
 msgid "Default"
 msgstr "Implicit"
 
-#: ../src/greeter.c:439
+#: ../src/greeter.c:428
 msgid "_Reboot"
 msgstr "_Repornire"
 
-#: ../src/greeter.c:443
+#: ../src/greeter.c:432
 msgid "_Shutdown"
 msgstr "_Oprire"
+
+#: ../src/greeter.c:594
+msgid ""
+"\n"
+"<i>logined</i>"
+msgstr ""
 
 #: ../src/lang.c:116
 msgid "More ..."

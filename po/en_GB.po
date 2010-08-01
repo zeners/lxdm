@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-06 08:47+0000\n"
+"POT-Creation-Date: 2010-08-01 13:37+0200\n"
 "PO-Revision-Date: 2010-03-19 23:05:36 +0000\n"
 "Last-Translator: Steve Cook <yorvik.ubunto@gmail.com>\n"
 "Language-Team: English UK en_GB\n"
@@ -28,7 +28,7 @@ msgstr "Keyboard Layout:"
 msgid "Language:"
 msgstr "Language:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:130 ../src/greeter.c:171
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:131 ../src/greeter.c:170
 msgid "User:"
 msgstr "User:"
 
@@ -36,21 +36,27 @@ msgstr "User:"
 msgid "Unspecified"
 msgstr "Unspecified"
 
-#: ../src/greeter.c:101
+#: ../src/greeter.c:102
 msgid "Password:"
 msgstr "Password:"
 
-#: ../src/greeter.c:223 ../src/lang.c:102
+#: ../src/greeter.c:238 ../src/lang.c:102
 msgid "Default"
 msgstr "Default"
 
-#: ../src/greeter.c:440
+#: ../src/greeter.c:428
 msgid "_Reboot"
 msgstr "_Reboot"
 
-#: ../src/greeter.c:444
+#: ../src/greeter.c:432
 msgid "_Shutdown"
 msgstr "_Shutdown"
+
+#: ../src/greeter.c:594
+msgid ""
+"\n"
+"<i>logined</i>"
+msgstr ""
 
 #: ../src/lang.c:116
 msgid "More ..."

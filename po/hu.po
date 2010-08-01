@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 16:42+0200\n"
+"POT-Creation-Date: 2010-08-01 13:37+0200\n"
 "PO-Revision-Date: 2010-01-17 18:24+0100\n"
 "Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
 "Language-Team: HUNGARIAN <debian-l10n-hungaria@lists.debian.org>\n"
@@ -30,7 +30,7 @@ msgstr "Billentyűkiosztás"
 msgid "Language:"
 msgstr "Nyelv:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:131 ../src/greeter.c:170
 msgid "User:"
 msgstr "Felhasználó"
 
@@ -38,21 +38,27 @@ msgstr "Felhasználó"
 msgid "Unspecified"
 msgstr "Meghatározatlan"
 
-#: ../src/greeter.c:100
+#: ../src/greeter.c:102
 msgid "Password:"
 msgstr "Jelszó:"
 
-#: ../src/greeter.c:222 ../src/lang.c:102
+#: ../src/greeter.c:238 ../src/lang.c:102
 msgid "Default"
 msgstr "Alap"
 
-#: ../src/greeter.c:439
+#: ../src/greeter.c:428
 msgid "_Reboot"
 msgstr "Újra_indítás"
 
-#: ../src/greeter.c:443
+#: ../src/greeter.c:432
 msgid "_Shutdown"
 msgstr "_Leállítás"
+
+#: ../src/greeter.c:594
+msgid ""
+"\n"
+"<i>logined</i>"
+msgstr ""
 
 #: ../src/lang.c:116
 msgid "More ..."

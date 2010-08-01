@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-25 05:32+0000\n"
+"POT-Creation-Date: 2010-08-01 13:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr "Näppäimistöasettelu:"
 msgid "Language:"
 msgstr "Kieli:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:130 ../src/greeter.c:171
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:131 ../src/greeter.c:170
 msgid "User:"
 msgstr "Käyttäjä:"
 
@@ -35,21 +35,27 @@ msgstr "Käyttäjä:"
 msgid "Unspecified"
 msgstr "Määrittelemätön"
 
-#: ../src/greeter.c:101
+#: ../src/greeter.c:102
 msgid "Password:"
 msgstr "Salasana:"
 
-#: ../src/greeter.c:223 ../src/lang.c:102
+#: ../src/greeter.c:238 ../src/lang.c:102
 msgid "Default"
 msgstr "Oletus"
 
-#: ../src/greeter.c:440
+#: ../src/greeter.c:428
 msgid "_Reboot"
 msgstr "_Käynnistä uudelleen"
 
-#: ../src/greeter.c:444
+#: ../src/greeter.c:432
 msgid "_Shutdown"
 msgstr "_Sammuta"
+
+#: ../src/greeter.c:594
+msgid ""
+"\n"
+"<i>logined</i>"
+msgstr ""
 
 #: ../src/lang.c:116
 msgid "More ..."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-30 04:48+0000\n"
+"POT-Creation-Date: 2010-08-01 13:37+0200\n"
 "PO-Revision-Date: 2010-05-18 21:16+0200\n"
 "Last-Translator: Ivica Kolić <ikoli@yahoo.com>\n"
 "Language-Team: Croatian (hr) <>\n"
@@ -28,7 +28,7 @@ msgstr "Raspored tipkovnice"
 msgid "Language:"
 msgstr "Jezik"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:130 ../src/greeter.c:171
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:131 ../src/greeter.c:170
 msgid "User:"
 msgstr "Korisnik"
 
@@ -36,21 +36,27 @@ msgstr "Korisnik"
 msgid "Unspecified"
 msgstr "Neodređeno"
 
-#: ../src/greeter.c:101
+#: ../src/greeter.c:102
 msgid "Password:"
 msgstr "Lozinka"
 
-#: ../src/greeter.c:223 ../src/lang.c:102
+#: ../src/greeter.c:238 ../src/lang.c:102
 msgid "Default"
 msgstr "Zadano"
 
-#: ../src/greeter.c:440
+#: ../src/greeter.c:428
 msgid "_Reboot"
 msgstr "_Ponovo pokreni"
 
-#: ../src/greeter.c:444
+#: ../src/greeter.c:432
 msgid "_Shutdown"
 msgstr "_Isključi"
+
+#: ../src/greeter.c:594
+msgid ""
+"\n"
+"<i>logined</i>"
+msgstr ""
 
 #: ../src/lang.c:116
 msgid "More ..."

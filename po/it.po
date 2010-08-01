@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxem r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 16:42+0200\n"
-"PO-Revision-Date: 2010-04-04 10:22+0100\n"
+"POT-Creation-Date: 2010-08-01 13:37+0200\n"
+"PO-Revision-Date: 2010-08-01 13:38+0100\n"
 "Last-Translator: Andrea Florio <andrea@opensuse.org>\n"
 "Language-Team: Italian <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,9 @@ msgstr "Layout Tastiera:"
 msgid "Language:"
 msgstr "Lingua:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4
+#: ../src/greeter.c:131
+#: ../src/greeter.c:170
 msgid "User:"
 msgstr "Utente:"
 
@@ -39,21 +41,30 @@ msgstr "Utente:"
 msgid "Unspecified"
 msgstr "Non specificato"
 
-#: ../src/greeter.c:100
+#: ../src/greeter.c:102
 msgid "Password:"
 msgstr "Password:"
 
-#: ../src/greeter.c:222 ../src/lang.c:102
+#: ../src/greeter.c:238
+#: ../src/lang.c:102
 msgid "Default"
 msgstr "Predefinito"
 
-#: ../src/greeter.c:439
+#: ../src/greeter.c:428
 msgid "_Reboot"
 msgstr "_Riavvia"
 
-#: ../src/greeter.c:443
+#: ../src/greeter.c:432
 msgid "_Shutdown"
 msgstr "_Spegni"
+
+#: ../src/greeter.c:594
+msgid ""
+"\n"
+"<i>logined</i>"
+msgstr ""
+"\n"
+"<i>logined</i>"
 
 #: ../src/lang.c:116
 msgid "More ..."

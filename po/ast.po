@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxede.lxdm.ast\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-07 04:11+0000\n"
+"POT-Creation-Date: 2010-08-01 13:37+0200\n"
 "PO-Revision-Date: 2010-05-07 23:59+0100\n"
 "Last-Translator: astur <malditoastur@gmail.com>\n"
 "Language-Team: asturian <alministradores@softastur.org>\n"
@@ -31,9 +31,7 @@ msgstr "Distribución del tecláu:"
 msgid "Language:"
 msgstr "Llingua:"
 
-#: ../data/lxdm.glade.h:4
-#: ../src/greeter.c:129
-#: ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:131 ../src/greeter.c:170
 msgid "User:"
 msgstr "Usuariu:"
 
@@ -41,24 +39,28 @@ msgstr "Usuariu:"
 msgid "Unspecified"
 msgstr "Non especificáu"
 
-#: ../src/greeter.c:100
+#: ../src/greeter.c:102
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: ../src/greeter.c:222
-#: ../src/lang.c:102
+#: ../src/greeter.c:238 ../src/lang.c:102
 msgid "Default"
 msgstr "Predetermináu"
 
-#: ../src/greeter.c:439
+#: ../src/greeter.c:428
 msgid "_Reboot"
 msgstr "_Reaniciar"
 
-#: ../src/greeter.c:443
+#: ../src/greeter.c:432
 msgid "_Shutdown"
 msgstr "_Apagar"
+
+#: ../src/greeter.c:594
+msgid ""
+"\n"
+"<i>logined</i>"
+msgstr ""
 
 #: ../src/lang.c:116
 msgid "More ..."
 msgstr "Más ..."
-
