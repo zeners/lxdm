@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-28 16:42+0200\n"
+"POT-Creation-Date: 2010-08-01 05:39+0000\n"
 "PO-Revision-Date: 2010-01-20 14:27+0200\n"
 "Last-Translator: Hugo Florentino <sysadmin@cips.cu>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: es\n"
-"X-Generator: Pootle 2.0.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
@@ -30,7 +30,7 @@ msgstr "Distribución del teclado:"
 msgid "Language:"
 msgstr "Idioma:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:129 ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:131 ../src/greeter.c:170
 msgid "User:"
 msgstr "Usuario:"
 
@@ -38,21 +38,29 @@ msgstr "Usuario:"
 msgid "Unspecified"
 msgstr "No especificado"
 
-#: ../src/greeter.c:100
+#: ../src/greeter.c:102
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: ../src/greeter.c:222 ../src/lang.c:102
+#: ../src/greeter.c:238 ../src/lang.c:102
 msgid "Default"
 msgstr "Predeterminado"
 
-#: ../src/greeter.c:439
+#: ../src/greeter.c:428
 msgid "_Reboot"
 msgstr "_Reiniciar"
 
-#: ../src/greeter.c:443
+#: ../src/greeter.c:432
 msgid "_Shutdown"
 msgstr "_Apagar"
+
+#: ../src/greeter.c:594
+msgid ""
+"\n"
+"<i>logined</i>"
+msgstr ""
+"\n"
+"<i>autenticado</i>"
 
 #: ../src/lang.c:116
 msgid "More ..."
