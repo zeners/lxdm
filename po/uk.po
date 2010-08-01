@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-01 13:40+0200\n"
+"POT-Creation-Date: 2010-08-01 05:39+0000\n"
 "PO-Revision-Date: 2010-01-12 23:31+0100\n"
 "Last-Translator: Y P <yupadmin@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,6 +57,8 @@ msgid ""
 "\n"
 "<i>logined</i>"
 msgstr ""
+"\n"
+"<i>ввійшов</i>"
 
 #: ../src/lang.c:116
 msgid "More ..."
