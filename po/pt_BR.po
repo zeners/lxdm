@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-01 13:40+0200\n"
+"POT-Creation-Date: 2010-08-01 05:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgstr "Disposição do teclado:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
-msgstr "Linguagem:"
+msgstr "Idioma:"
 
 #: ../data/lxdm.glade.h:4 ../src/greeter.c:131 ../src/greeter.c:170
 msgid "User:"
@@ -52,10 +52,13 @@ msgid "_Shutdown"
 msgstr "De_sligar"
 
 #: ../src/greeter.c:594
+#, fuzzy
 msgid ""
 "\n"
 "<i>logined</i>"
 msgstr ""
+"\n"
+"<i>logined</i>"
 
 #: ../src/lang.c:116
 msgid "More ..."
