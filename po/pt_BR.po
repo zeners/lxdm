@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-01 05:39+0000\n"
+"POT-Creation-Date: 2010-08-02 05:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,13 +52,12 @@ msgid "_Shutdown"
 msgstr "De_sligar"
 
 #: ../src/greeter.c:594
-#, fuzzy
 msgid ""
 "\n"
 "<i>logined</i>"
 msgstr ""
 "\n"
-"<i>logined</i>"
+"<i>conectado</i>"
 
 #: ../src/lang.c:116
 msgid "More ..."
