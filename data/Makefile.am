@@ -33,7 +33,8 @@ install-data-hook:
 		$(DESTDIR)/etc/lxdm/PreReboot \
 		$(DESTDIR)/etc/lxdm/PreShutdown \
 		$(DESTDIR)/etc/lxdm/LoginReady
-	chmod 600 $(DESTDIR)/etc/lxdm/lxdm.conf
+	chmod 640 $(DESTDIR)/etc/lxdm/lxdm.conf
+	chown root:lxdm $(DESTDIR)/etc/lxdm/lxdm.conf
 
 themedir=$(datadir)/lxdm/themes/Industrial
 theme_DATA= \
