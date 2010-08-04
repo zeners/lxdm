@@ -592,7 +592,8 @@ static gboolean load_user_list(GtkWidget *widget)
 			(gecos&&strcmp(gecos,users[i]))?"(":"",
 			(gecos&&strcmp(gecos,users[i]))?users[i]:"",
 			(gecos&&strcmp(gecos,users[i]))?")":"",
-			login?_("\n<i>logged in</i>"):"");
+			login?("\n<i>logged in</i>"):"");
+		// don't translate it now, not freeze
 		gtk_list_store_set(model,&iter,0,face,1,display,2,users[i],3,gecos,4,login,-1);
 		if(face) g_object_unref(G_OBJECT(face));
 		g_free(display);
@@ -829,7 +830,6 @@ static void apply_theme(const char* theme_name)
 
     if( g_file_test(rc, G_FILE_TEST_EXISTS) )
     {
-        //g_debug("%s", rc);
         gtk_rc_parse(rc);
     }
     g_free(rc);
