@@ -585,13 +585,15 @@ static gboolean load_user_list(GtkWidget *widget)
 		if(!face)
 		{
 			/* TODO: load some default face */
+			face=gdk_pixbuf_new_from_file_at_scale(LXDM_DATA_DIR"/nobody.png",48,48,TRUE,NULL);
 		}
 		display=g_strdup_printf("<span font_size=\"x-large\">%s</span>%s%s%s%s",
 			gecos?gecos:users[i],
 			(gecos&&strcmp(gecos,users[i]))?"(":"",
 			(gecos&&strcmp(gecos,users[i]))?users[i]:"",
 			(gecos&&strcmp(gecos,users[i]))?")":"",
-			login?_("\n<i>logined</i>"):"");
+			login?("\n<i>logged in</i>"):"");
+		// don't translate it now, not freeze
 		gtk_list_store_set(model,&iter,0,face,1,display,2,users[i],3,gecos,4,login,-1);
 		if(face) g_object_unref(G_OBJECT(face));
 		g_free(display);
@@ -828,7 +830,6 @@ static void apply_theme(const char* theme_name)
 
     if( g_file_test(rc, G_FILE_TEST_EXISTS) )
     {
-        g_debug("%s", rc);
         gtk_rc_parse(rc);
     }
     g_free(rc);
