@@ -688,7 +688,8 @@ static void create_win()
 	gtk_window_present( GTK_WINDOW(win) );
 	gtk_widget_realize(login_entry);
     
-	if(user_list && load_user_list(user_list))
+	if(user_list && !g_key_file_get_integer(config,"userlist","disable",NULL) && 
+			load_user_list(user_list))
 	{
 		gtk_widget_hide(login_entry);
 	}

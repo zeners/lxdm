@@ -16,3 +16,6 @@ theme=Industrial
 
 [input]
 
+[userlist]
+disable=0
+
