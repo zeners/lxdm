@@ -138,7 +138,12 @@ static int ui_do_login(void)
     else if(!strcmp(user, "shutdown"))
         printf("shutdown\n");
     else
-    	printf("login user=%s pass=%s\n",user, pass);
+    {
+	char *temp;
+	temp=g_base64_encode(pass,strlen(pass)+1);
+    	printf("login user=%s pass=%s\n",user, temp);
+	g_free(temp);
+    }
     return 0;
 }
 

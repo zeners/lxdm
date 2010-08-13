@@ -110,6 +110,17 @@ static gchar *greeter_param(char *str, char *name)
 		ret[i] = p[i];
 	}
 	ret[i] = 0;
+	if(!strcmp(name,"pass"))
+	{
+		gsize outlen;
+		temp=(char*)g_base64_decode(ret,&outlen);
+		if(!temp) return NULL;
+		p=g_malloc(outlen+1);
+		memcpy(p,temp,outlen);
+		p[outlen]=0;
+		g_free(temp);
+		return p;
+	}
 	return g_strdup(ret);
 }
 

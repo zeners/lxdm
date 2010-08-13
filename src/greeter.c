@@ -123,16 +123,9 @@ static void on_entry_activate(GtkEntry* entry)
             /* FIXME: fatal error */
         }
 
-        pass = g_strdup( gtk_entry_get_text(entry) );
-        if( strchr(pass, ' ') )
-        {
-            g_free(user); user = NULL;
-            g_free(pass); pass = NULL;
-            gtk_label_set_text( GTK_LABEL(prompt), _("User:") );
-            gtk_entry_set_text(GTK_ENTRY(entry), "");
-            gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
-            return;
-        }
+        tmp = g_strdup( gtk_entry_get_text(entry) );
+	pass=g_base64_encode(tmp,strlen(tmp)+1);
+	g_free(tmp);
 
         if( lang && gtk_combo_box_get_active_iter(GTK_COMBO_BOX(lang), &it) )
         {
