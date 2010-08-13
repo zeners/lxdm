@@ -54,7 +54,6 @@ static GKeyFile * var_config;
 static GtkWidget* win;
 static GtkWidget* prompt;
 static GtkWidget* login_entry;
-static GtkWidget* prompt;
 static GtkWidget* user_list;
 
 static GtkWidget* sessions;
@@ -71,6 +70,7 @@ static char* session_exec = NULL;
 static char* session_desktop_file = NULL;
 
 static char* ui_file = NULL;
+static char *ui_nobody = NULL;
 
 static GdkPixbuf *bg_img = NULL;
 static GdkColor bg_color = {0};
@@ -94,76 +94,76 @@ static void on_screen_size_changed(GdkScreen* scr, GtkWindow* win)
 
 static void on_entry_activate(GtkEntry* entry)
 {
-    char* tmp;
-    if( !user )
-    {
-        user = g_strdup( gtk_entry_get_text( GTK_ENTRY(entry) ) );
-        gtk_entry_set_text(GTK_ENTRY(entry), "");
-        gtk_label_set_text( GTK_LABEL(prompt), _("Password:") );
-        if(strchr(user, ' '))
-        {
-            g_free(user);
-            user = NULL;
-            return;
-        }
-        gtk_entry_set_visibility(entry, FALSE);
-    }
-    else
-    {
-        GtkTreeIter it;
-        char *session_lang = "";
+	char* tmp;
+	if( !user )
+	{
+		user = g_strdup( gtk_entry_get_text( GTK_ENTRY(entry) ) );
+		gtk_entry_set_text(GTK_ENTRY(entry), "");
+		gtk_label_set_text( GTK_LABEL(prompt), _("Password:") );
+		if(strchr(user, ' '))
+		{
+			g_free(user);
+			user = NULL;
+			return;
+		}
+		gtk_entry_set_visibility(entry, FALSE);
+	}
+	else
+	{
+		GtkTreeIter it;
+		char *session_lang = "";
 
-        if( gtk_combo_box_get_active_iter(GTK_COMBO_BOX(sessions), &it) )
-        {
-            GtkTreeModel* model = gtk_combo_box_get_model( GTK_COMBO_BOX(sessions) );
-            gtk_tree_model_get(model, &it, 1, &session_exec, 2, &session_desktop_file, -1);
-        }
-        else
-        {
-            /* FIXME: fatal error */
-        }
+		if( gtk_combo_box_get_active_iter(GTK_COMBO_BOX(sessions), &it) )
+		{
+			GtkTreeModel* model = gtk_combo_box_get_model( GTK_COMBO_BOX(sessions) );
+			gtk_tree_model_get(model, &it, 1, &session_exec, 2, &session_desktop_file, -1);
+		}
+		else
+		{
+			/* FIXME: fatal error */
+		}
 
-        tmp = g_strdup( gtk_entry_get_text(entry) );
-	pass=g_base64_encode(tmp,strlen(tmp)+1);
-	g_free(tmp);
+		tmp = g_strdup( gtk_entry_get_text(entry) );
+		pass=g_base64_encode(tmp,strlen(tmp)+1);
+		g_free(tmp);
 
-        if( lang && gtk_combo_box_get_active_iter(GTK_COMBO_BOX(lang), &it) )
-        {
-            GtkTreeModel* model = gtk_combo_box_get_model( GTK_COMBO_BOX(lang) );
-            gtk_tree_model_get(model, &it, 1, &session_lang, -1);
-            //FIXME: is session leaked?
-        }
+		if( lang && gtk_combo_box_get_active_iter(GTK_COMBO_BOX(lang), &it) )
+		{
+			GtkTreeModel* model = gtk_combo_box_get_model( GTK_COMBO_BOX(lang) );
+			gtk_tree_model_get(model, &it, 1, &session_lang, -1);
+			//FIXME: is session leaked?
+		}
 
-        tmp = g_key_file_get_string(var_config, "base", "last_session", NULL);
-        if( g_strcmp0(tmp, session_desktop_file) )
-        {
-            g_key_file_set_string(var_config, "base", "last_session", session_desktop_file);
-        }
-        g_free(tmp);
+		tmp = g_key_file_get_string(var_config, "base", "last_session", NULL);
+		if( g_strcmp0(tmp, session_desktop_file) )
+		{
+			g_key_file_set_string(var_config, "base", "last_session", session_desktop_file);
+		}
+		g_free(tmp);
 
-        tmp = g_key_file_get_string(var_config, "base", "last_lang", NULL);
-        if( g_strcmp0(tmp, session_lang) )
-        {
-            g_key_file_set_string(var_config, "base", "last_lang", session_lang);
-        }
-        g_free(tmp);
+		tmp = g_key_file_get_string(var_config, "base", "last_lang", NULL);
+		if( g_strcmp0(tmp, session_lang) )
+		{
+			g_key_file_set_string(var_config, "base", "last_lang", session_lang);
+		}
+		g_free(tmp);
 
-        printf("login user=%s pass=%s session=%s lang=%s\n",
-               user, pass, session_exec, session_lang);
+		printf("login user=%s pass=%s session=%s lang=%s\n",
+			user, pass, session_exec, session_lang);
 
-        /* password check failed */
-        g_free(user);
-        user = NULL;
-        g_free(pass);
-        pass = NULL;
+		/* password check failed */
+		g_free(user);
+		user = NULL;
+		g_free(pass);
+		pass = NULL;
 
-        gtk_widget_hide(prompt);
-        gtk_widget_hide( GTK_WIDGET(entry) );
+		gtk_widget_hide(prompt);
+		gtk_widget_hide( GTK_WIDGET(entry) );
 
-        gtk_label_set_text( GTK_LABEL(prompt), _("User:") );
-        gtk_entry_set_text(GTK_ENTRY(entry), "");
-        gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
-    }
+		gtk_label_set_text( GTK_LABEL(prompt), _("User:") );
+		gtk_entry_set_text(GTK_ENTRY(entry), "");
+		gtk_entry_set_visibility(GTK_ENTRY(entry), TRUE);
+	}
 }
 
 static void load_sessions()
@@ -515,16 +515,37 @@ static void on_user_select(GtkIconView *iconview)
 	g_list_free (list);
 	gtk_tree_model_get(model,&iter,2,&name,-1);
 	gtk_widget_hide(user_list);
-	gtk_entry_set_text(GTK_ENTRY(login_entry),name);
-	g_free(name);
-	on_entry_activate(GTK_ENTRY(login_entry));
-	gtk_widget_show(login_entry);
-	gtk_widget_grab_focus(login_entry);
+	if(name && name[0])
+	{
+		gtk_entry_set_text(GTK_ENTRY(login_entry),name);
+		g_free(name);
+		on_entry_activate(GTK_ENTRY(login_entry));
+		gtk_widget_show(login_entry);
+		gtk_widget_grab_focus(login_entry);
+		
+		gtk_label_set_text( GTK_LABEL(prompt), _("Password:") );
+		gtk_widget_show(prompt);
+	}
+	else
+	{
+		g_free(name);
+		if(user)
+		{
+			g_free(user);
+			user=NULL;
+		}
+		gtk_entry_set_text(GTK_ENTRY(login_entry),"");
+		gtk_widget_show(login_entry);
+		gtk_widget_grab_focus(login_entry);
+		gtk_label_set_text( GTK_LABEL(prompt), _("User:") );
+		gtk_widget_show(prompt);
+	}
 }
 
 static gboolean load_user_list(GtkWidget *widget)
 {
 	GtkListStore *model;
+	GtkTreeIter iter;
 	GKeyFile *kf;
 	char *res=NULL;
 	char **users;
@@ -563,9 +584,14 @@ static gboolean load_user_list(GtkWidget *widget)
 		printf("USER_LIST 0 user\n");
 		return FALSE;
 	}
-	for(i=0;i<count;i++)
+	if(count>3)
 	{
-		GtkTreeIter iter;
+		// TODO: better ui needed
+		g_key_file_free(kf);
+		return FALSE;
+	}
+	for(i=0;i<count;i++)
+	{		
 		char *gecos,*face_path,*display;
 		gboolean login;
 		GdkPixbuf *face=NULL;
@@ -578,7 +604,7 @@ static gboolean load_user_list(GtkWidget *widget)
 		if(!face)
 		{
 			/* TODO: load some default face */
-			face=gdk_pixbuf_new_from_file_at_scale(LXDM_DATA_DIR"/nobody.png",48,48,TRUE,NULL);
+			face=gdk_pixbuf_new_from_file_at_scale(ui_nobody,48,48,TRUE,NULL);
 		}
 		display=g_strdup_printf("<span font_size=\"x-large\">%s</span>%s%s%s%s",
 			gecos?gecos:users[i],
@@ -595,6 +621,10 @@ static gboolean load_user_list(GtkWidget *widget)
 	}
 	g_strfreev(users);
 	g_key_file_free(kf);
+	
+	// add "More ..."
+	gtk_list_store_append(model,&iter);
+	gtk_list_store_set(model,&iter,1,_("More ..."),2,"",3,"",4,FALSE,-1);
 	return TRUE;
 }
 
@@ -755,34 +785,45 @@ int set_background(void)
 
 static gboolean on_lxdm_command(GIOChannel *source, GIOCondition condition, gpointer data)
 {
-    GIOStatus ret;
-    char *str;
+	GIOStatus ret;
+	char *str;
 
-    if( !(G_IO_IN & condition) )
-        return FALSE;
-    ret = g_io_channel_read_line(source, &str, NULL, NULL, NULL);
-    if( ret != G_IO_STATUS_NORMAL )
-        return FALSE;
+	if( !(G_IO_IN & condition) )
+		return FALSE;
+	ret = g_io_channel_read_line(source, &str, NULL, NULL, NULL);
+	if( ret != G_IO_STATUS_NORMAL )
+		return FALSE;
 
-    if( !strncmp(str, "quit", 4) || !strncmp(str, "exit",4))
-        gtk_main_quit();
-    else if( !strncmp(str, "reset", 5) )
-    {
-        gtk_widget_show(prompt);
-        if(user_list)
-        {
+	if( !strncmp(str, "quit", 4) || !strncmp(str, "exit",4))
+	gtk_main_quit();
+	else if( !strncmp(str, "reset", 5) )
+	{
+		if(user)
+		{
+			g_free(user);
+			user=NULL;
+		}
+		if(pass)
+		{
+			g_free(pass);
+			pass=NULL;
+		}
+		gtk_label_set_text( GTK_LABEL(prompt), _("User:"));
+		gtk_widget_show(prompt);
+		if(user_list)
+		{
 			gtk_widget_hide(login_entry);
 			gtk_icon_view_unselect_all(GTK_ICON_VIEW(user_list));
 			gtk_widget_show(user_list);
 		}
-        else
-        {
+		else
+		{
 			gtk_widget_show(login_entry);
-        	gtk_widget_grab_focus(login_entry);
+			gtk_widget_grab_focus(login_entry);
 		}
-    }
-    g_free(str);
-    return TRUE;
+	}
+	g_free(str);
+	return TRUE;
 }
 
 void listen_stdin(void)
@@ -833,7 +874,17 @@ static void apply_theme(const char* theme_name)
         g_free(ui_file);
         ui_file = NULL;
     }
+    
+    ui_nobody = g_build_filename(theme_dir, "nobody.png", NULL);
+    if( !g_file_test(ui_nobody, G_FILE_TEST_EXISTS) )
+    {
+        g_free(ui_nobody);
+        ui_nobody = NULL;
+    }
+    
     g_free(theme_dir);
+    
+    
 }
 
 int main(int arc, char *arg[])
