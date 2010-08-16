@@ -587,8 +587,7 @@ static gboolean load_user_list(GtkWidget *widget)
 	if(count>3)
 	{
 		// TODO: better ui needed
-		g_key_file_free(kf);
-		return FALSE;
+		count=3;
 	}
 	for(i=0;i<count;i++)
 	{		

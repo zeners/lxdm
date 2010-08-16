@@ -127,9 +127,6 @@ static void on_ui_expose(void)
 
 static int ui_do_login(void)
 {
-    struct passwd *pw;
-    int ret;
-
     if( stage != 2 )
         return -1;
 
@@ -140,7 +137,7 @@ static int ui_do_login(void)
     else
     {
 	char *temp;
-	temp=g_base64_encode(pass,strlen(pass)+1);
+	temp=(char*)g_base64_encode((guchar*)pass,strlen(pass)+1);
     	printf("login user=%s pass=%s\n",user, temp);
 	g_free(temp);
     }

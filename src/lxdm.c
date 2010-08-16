@@ -1517,30 +1517,71 @@ static void lxdm_signal_handler(void *data,int sig)
 	}
 }
 
+static gboolean strv_find(char **strv,const char *p)
+{
+	int i;
+	if(!strv || !p) return FALSE;
+	for(i=0;strv[i]!=NULL;i++)
+	{
+		if(!strcmp(strv[i],p))
+			return TRUE;
+	}
+	return FALSE;
+}
+
 GKeyFile *lxdm_user_list(void)
 {
 	struct passwd *pw;
 	GKeyFile *kf;
 	char *face;
+	char **black=NULL;
+	char **white=NULL;
+	
+	// load black list
+	face=g_key_file_get_string(config,"userlist","black",NULL);
+	if(face)
+	{
+		black=g_strsplit(face," ",-1);
+		g_free(face);
+	}
+	//load white list
+	face=g_key_file_get_string(config,"userlist","white",NULL);
+	if(face)
+	{
+		white=g_strsplit(face," ",-1);
+		g_free(face);
+	}
+
 	kf=g_key_file_new();
 	g_key_file_set_comment(kf,NULL,NULL,"lxdm user list",NULL);
 	while((pw=getpwent())!=NULL)
 	{
-		 if(strstr(pw->pw_shell, "nologin"))
-		 	continue;
-		 if(strncmp(pw->pw_dir,"/home/",6))
-		 	continue;
-		 g_key_file_set_string(kf,pw->pw_name,"name",pw->pw_name);
-		 if(pw->pw_gecos && pw->pw_gecos[0])
-		 	g_key_file_set_string(kf,pw->pw_name,"gecos",pw->pw_gecos);
-		 if(lxsession_find_user(pw->pw_uid))
-		 	g_key_file_set_boolean(kf,pw->pw_name,"login",TRUE);
-		 face=g_strdup_printf("%s/.face",pw->pw_dir);
-		 if(!access(face,R_OK))
-		 	g_key_file_set_string(kf,pw->pw_name,"face",face);
-		 g_free(face);
+		if(strstr(pw->pw_shell, "nologin"))
+			continue;
+		if(strncmp(pw->pw_dir,"/home/",6))
+		{
+			if(!strv_find(white,pw->pw_name))
+				continue;
+		}
+		else
+		{
+			if(strv_find(black,pw->pw_name))
+				continue;
+		}
+
+		g_key_file_set_string(kf,pw->pw_name,"name",pw->pw_name);
+		if(pw->pw_gecos && pw->pw_gecos[0] && strcmp(pw->pw_name,pw->pw_gecos))
+			g_key_file_set_string(kf,pw->pw_name,"gecos",pw->pw_gecos);
+		if(lxsession_find_user(pw->pw_uid))
+			g_key_file_set_boolean(kf,pw->pw_name,"login",TRUE);
+		face=g_strdup_printf("%s/.face",pw->pw_dir);
+		if(!access(face,R_OK))
+			g_key_file_set_string(kf,pw->pw_name,"face",face);
+		g_free(face);
 	}
 	endpwent();
+	if(black) g_strfreev(black);
+	if(white) g_strfreev(white);
 	return kf;
 }
 
