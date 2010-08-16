@@ -52,6 +52,7 @@
                           <object class="GtkLabel" id="prompt">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">User:</property>
+                            <property name="yalign">0.2</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -63,6 +64,7 @@
                           <object class="GtkIconView" id="user_list">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="item-padding">1</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
