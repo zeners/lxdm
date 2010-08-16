@@ -124,7 +124,7 @@ static void on_entry_activate(GtkEntry* entry)
 		}
 
 		tmp = g_strdup( gtk_entry_get_text(entry) );
-		pass=g_base64_encode(tmp,strlen(tmp)+1);
+		pass=g_base64_encode((guchar*)tmp,strlen(tmp)+1);
 		g_free(tmp);
 
 		if( lang && gtk_combo_box_get_active_iter(GTK_COMBO_BOX(lang), &it) )
@@ -610,7 +610,7 @@ static gboolean load_user_list(GtkWidget *widget)
 			(gecos&&strcmp(gecos,users[i]))?"(":"",
 			(gecos&&strcmp(gecos,users[i]))?users[i]:"",
 			(gecos&&strcmp(gecos,users[i]))?")":"",
-			login?("\n<i>logged in</i>"):"");
+			login?_("\n<i>logged in</i>"):"");
 		// don't translate it now, not freeze
 		gtk_list_store_set(model,&iter,0,face,1,display,2,users[i],3,gecos,4,login,-1);
 		if(face) g_object_unref(G_OBJECT(face));
