@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-01 13:40+0200\n"
+"POT-Creation-Date: 2010-08-17 05:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,8 @@ msgstr "Raspored na tastaturi:"
 msgid "Language:"
 msgstr "Jezik:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:131 ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:163 ../src/greeter.c:540
+#: ../src/greeter.c:810
 msgid "User:"
 msgstr "Korisnik:"
 
@@ -35,28 +36,30 @@ msgstr "Korisnik:"
 msgid "Unspecified"
 msgstr "Neodređeno"
 
-#: ../src/greeter.c:102
+#: ../src/greeter.c:102 ../src/greeter.c:526
 msgid "Password:"
 msgstr "Lozinka:"
 
-#: ../src/greeter.c:238 ../src/lang.c:102
+#: ../src/greeter.c:231 ../src/lang.c:102
 msgid "Default"
 msgstr "Podrazumevano"
 
-#: ../src/greeter.c:428
+#: ../src/greeter.c:421
 msgid "_Reboot"
 msgstr "_Restart"
 
-#: ../src/greeter.c:432
+#: ../src/greeter.c:425
 msgid "_Shutdown"
 msgstr "_Ugasi"
 
-#: ../src/greeter.c:594
+#: ../src/greeter.c:613
 msgid ""
 "\n"
-"<i>logined</i>"
+"<i>logged in</i>"
 msgstr ""
+"\n"
+"<i>Prijaǉven u</i>"
 
-#: ../src/lang.c:116
+#: ../src/greeter.c:626 ../src/lang.c:116
 msgid "More ..."
 msgstr "Više ..."
