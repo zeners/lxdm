@@ -42,27 +42,29 @@ static int cmpstr(const void *p1, const void *p2)
            return strcmp(* (char * const *) p1, * (char * const *) p2);
 }
 
-static char **lxdm_get_all_language_names(void)
+static char **lxdm_get_all_language_names_static(void)
 {
-#if 0
 	GPtrArray *array;
 	FILE *fp;
-	array=g_ptr_array_new();
+	char line[128];
+	
 	fp=fopen(LXDM_DATA_DIR "/lang.txt","r");
-	if(fp)
+	if(!fp) return NULL;
+	array=g_ptr_array_new();
+	while(fgets(line,128,fp)!=NULL)
 	{
-		char line[128];
-		while(fgets(line,128,fp)!=NULL)
-		{
-			char *p=strchr(line,'\n');
-			if(*p) *p=0;
-			g_ptr_array_add(array,g_strdup(line));
-		}
-		fclose(fp);
+		char *p=strchr(line,'\n');
+		if(*p) *p=0;
+		g_ptr_array_add(array,g_strdup(line));
+
 	}
+	fclose(fp);
 	g_ptr_array_add (array, NULL);
 	return (char **) g_ptr_array_free (array, FALSE);
-#else
+}
+
+static char **lxdm_get_all_language_names(void)
+{
 	char **list,**lang;
 	int len;
 	list=gdm_get_all_language_names();
@@ -79,7 +81,6 @@ static char **lxdm_get_all_language_names(void)
 	len=g_strv_length(list);
 	qsort(list,len,sizeof(char*),(void*)cmpstr);
 	return list;
-#endif
 }
 
 static char **lxdm_get_config_language_names(GKeyFile *config)
@@ -101,7 +102,15 @@ void lxdm_load_langs(GKeyFile *config, gboolean all, void *arg, void (*cb)(void 
 
     cb(arg, "", _("Default")); /* default is to use the system wide settings ,not use the "C" */
 
-    lang = all?lxdm_get_all_language_names():lxdm_get_config_language_names(config);
+	if(!all)
+	{
+		lang=lxdm_get_config_language_names(config);
+	}
+	else
+	{
+		lang=lxdm_get_all_language_names_static();
+		if(!lang) lang=lxdm_get_all_language_names();
+	}
     if(!lang) return;
 
     for(i=0;lang[i]!=NULL;i++)

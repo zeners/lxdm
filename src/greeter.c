@@ -891,6 +891,9 @@ int main(int arc, char *arg[])
     char* theme_name;
     GtkSettings*p;
 
+    /* this will override LC_MESSAGES */
+    unsetenv("LANGUAGE");
+
     gtk_set_locale();
     bindtextdomain("lxdm", "/usr/share/locale");
     textdomain("lxdm");

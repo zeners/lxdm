@@ -172,6 +172,7 @@ void xconn_close(xconn_t c)
 	free(c);
 }
 
+#if 0
 static xcb_window_t xconn_get_root(xconn_t c)
 {
 	const xcb_setup_t *setup;
@@ -180,6 +181,7 @@ static xcb_window_t xconn_get_root(xconn_t c)
 	xcb_screen_t *screen = iter.data;
 	return screen->root;
 }
+#endif
 
 void xconn_clean(xconn_t c)
 {

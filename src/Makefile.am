@@ -33,7 +33,8 @@ lxdm_greeter_gtk_CFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\"@localedir@\" \
 	-DGNOMELOCALEDIR=\"@localedir@\" \
 	-DLIBLOCALEDIR=\"@prefix@/lib/locale\" \
-	-Werror-implicit-function-declaration
+	-Werror-implicit-function-declaration \
+	-Wall \
 	$(NULL)
 
 lxdm_greeter_gtk_LDADD = \
@@ -57,7 +58,8 @@ lxdm_greeter_gdk_CFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\"@localedir@\" \
 	-DGNOMELOCALEDIR=\"@localedir@\" \
 	-DLIBLOCALEDIR=\"@prefix@/lib/locale\" \
-	-Werror-implicit-function-declaration
+	-Werror-implicit-function-declaration \
+	-Wall \
 	$(NULL)
 
 lxdm_greeter_gdk_LDADD = \

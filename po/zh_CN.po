@@ -34,7 +34,7 @@ msgstr "用户："
 
 #: ../src/gdm/gdm-languages.c:610
 msgid "Unspecified"
-msgstr ""
+msgstr "未定义"
 
 #: ../src/greeter.c:102
 msgid "Password:"
@@ -55,8 +55,10 @@ msgstr "关机(_S)"
 #: ../src/greeter.c:594
 msgid ""
 "\n"
-"<i>logined</i>"
+"<i>logged in</i>"
 msgstr ""
+"\n"
+"<i>已登录</i>"
 
 #: ../src/lang.c:116
 msgid "More ..."

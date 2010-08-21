@@ -604,6 +604,7 @@ get_translated_language (const char *code,
                 if (locale != NULL) {
                         old_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
                         setlocale (LC_MESSAGES, locale);
+                        setlocale (LC_ALL, locale);
                 }
 
                 if (is_fallback_language (code)) {
