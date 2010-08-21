@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-17 05:38+0000\n"
+"POT-Creation-Date: 2010-08-22 01:09+0200\n"
 "PO-Revision-Date: 2010-07-06 11:15+0200\n"
 "Last-Translator: Hamidreza <n3gb0y@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr "زبان:"
 msgid "User:"
 msgstr "کاربر:"
 
-#: ../src/gdm/gdm-languages.c:610
+#: ../src/gdm/gdm-languages.c:611
 msgid "Unspecified"
 msgstr "نامشخص"
 
@@ -43,7 +43,7 @@ msgstr "نامشخص"
 msgid "Password:"
 msgstr "گذرواژه:"
 
-#: ../src/greeter.c:231 ../src/lang.c:102
+#: ../src/greeter.c:231 ../src/lang.c:103
 msgid "Default"
 msgstr "پیش‌فرض"
 
@@ -63,6 +63,6 @@ msgstr ""
 "\n"
 "<i>وارد شد</i>"
 
-#: ../src/greeter.c:626 ../src/lang.c:116
+#: ../src/greeter.c:626 ../src/lang.c:125
 msgid "More ..."
 msgstr "بیشتر ..."

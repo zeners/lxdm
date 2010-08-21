@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-19 07:50+0000\n"
+"POT-Creation-Date: 2010-08-22 01:09+0200\n"
 "PO-Revision-Date: 2010-01-12 23:31+0100\n"
 "Last-Translator: Y P <yupadmin@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,7 +33,7 @@ msgstr "Мова:"
 msgid "User:"
 msgstr "Користувач:"
 
-#: ../src/gdm/gdm-languages.c:610
+#: ../src/gdm/gdm-languages.c:611
 msgid "Unspecified"
 msgstr "Невизначено"
 
@@ -41,7 +41,7 @@ msgstr "Невизначено"
 msgid "Password:"
 msgstr "Пароль:"
 
-#: ../src/greeter.c:231 ../src/lang.c:102
+#: ../src/greeter.c:231 ../src/lang.c:103
 msgid "Default"
 msgstr "По замовчуванню"
 
@@ -61,6 +61,6 @@ msgstr ""
 "\n"
 "<i>ввійшов</i>"
 
-#: ../src/greeter.c:626 ../src/lang.c:116
+#: ../src/greeter.c:626 ../src/lang.c:125
 msgid "More ..."
 msgstr "Більше..."

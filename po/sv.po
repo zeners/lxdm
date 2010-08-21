@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-01 13:40+0200\n"
+"POT-Creation-Date: 2010-08-22 01:09+0200\n"
 "PO-Revision-Date: 2010-08-02 05:27+0200\n"
 "Last-Translator: Martin <brother@bsnet.se>\n"
 "Language-Team: Swedish <tp-sv@lists.debian.org>\n"
-"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.5\n"
 "X-Poedit-Language: Swedish\n"
@@ -32,40 +32,42 @@ msgstr "Tangentbordsupplägg:"
 msgid "Language:"
 msgstr "Språk:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:131 ../src/greeter.c:170
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:163 ../src/greeter.c:540
+#: ../src/greeter.c:810
 msgid "User:"
 msgstr "Användare:"
 
-#: ../src/gdm/gdm-languages.c:610
+#: ../src/gdm/gdm-languages.c:611
 msgid "Unspecified"
 msgstr "Ospecificerat"
 
-#: ../src/greeter.c:102
+#: ../src/greeter.c:102 ../src/greeter.c:526
 msgid "Password:"
 msgstr "Lösenord:"
 
-#: ../src/greeter.c:238 ../src/lang.c:102
+#: ../src/greeter.c:231 ../src/lang.c:103
 msgid "Default"
 msgstr "Standard"
 
-#: ../src/greeter.c:428
+#: ../src/greeter.c:421
 msgid "_Reboot"
 msgstr "_Starta om"
 
-#: ../src/greeter.c:432
+#: ../src/greeter.c:425
 msgid "_Shutdown"
 msgstr "_Avsluta"
 
 # ?
-#: ../src/greeter.c:594
+#: ../src/greeter.c:613
+#, fuzzy
 msgid ""
 "\n"
-"<i>logined</i>"
+"<i>logged in</i>"
 msgstr ""
 "\n"
 "<i>inloggade</i>"
 
-#: ../src/lang.c:116
+#: ../src/greeter.c:626 ../src/lang.c:125
 msgid "More ..."
 msgstr "Mer..."
 

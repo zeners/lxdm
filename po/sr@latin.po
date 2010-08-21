@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-17 05:38+0000\n"
+"POT-Creation-Date: 2010-08-22 01:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgstr "Jezik:"
 msgid "User:"
 msgstr "Korisnik:"
 
-#: ../src/gdm/gdm-languages.c:610
+#: ../src/gdm/gdm-languages.c:611
 msgid "Unspecified"
 msgstr "Neodređeno"
 
@@ -40,7 +40,7 @@ msgstr "Neodređeno"
 msgid "Password:"
 msgstr "Lozinka:"
 
-#: ../src/greeter.c:231 ../src/lang.c:102
+#: ../src/greeter.c:231 ../src/lang.c:103
 msgid "Default"
 msgstr "Podrazumevano"
 
@@ -60,6 +60,6 @@ msgstr ""
 "\n"
 "<i>Prijaǉven u</i>"
 
-#: ../src/greeter.c:626 ../src/lang.c:116
+#: ../src/greeter.c:626 ../src/lang.c:125
 msgid "More ..."
 msgstr "Više ..."
