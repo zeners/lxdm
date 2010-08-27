@@ -2,12 +2,12 @@
 # Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER.
 # This file is distributed under the same license as the lxde.lxdm package.
 # Joe Hansen (joedalton2@yahoo.dk), 2010.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-22 01:09+0200\n"
+"POT-Creation-Date: 2010-08-27 21:07+0000\n"
 "PO-Revision-Date: 2010-08-03 20:27+0000\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -54,13 +54,10 @@ msgstr "_Luk computeren"
 
 # fejl?
 #: ../src/greeter.c:613
-#, fuzzy
 msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
-"\n"
-"<i>logined</i>"
 
 #: ../src/greeter.c:626 ../src/lang.c:125
 msgid "More ..."
