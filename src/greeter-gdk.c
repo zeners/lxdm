@@ -101,7 +101,7 @@ static void on_ui_expose(void)
             color = &hint;
         }
     }
-    else if( stage == 1 )
+    else if( stage >= 1 )
     {
         char spy[MAX_VISIBLE_CHARS + 1];
         p = spy;
