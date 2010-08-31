@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-08-22 01:09+0200\n"
-"PO-Revision-Date: 2010-01-13 23:09+0200\n"
-"Last-Translator: Josep Sanchez <papapep@gmail.com>\n"
+"PO-Revision-Date: 2010-08-31 02:28+0200\n"
+"Last-Translator: sisco <sisco.garcia@ubuntu.cat>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.0\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
@@ -55,11 +55,15 @@ msgstr "_Reinicia"
 msgid "_Shutdown"
 msgstr "_Atura"
 
+# no sé si no és una mica simplificadora. Cal revisió.
 #: ../src/greeter.c:613
+#, fuzzy
 msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
+"\n"
+"<i>registrat</i>"
 
 #: ../src/greeter.c:626 ../src/lang.c:125
 msgid "More ..."
