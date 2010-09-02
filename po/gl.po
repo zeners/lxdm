@@ -7,16 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-22 01:09+0200\n"
-"PO-Revision-Date: 2010-04-07 10:10+0200\n"
-"Last-Translator: Indalecio <ifreiria@gmail.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-09-02 05:50+0000\n"
+"PO-Revision-Date: 2010-09-02 13:21+0100\n"
+"Last-Translator: Indalecio Freiría Santos <ifreiria@gmail.com>\n"
+"Language-Team: Proxecto Trasno <proxecto@trasno.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.1\n"
+"X-Poedit-Language: Galician\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
@@ -30,7 +33,9 @@ msgstr "Disposición de teclado:"
 msgid "Language:"
 msgstr "Idioma:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:163 ../src/greeter.c:540
+#: ../data/lxdm.glade.h:4
+#: ../src/greeter.c:163
+#: ../src/greeter.c:540
 #: ../src/greeter.c:810
 msgid "User:"
 msgstr "Usuario:"
@@ -39,11 +44,13 @@ msgstr "Usuario:"
 msgid "Unspecified"
 msgstr "Sen especificar"
 
-#: ../src/greeter.c:102 ../src/greeter.c:526
+#: ../src/greeter.c:102
+#: ../src/greeter.c:526
 msgid "Password:"
 msgstr "Contrasinal:"
 
-#: ../src/greeter.c:231 ../src/lang.c:103
+#: ../src/greeter.c:231
+#: ../src/lang.c:103
 msgid "Default"
 msgstr "Predefinido"
 
@@ -60,7 +67,11 @@ msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
+"\n"
+"<i>autenticado</i>"
 
-#: ../src/greeter.c:626 ../src/lang.c:125
+#: ../src/greeter.c:626
+#: ../src/lang.c:125
 msgid "More ..."
 msgstr "Máis ..."
+
