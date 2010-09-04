@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-22 01:09+0200\n"
+"POT-Creation-Date: 2010-09-04 05:44+0000\n"
 "PO-Revision-Date: 2010-03-19 23:05:36 +0000\n"
 "Last-Translator: Steve Cook <yorvik.ubunto@gmail.com>\n"
 "Language-Team: English UK en_GB\n"
@@ -58,6 +58,8 @@ msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
+"\n"
+"<i>logged in</i>"
 
 #: ../src/greeter.c:626 ../src/lang.c:125
 msgid "More ..."
