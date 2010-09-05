@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-22 01:09+0200\n"
+"POT-Creation-Date: 2010-09-04 05:44+0000\n"
 "PO-Revision-Date: 2010-01-26 03:29+0200\n"
 "Last-Translator: Kılıç <kilickoken@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: tr\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Pootle 2.0.1\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
@@ -24,7 +24,7 @@ msgstr "Masaüstü:"
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
-msgstr "Tuştakımı Düzeni"
+msgstr "Tuştakımı Düzeni:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
@@ -41,7 +41,7 @@ msgstr "Belirlenmemiş"
 
 #: ../src/greeter.c:102 ../src/greeter.c:526
 msgid "Password:"
-msgstr "Parola"
+msgstr "Parola:"
 
 #: ../src/greeter.c:231 ../src/lang.c:103
 msgid "Default"
@@ -63,4 +63,4 @@ msgstr ""
 
 #: ../src/greeter.c:626 ../src/lang.c:125
 msgid "More ..."
-msgstr ""
+msgstr "Daha Fazla..."
