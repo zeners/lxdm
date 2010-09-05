@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-08-22 01:09+0200\n"
-"PO-Revision-Date: 2010-05-18 21:16+0200\n"
+"PO-Revision-Date: 2010-09-05 18:37+0200\n"
 "Last-Translator: Ivica Kolić <ikoli@yahoo.com>\n"
 "Language-Team: Croatian (hr) <>\n"
 "MIME-Version: 1.0\n"
@@ -18,20 +18,20 @@ msgstr ""
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
-msgstr "Radna površina"
+msgstr "Radna površina:"
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
-msgstr "Raspored tipkovnice"
+msgstr "Raspored tipkovnice:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
-msgstr "Jezik"
+msgstr "Jezik:"
 
 #: ../data/lxdm.glade.h:4 ../src/greeter.c:163 ../src/greeter.c:540
 #: ../src/greeter.c:810
 msgid "User:"
-msgstr "Korisnik"
+msgstr "Korisnik:"
 
 #: ../src/gdm/gdm-languages.c:611
 msgid "Unspecified"
@@ -39,7 +39,7 @@ msgstr "Neodređeno"
 
 #: ../src/greeter.c:102 ../src/greeter.c:526
 msgid "Password:"
-msgstr "Lozinka"
+msgstr "Lozinka:"
 
 #: ../src/greeter.c:231 ../src/lang.c:103
 msgid "Default"
@@ -58,7 +58,9 @@ msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
+"\n"
+"<i>prijavljen</i>"
 
 #: ../src/greeter.c:626 ../src/lang.c:125
 msgid "More ..."
-msgstr "Više"
+msgstr "Više..."
