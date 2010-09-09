@@ -1346,6 +1346,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 	{
 		DBusError error;
 		char x[256], *d, *n;
+		gboolean is_local=TRUE;
 		sprintf(x, "/dev/tty%d", s->tty);
 		dbus_error_init(&error);
 		d = x; n = getenv("DISPLAY");
@@ -1355,6 +1356,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 							  //"display-device", &d,
 							  "x11-display-device", &d,
 							  "x11-display", &n,
+							  "is-local",&is_local,
 							  NULL))
 		setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(s->ckc), 1);
 	}
