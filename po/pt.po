@@ -1,13 +1,14 @@
 # Portuguese translation for lxdm package.
 # Copyright (C) 2009 THE lxdm COPYRIGHT HOLDER
 # This file is distributed under the same license as the lxdm package.
-#  Sérgio Marques <smarquespt@gmail.com>, 2009.
+# Sérgio Marques <smarquespt@gmail.com>, 2009-2010.
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-08-29 07:54+0000\n"
-"PO-Revision-Date: 2010-01-12 14:47+0100\n"
+"PO-Revision-Date: 2010-09-20 16:06-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,17 +20,19 @@ msgstr ""
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
-msgstr "Ambiente de Trabalho:"
+msgstr "Ambiente de trabalho:"
 
 #: ../data/lxdm.glade.h:2
 msgid "Keyboard Layout:"
-msgstr "Disposição de Teclado:"
+msgstr "Disposição do teclado:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
 msgstr "Idioma:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:163 ../src/greeter.c:540
+#: ../data/lxdm.glade.h:4
+#: ../src/greeter.c:163
+#: ../src/greeter.c:540
 #: ../src/greeter.c:810
 msgid "User:"
 msgstr "Utilizador:"
@@ -38,11 +41,13 @@ msgstr "Utilizador:"
 msgid "Unspecified"
 msgstr "Não especificado"
 
-#: ../src/greeter.c:102 ../src/greeter.c:526
+#: ../src/greeter.c:102
+#: ../src/greeter.c:526
 msgid "Password:"
-msgstr "Palavra-passe:"
+msgstr "Senha:"
 
-#: ../src/greeter.c:231 ../src/lang.c:103
+#: ../src/greeter.c:231
+#: ../src/lang.c:103
 msgid "Default"
 msgstr "Omissão"
 
@@ -62,21 +67,8 @@ msgstr ""
 "\n"
 "<i>tem a sessão iniciada</i>"
 
-#: ../src/greeter.c:626 ../src/lang.c:125
+#: ../src/greeter.c:626
+#: ../src/lang.c:125
 msgid "More ..."
 msgstr "Mais..."
 
-#~ msgid "US English"
-#~ msgstr "Inglês US"
-
-#~ msgid "Simpllified Chinese"
-#~ msgstr "Chinês Simplificado"
-
-#~ msgid "Traditional Chinese"
-#~ msgstr "Chinês Tradicional"
-
-#~ msgid "German"
-#~ msgstr "Alemão"
-
-#~ msgid "Italian"
-#~ msgstr "Italiano"
