@@ -68,8 +68,6 @@ static GtkWidget *lang_menu;
 
 static char* user = NULL;
 static char* pass = NULL;
-static char* session_exec = NULL;
-static char* session_desktop_file = NULL;
 
 static char* ui_file = NULL;
 static char *ui_nobody = NULL;
@@ -78,6 +76,8 @@ static GdkPixbuf *bg_img = NULL;
 static GdkColor bg_color = {0};
 
 static GIOChannel *greeter_io;
+
+static int auto_login;
 
 static void do_reboot(void)
 {
@@ -92,6 +92,36 @@ static void do_shutdown(void)
 static void on_screen_size_changed(GdkScreen* scr, GtkWindow* win)
 {
     gtk_window_resize( win, gdk_screen_get_width(scr), gdk_screen_get_height(scr) );
+}
+
+static char *get_session_lang(void)
+{
+	GtkTreeModel* model;
+	GtkTreeIter it;
+	gchar *res;
+	if(!lang)
+		return g_strdup("");
+	
+	if(!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(lang), &it))
+		return g_strdup("");
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(lang));
+	gtk_tree_model_get(model, &it, 1, &res, -1);
+	return res;
+}
+
+static char *get_session_exec(void)
+{
+	GtkTreeModel* model;
+	GtkTreeIter it;
+	gchar *res;
+	if(!lang)
+		return g_strdup("");
+	
+	if(!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(sessions), &it))
+		return g_strdup("");
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(sessions));
+	gtk_tree_model_get(model, &it, 1, &res, -1);
+	return res;
 }
 
 static void on_entry_activate(GtkEntry* entry)
@@ -112,42 +142,11 @@ static void on_entry_activate(GtkEntry* entry)
 	}
 	else
 	{
-		GtkTreeIter it;
-		char *session_lang = "";
-
-		if( gtk_combo_box_get_active_iter(GTK_COMBO_BOX(sessions), &it) )
-		{
-			GtkTreeModel* model = gtk_combo_box_get_model( GTK_COMBO_BOX(sessions) );
-			gtk_tree_model_get(model, &it, 1, &session_exec, 2, &session_desktop_file, -1);
-		}
-		else
-		{
-			/* FIXME: fatal error */
-		}
-
+		char *session_exec=get_session_exec();
+		char *session_lang=get_session_lang();
+		
 		tmp = g_strdup( gtk_entry_get_text(entry) );
 		pass=g_base64_encode((guchar*)tmp,strlen(tmp)+1);
-		g_free(tmp);
-
-		if( lang && gtk_combo_box_get_active_iter(GTK_COMBO_BOX(lang), &it) )
-		{
-			GtkTreeModel* model = gtk_combo_box_get_model( GTK_COMBO_BOX(lang) );
-			gtk_tree_model_get(model, &it, 1, &session_lang, -1);
-			//FIXME: is session leaked?
-		}
-
-		tmp = g_key_file_get_string(var_config, "base", "last_session", NULL);
-		if( g_strcmp0(tmp, session_desktop_file) )
-		{
-			g_key_file_set_string(var_config, "base", "last_session", session_desktop_file);
-		}
-		g_free(tmp);
-
-		tmp = g_key_file_get_string(var_config, "base", "last_lang", NULL);
-		if( g_strcmp0(tmp, session_lang) )
-		{
-			g_key_file_set_string(var_config, "base", "last_lang", session_lang);
-		}
 		g_free(tmp);
 
 		printf("login user=%s pass=%s session=%s lang=%s\n",
@@ -158,6 +157,8 @@ static void on_entry_activate(GtkEntry* entry)
 		user = NULL;
 		g_free(pass);
 		pass = NULL;
+		g_free(session_lang);
+		g_free(session_exec);
 
 		gtk_widget_hide(prompt);
 		gtk_widget_hide( GTK_WIDGET(entry) );
@@ -657,6 +658,35 @@ static gboolean on_timeout(GtkLabel* label)
     return TRUE;
 }
 
+static gboolean autologin_timeout(gpointer data)
+{
+	char *user=g_key_file_get_string(config,"base","autologin",NULL);
+	if(auto_login && user && user[0])
+	{
+		char *session_exec=get_session_exec();
+		char *session_lang=get_session_lang();
+
+		printf("autologin session=%s lang=%s\n",
+				session_exec, session_lang);
+
+		g_free(session_lang);
+		g_free(session_exec);
+
+		gtk_widget_hide(prompt);
+		gtk_widget_hide( GTK_WIDGET(login_entry) );
+	}
+	g_free(user);
+	return FALSE;
+}
+
+static gboolean is_autologin_user(const char *name)
+{
+	char *autologin=g_key_file_get_string(config,"base","autologin",NULL);
+	if(!autologin)
+		return FALSE;
+	return strcmp(name,autologin)?FALSE:TRUE;
+}
+
 static void on_user_select(GtkIconView *iconview)
 {
 	GList *list=gtk_icon_view_get_selected_items(iconview);
@@ -671,6 +701,23 @@ static void on_user_select(GtkIconView *iconview)
 	gtk_widget_hide(user_list);
 	if(name && name[0])
 	{
+		if(auto_login && is_autologin_user(name))
+		{
+			g_free(name);
+
+			char *session_exec=get_session_exec();
+			char *session_lang=get_session_lang();
+
+			printf("autologin session=%s lang=%s\n",
+					session_exec, session_lang);
+
+			g_free(session_lang);
+			g_free(session_exec);
+
+			gtk_widget_hide(prompt);
+			gtk_widget_hide( GTK_WIDGET(login_entry) );
+			return;
+		}
 		gtk_entry_set_text(GTK_ENTRY(login_entry),name);
 		g_free(name);
 		on_entry_activate(GTK_ENTRY(login_entry));
@@ -694,6 +741,7 @@ static void on_user_select(GtkIconView *iconview)
 		gtk_label_set_text( GTK_LABEL(prompt), _("User:") );
 		gtk_widget_show(prompt);
 	}
+	auto_login=0;
 }
 
 static gboolean load_user_list(GtkWidget *widget)
@@ -784,6 +832,7 @@ static gboolean load_user_list(GtkWidget *widget)
 static void create_win()
 {
     GtkBuilder* builder;
+    Display *dpy;
     GdkScreen* scr;
     GSList* objs, *l;
     GtkWidget* w;
@@ -791,6 +840,8 @@ static void create_win()
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, ui_file ? ui_file : LXDM_DATA_DIR "/lxdm.glade", NULL);
     win = (GtkWidget*)gtk_builder_get_object(builder, "lxdm");
+    gtk_widget_realize(win);
+    dpy=gdk_x11_get_default_xdisplay();
 
     /* set widget names according to their object id in GtkBuilder xml */
     objs = gtk_builder_get_objects(builder);
@@ -880,7 +931,8 @@ static void create_win()
 	gtk_window_set_default_size( GTK_WINDOW(win), gdk_screen_get_width(scr), gdk_screen_get_height(scr) );
 	gtk_window_present( GTK_WINDOW(win) );
 	gtk_widget_realize(login_entry);
-    
+  
+	XSetInputFocus(dpy,GDK_WINDOW_XWINDOW(win->window),RevertToNone,CurrentTime); 
 	if(user_list && !g_key_file_get_integer(config,"userlist","disable",NULL) && 
 			load_user_list(user_list))
 	{
@@ -1054,6 +1106,7 @@ int main(int arc, char *arg[])
 {
     char* theme_name;
     GtkSettings*p;
+    int i;
 
     /* this will override LC_MESSAGES */
     unsetenv("LANGUAGE");
@@ -1070,6 +1123,13 @@ int main(int arc, char *arg[])
     g_key_file_load_from_file(var_config,VCONFIG_FILE,G_KEY_FILE_KEEP_COMMENTS, NULL);
 
     gtk_init(&arc, &arg);
+    for(i=1;i<arc;i++)
+    {
+		if(!strcmp(arg[i],"--auto-login"))
+		{
+			auto_login=g_key_file_get_integer(config,"base","timeout",NULL);
+		}
+	}
 
     p=gtk_settings_get_default();
     if(p)
@@ -1105,6 +1165,11 @@ int main(int arc, char *arg[])
     /* use line buffered stdout for inter-process-communcation of
      * single-line-commands */
     setvbuf(stdout, NULL, _IOLBF, 0 );
+    
+    if(auto_login)
+    {
+		g_timeout_add_seconds(auto_login,autologin_timeout,NULL);
+	}
 
     gtk_main();
 

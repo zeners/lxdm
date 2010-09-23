@@ -40,6 +40,7 @@ static int greeter_pipe[2];
 static GIOChannel *greeter_io;
 static guint io_id;
 static int user;
+static gboolean first=TRUE;
 
 static void xwrite(int fd,const void *buf,size_t size)
 {
@@ -47,6 +48,11 @@ static void xwrite(int fd,const void *buf,size_t size)
 	do{
 		ret=write(fd,buf,size);
 	}while(ret==-1 && errno==EINTR);
+}
+
+static void ui_reset(void)
+{
+	xwrite(greeter_pipe[0], "reset\n", 6);
 }
 
 void ui_drop(void)
@@ -164,6 +170,37 @@ static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpo
 		g_free(session);
 		g_free(lang);
 	}
+	else if(!strncmp(str, "autologin ", 10))
+	{
+		char *user=g_key_file_get_string(config,"base","autologin",NULL);
+		char *pass=g_key_file_get_string(config,"base","password",NULL);
+		char *session = greeter_param(str, "session");
+		char *lang = greeter_param(str, "lang");
+
+		if(user)
+		{
+			struct passwd *pw;
+			int ret = lxdm_auth_user(user, pass, &pw);
+			if( AUTH_SUCCESS == ret && pw != NULL )
+			{
+				ui_drop();
+				lxdm_do_login(pw, session, lang,NULL);
+			}
+			else
+			{
+				ui_reset();
+			}
+		}
+		else
+		{
+			ui_reset();
+		}
+			
+		g_free(user);
+		g_free(pass);
+		g_free(session);
+		g_free(lang);
+	}
 	g_free(str);
 	return TRUE;
 }
@@ -191,15 +228,21 @@ void ui_prepare(void)
 	p = g_key_file_get_string(config, "base", "greeter", NULL);
 	if( p && p[0] )
 	{
-		char **argv;
+		char *argv[3]={p,NULL,NULL};
 		gboolean ret;
 		struct passwd *pw;
-		g_shell_parse_argv(p, NULL, &argv, NULL);
+		if(first)
+		{
+			char *t=g_key_file_get_string(config,"base","autologin",NULL);
+			if(t && !strchr(t,' '))
+				argv[1]="--auto-login";
+			g_free(t);
+			first=FALSE;
+		}
 		pw=getpwnam("lxdm");endpwent();
 		ret = g_spawn_async_with_pipes(NULL, argv, NULL,
 				   G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,greeter_setup, pw,
 				   &greeter, greeter_pipe + 0, greeter_pipe + 1, NULL, NULL);
-		g_strfreev(argv);
 		if( ret == TRUE )
 		{
 			g_free(p);
@@ -212,6 +255,7 @@ void ui_prepare(void)
 		}
 	}
 	g_free(p);
+	first=FALSE;
 }
 
 int ui_main(void)

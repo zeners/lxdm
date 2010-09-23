@@ -1432,6 +1432,11 @@ void lxdm_do_shutdown(void)
 	lxdm_quit_self(0);
 }
 
+static gboolean auto_login_future(void)
+{
+	return g_key_file_get_integer(config,"base","timeout",NULL)>=5;
+}
+
 int lxdm_do_auto_login(void)
 {
 	struct passwd *pw;
@@ -1702,7 +1707,8 @@ int main(int arc, char *arg[])
 	set_signal();
 	lxdm_get_tty();
 
-	lxdm_do_auto_login();
+	if(!auto_login_future())
+		lxdm_do_auto_login();
 	if(!lxsession_get_active())
 		lxsession_greeter();
 
