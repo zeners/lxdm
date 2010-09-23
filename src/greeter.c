@@ -26,6 +26,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
+#include <X11/XKBlib.h>
 
 #include "lang.h"
 #include <time.h>
@@ -47,7 +48,8 @@ enum {
     N_LANG_COLS
 };
 
-#define VCONFIG_FILE "/var/lib/lxdm/lxdm.conf"
+#define VCONFIG_FILE 		"/var/lib/lxdm/lxdm.conf"
+#define XKB_SYMBOL_DIR		"/usr/share/X11/xkb/symbols.dir"
 
 static GKeyFile *config;
 static GKeyFile * var_config;
@@ -278,6 +280,17 @@ static gint lang_cmpr(GtkTreeModel *list,GtkTreeIter *a,GtkTreeIter *b,gpointer 
 	return ret;
 }
 
+static gint keyboard_cmpr(GtkTreeModel *list,GtkTreeIter *a,GtkTreeIter *b,gpointer user_data)
+{
+	gint ret;
+	gchar *as,*bs;
+	gtk_tree_model_get(list,a,0,&as,-1);
+	gtk_tree_model_get(list,b,0,&bs,-1);
+	ret=strcmp(as,bs);
+	g_free(as);g_free(bs);
+	return ret;
+}
+
 static void on_menu_lang_select(GtkMenuItem *item,gpointer user_data)
 {
 	GtkTreeIter iter;
@@ -355,7 +368,7 @@ static void on_lang_changed(GtkComboBox *widget)
 	GtkTreeIter it;
 	if( gtk_combo_box_get_active_iter(widget, &it) )
 	{
-		GtkListStore *list=(GtkListStore*)gtk_combo_box_get_model(GTK_COMBO_BOX(lang));
+		GtkListStore *list=(GtkListStore*)gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
 		char *lang=NULL;
 		gtk_tree_model_get(GTK_TREE_MODEL(list), &it, 1, &lang, -1);
 		if(lang[0]=='~')
@@ -406,6 +419,147 @@ static void load_langs()
     g_object_unref(list);
 
     g_signal_connect(G_OBJECT(lang),"changed",G_CALLBACK(on_lang_changed),NULL);
+}
+
+static void on_keyboard_changed(GtkComboBox *widget)
+{
+	GtkTreeIter it;
+	if( gtk_combo_box_get_active_iter(widget, &it) )
+	{
+		GtkListStore *list=(GtkListStore*)gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
+		char *keyboard=NULL;
+		char *cmd;
+		int status;
+		gboolean res;
+		gtk_tree_model_get(GTK_TREE_MODEL(list), &it, 0, &keyboard, -1);
+		/* set the current xkb */
+		cmd=g_strdup_printf("setxkbmap %s",keyboard);
+		res=g_spawn_command_line_sync(cmd,NULL,NULL,&status,NULL);
+		printf("%s %d %d\n",cmd,res,WEXITSTATUS (status));
+		g_free(cmd);
+		g_free(keyboard);
+	}
+}
+
+static gchar *xkb_name_norm(gchar *s)
+{
+	if(!strcmp(s,"pc")) return NULL;
+	if(!strncmp(s,"pc(",3)) return NULL;
+	if(!strncmp(s,"inet(",5)) return NULL;
+	if(!strncmp(s,"group(",6)) return NULL;
+	if(!strncmp(s,"srvr_ctrl(",10)) return NULL;
+	if(g_str_has_suffix(s,"(basic)"))
+	{
+		*strstr(s,"(basic)")=0;
+	}
+	else if(!strcmp(s,"jp(106)"))		//TODO: is default jp jp(106)
+	{
+		s[2]=0;
+	}
+	return s;
+}
+
+static char *xkb_get_current(void)
+{
+	Display *dpy=gdk_x11_display_get_xdisplay(gdk_display_get_default());
+	XkbDescRec * xkb_desc;
+	char *symbol_string=NULL;
+	gchar **list;
+	int i;
+
+	if(!dpy) return NULL;
+	xkb_desc=XkbAllocKeyboard();
+	if (xkb_desc == NULL)
+		return NULL;
+	XkbGetControls(dpy, XkbAllControlsMask, xkb_desc);
+	XkbGetNames(dpy, XkbSymbolsNameMask | XkbGroupNamesMask, xkb_desc);
+	if ((xkb_desc->names == NULL) || (xkb_desc->ctrls == NULL) || (xkb_desc->names->groups == NULL))
+	{
+	}
+	else
+	{
+		if (xkb_desc->names->symbols != None)
+		{
+			symbol_string=XGetAtomName(dpy, xkb_desc->names->symbols);
+		}
+	}
+	XkbFreeKeyboard(xkb_desc, 0, True);
+	
+	if(!symbol_string)
+		return FALSE;
+	list=g_strsplit(symbol_string,"+",-1);
+	XFree(symbol_string);
+	if(!list) return NULL;
+	for(i=0;list[i]!=NULL;i++)
+	{
+		if(!xkb_name_norm(list[i])) continue;
+		symbol_string=g_strdup(list[i]);
+		break;
+	}
+	g_strfreev(list);
+
+	return symbol_string;
+}
+
+static gboolean load_keyboards(GtkWidget *w)
+{
+	GtkListStore* list;
+	char p1[16],p2[16],p3[64];
+	FILE *fp;
+	char *cur;
+	int ret;
+	int count,active;
+	GtkTreeIter active_iter;
+	GdkScreen *scr;
+	
+	scr=gdk_screen_get_default();
+	if(gdk_screen_get_width(scr)<1024)
+		return FALSE;
+
+	if(!w) return FALSE;
+	
+	cur=xkb_get_current();
+	if(!cur) return FALSE;
+	fp=fopen(XKB_SYMBOL_DIR,"r");
+	if(!fp)
+	{
+		g_free(cur);
+		return FALSE;
+	}
+	list = gtk_list_store_new(1, G_TYPE_STRING);
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(list),0,GTK_SORT_ASCENDING);
+    gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(list),0,keyboard_cmpr,NULL,NULL);
+	for(count=0,active=-1;(ret=fscanf(fp,"%16s %16s %64s\n",p1,p2,p3))==3;)
+	{
+		GtkTreeIter iter;
+		if(strchr(p2,'m') && !strchr(p2,'a')) continue;
+		if(!xkb_name_norm(p3)) continue;
+		gtk_list_store_append(list,&iter);
+		gtk_list_store_set(list,&iter,0,p3,-1);
+		if(!strcmp(cur,p3))
+		{
+			active=count;
+			active_iter=iter;
+		}
+		count++;
+	}
+	fclose(fp);
+	g_free(cur);
+	
+	if(count==0 || active==-1)
+	{
+		g_object_unref(list);
+		return FALSE;
+	}
+	
+	gtk_combo_box_set_model(GTK_COMBO_BOX(w), GTK_TREE_MODEL(list) );
+	gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(w), 0);
+	g_object_unref(G_OBJECT(list));
+    gtk_combo_box_set_active_iter(GTK_COMBO_BOX(w), &active_iter);
+	
+	g_signal_connect(G_OBJECT(w),"changed",G_CALLBACK(on_keyboard_changed),NULL);
+
+	return TRUE;
 }
 
 static void on_exit_clicked(GtkButton* exit_btn, gpointer user_data)
@@ -687,7 +841,6 @@ static void create_win()
 
     if( g_key_file_get_integer(config, "display", "lang", 0) == 0 )
     {
-        GtkWidget *w;
         w = (GtkWidget*)gtk_builder_get_object(builder, "lang_box");
         if( w )
             gtk_widget_hide(w);
@@ -699,6 +852,17 @@ static void create_win()
         fix_combobox_entry(lang);
         load_langs();
     }
+    
+    if(g_key_file_get_integer(config, "display", "keyboard", 0)==1)
+    {
+		w=(GtkWidget*)gtk_builder_get_object(builder, "keyboard");
+		if((load_keyboards(w))!=FALSE)
+		{
+			gtk_widget_show(w);
+			w=(GtkWidget*)gtk_builder_get_object(builder, "label_keyboard");
+			if(w) gtk_widget_show(w);
+		}
+	}
 
 	if( (w = (GtkWidget*)gtk_builder_get_object(builder, "time"))!=NULL )
 	{

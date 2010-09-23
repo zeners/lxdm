@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-22 01:09+0200\n"
+"POT-Creation-Date: 2010-09-23 13:40+0800\n"
 "PO-Revision-Date: 2009-10-21 22:30+0800\n"
 "Last-Translator: dgod <dgod.osa@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,15 +22,15 @@ msgid "Desktop:"
 msgstr "桌面："
 
 #: ../data/lxdm.glade.h:2
-msgid "Keyboard Layout:"
-msgstr "键盘布局："
+msgid "Keyboard:"
+msgstr "键盘："
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
 msgstr "语言："
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:163 ../src/greeter.c:540
-#: ../src/greeter.c:810
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
+#: ../src/greeter.c:974
 msgid "User:"
 msgstr "用户："
 
@@ -37,23 +38,23 @@ msgstr "用户："
 msgid "Unspecified"
 msgstr "未定义"
 
-#: ../src/greeter.c:102 ../src/greeter.c:526
+#: ../src/greeter.c:104 ../src/greeter.c:680
 msgid "Password:"
 msgstr "密码："
 
-#: ../src/greeter.c:231 ../src/lang.c:103
+#: ../src/greeter.c:233 ../src/lang.c:103
 msgid "Default"
 msgstr "默认"
 
-#: ../src/greeter.c:421
+#: ../src/greeter.c:575
 msgid "_Reboot"
 msgstr "重启(_R)"
 
-#: ../src/greeter.c:425
+#: ../src/greeter.c:579
 msgid "_Shutdown"
 msgstr "关机(_S)"
 
-#: ../src/greeter.c:613
+#: ../src/greeter.c:767
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -61,7 +62,7 @@ msgstr ""
 "\n"
 "<i>已登录</i>"
 
-#: ../src/greeter.c:626 ../src/lang.c:125
+#: ../src/greeter.c:780 ../src/lang.c:125
 msgid "More ..."
 msgstr "更多 ..."
 

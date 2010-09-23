@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-22 01:09+0200\n"
+"POT-Creation-Date: 2010-09-23 13:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,15 +21,16 @@ msgid "Desktop:"
 msgstr "Radna površ:"
 
 #: ../data/lxdm.glade.h:2
-msgid "Keyboard Layout:"
+#, fuzzy
+msgid "Keyboard:"
 msgstr "Raspored na tastaturi:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
 msgstr "Jezik:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:163 ../src/greeter.c:540
-#: ../src/greeter.c:810
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
+#: ../src/greeter.c:974
 msgid "User:"
 msgstr "Korisnik:"
 
@@ -36,23 +38,23 @@ msgstr "Korisnik:"
 msgid "Unspecified"
 msgstr "Neodređeno"
 
-#: ../src/greeter.c:102 ../src/greeter.c:526
+#: ../src/greeter.c:104 ../src/greeter.c:680
 msgid "Password:"
 msgstr "Lozinka:"
 
-#: ../src/greeter.c:231 ../src/lang.c:103
+#: ../src/greeter.c:233 ../src/lang.c:103
 msgid "Default"
 msgstr "Podrazumevano"
 
-#: ../src/greeter.c:421
+#: ../src/greeter.c:575
 msgid "_Reboot"
 msgstr "_Restart"
 
-#: ../src/greeter.c:425
+#: ../src/greeter.c:579
 msgid "_Shutdown"
 msgstr "_Ugasi"
 
-#: ../src/greeter.c:613
+#: ../src/greeter.c:767
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -60,6 +62,6 @@ msgstr ""
 "\n"
 "<i>Prijaǉven u</i>"
 
-#: ../src/greeter.c:626 ../src/lang.c:125
+#: ../src/greeter.c:780 ../src/lang.c:125
 msgid "More ..."
 msgstr "Više ..."

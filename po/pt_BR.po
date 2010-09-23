@@ -2,15 +2,16 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-22 05:39+0000\n"
+"POT-Creation-Date: 2010-09-23 13:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,15 +21,16 @@ msgid "Desktop:"
 msgstr "Área de trabalho:"
 
 #: ../data/lxdm.glade.h:2
-msgid "Keyboard Layout:"
+#, fuzzy
+msgid "Keyboard:"
 msgstr "Disposição do teclado:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
 msgstr "Idioma:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:163 ../src/greeter.c:540
-#: ../src/greeter.c:810
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
+#: ../src/greeter.c:974
 msgid "User:"
 msgstr "Usuário:"
 
@@ -36,23 +38,23 @@ msgstr "Usuário:"
 msgid "Unspecified"
 msgstr "Não especificado"
 
-#: ../src/greeter.c:102 ../src/greeter.c:526
+#: ../src/greeter.c:104 ../src/greeter.c:680
 msgid "Password:"
 msgstr "Senha:"
 
-#: ../src/greeter.c:231 ../src/lang.c:103
+#: ../src/greeter.c:233 ../src/lang.c:103
 msgid "Default"
 msgstr "Padrão"
 
-#: ../src/greeter.c:421
+#: ../src/greeter.c:575
 msgid "_Reboot"
 msgstr "_Reiniciar"
 
-#: ../src/greeter.c:425
+#: ../src/greeter.c:579
 msgid "_Shutdown"
 msgstr "De_sligar"
 
-#: ../src/greeter.c:613
+#: ../src/greeter.c:767
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -60,6 +62,6 @@ msgstr ""
 "\n"
 "<i>conectado</i>"
 
-#: ../src/greeter.c:626 ../src/lang.c:125
+#: ../src/greeter.c:780 ../src/lang.c:125
 msgid "More ..."
 msgstr "Mais..."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-01 22:18+0200\n"
+"POT-Creation-Date: 2010-09-23 13:40+0800\n"
 "PO-Revision-Date: 2010-07-21 13:06+0200\n"
 "Last-Translator:  <satyathavy@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,15 +23,16 @@ msgid "Desktop:"
 msgstr "ផ្ទៃតុ"
 
 #: ../data/lxdm.glade.h:2
-msgid "Keyboard Layout:"
+#, fuzzy
+msgid "Keyboard:"
 msgstr "ប្លង់ក្តារចុច"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
 msgstr "ភាសា"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:163 ../src/greeter.c:540
-#: ../src/greeter.c:810
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
+#: ../src/greeter.c:974
 msgid "User:"
 msgstr "អ្នកប្រើ"
 
@@ -39,28 +40,28 @@ msgstr "អ្នកប្រើ"
 msgid "Unspecified"
 msgstr "មិនបានបញ្ជាក់ចំពោះ"
 
-#: ../src/greeter.c:102 ../src/greeter.c:526
+#: ../src/greeter.c:104 ../src/greeter.c:680
 msgid "Password:"
 msgstr "ពាក្យសម្ងាត់"
 
-#: ../src/greeter.c:231 ../src/lang.c:103
+#: ../src/greeter.c:233 ../src/lang.c:103
 msgid "Default"
 msgstr "លំនាំដើម"
 
-#: ../src/greeter.c:421
+#: ../src/greeter.c:575
 msgid "_Reboot"
 msgstr "ចាប់ផ្តើមឡើងវិញ"
 
-#: ../src/greeter.c:425
+#: ../src/greeter.c:579
 msgid "_Shutdown"
 msgstr "បិទ"
 
-#: ../src/greeter.c:613
+#: ../src/greeter.c:767
 msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
 
-#: ../src/greeter.c:626 ../src/lang.c:125
+#: ../src/greeter.c:780 ../src/lang.c:125
 msgid "More ..."
 msgstr "ច្រើនជាង"
