@@ -440,7 +440,7 @@ static gboolean on_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_
     if( bg_img )
     {
         cairo_matrix_t matrix;
-        double x = -0.5, y = -0.5, sx, sy;
+        double x = 0, y = 0, sx, sy;
         cairo_get_matrix(cr, &matrix);
         sx = (double)gdk_screen_width() / (double)gdk_pixbuf_get_width(bg_img);
         sy = (double)gdk_screen_height() / (double)gdk_pixbuf_get_height(bg_img);
