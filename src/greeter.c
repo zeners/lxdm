@@ -78,6 +78,7 @@ static GdkColor bg_color = {0};
 static GIOChannel *greeter_io;
 
 static int auto_login;
+static char datetime_fmt[8]="%c";
 
 static void do_reboot(void)
 {
@@ -653,7 +654,7 @@ static gboolean on_timeout(GtkLabel* label)
     struct tm* tmbuf;
     time(&t);
     tmbuf = localtime(&t);
-    strftime(buf, 128, "%c", tmbuf);
+    strftime(buf, 128, datetime_fmt, tmbuf);
     gtk_label_set_text(label, buf);
     return TRUE;
 }
@@ -836,6 +837,12 @@ static void create_win()
     GdkScreen* scr;
     GSList* objs, *l;
     GtkWidget* w;
+    gchar *temp;
+    
+    temp=g_key_file_get_string(config,"display","datetime",NULL);
+    if(temp && temp[0]=='%' && strlen(temp)<=3)
+		strcpy(datetime_fmt,temp);
+	g_free(temp);
 
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, ui_file ? ui_file : LXDM_DATA_DIR "/lxdm.glade", NULL);
