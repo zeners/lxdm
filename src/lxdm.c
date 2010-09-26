@@ -33,6 +33,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <stdarg.h>
 #include <fcntl.h>
@@ -86,7 +87,7 @@ typedef struct{
 	CkConnector *ckc;
 #endif
 #ifndef DISABLE_XAUTH
-	char mcookie[33];
+	char mcookie[16];
 #endif
 	char **env;
 }LXSession;
@@ -612,42 +613,60 @@ static void replace_env(char** env, const char* name, const char* new_val)
 }
 
 #ifndef DISABLE_XAUTH
-void create_server_auth(LXSession *s)
+
+static inline void xauth_write_uint16(FILE *fp,uint16_t data)
+{
+	uint8_t t;
+	t=data>>8;
+	fwrite(&t,1,1,fp);
+	t=data&0xff;
+	fwrite(&t,1,1,fp);
+}
+
+static inline void xauth_write_string(FILE *fp,const char *s)
+{
+	size_t len=strlen(s);
+	xauth_write_uint16(fp,(uint16_t)len);
+	fwrite(s,len,1,fp);
+}
+
+static void xauth_write_file(const char *file,char data[16])
+{
+	FILE *fp;
+	
+	fp=fopen(file,"wb");
+	if(!fp) return;
+	xauth_write_uint16(fp,252);		//FamilyLocalHost
+	xauth_write_string(fp,"");
+	xauth_write_string(fp,"");
+	xauth_write_string(fp,"MIT-MAGIC-COOKIE-1");
+	xauth_write_uint16(fp,16);
+	fwrite(data,16,1,fp);
+	fclose(fp);
+}
+
+static void create_server_auth(LXSession *s)
 {
 	GRand *h;
 	int i;
 	char *authfile;
 
 	h = g_rand_new();
-	const char *digits = "0123456789abcdef";
-	int r,hex=0;
-	for( i = 0; i < 31; i++ )
+	for( i = 0; i < 16; i++ )
 	{
-		r = g_rand_int(h) % 16;
-		s->mcookie[i] = digits[r];
-		if( r > 9 )
-			hex++;
+		s->mcookie[i] = g_rand_int(h)&0xff;
 	}
-	if( (hex % 2) == 0 )
-		r = g_rand_int(h) % 10;
-	else
-        	r = g_rand_int(h) % 5 + 10;
-	s->mcookie[31] = digits[r];
-	s->mcookie[32] = 0;
 	g_rand_free(h);
 
 	authfile = g_strdup_printf("/var/run/lxdm/lxdm-:%d.auth",s->display);
 
 	setenv("XAUTHORITY",authfile,1);
 	remove(authfile);
-	char *tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
-                          authfile, getenv("DISPLAY"), s->mcookie);
-	g_spawn_command_line_sync(tmp,NULL,NULL,NULL,NULL);
-	g_free(tmp);
+	xauth_write_file(authfile,s->mcookie);
 	g_free(authfile);
 }
 
-void create_client_auth(char *home,char **env)
+static void create_client_auth(char *home,char **env)
 {
 	LXSession *s;
 	char *authfile;
@@ -662,10 +681,7 @@ void create_client_auth(char *home,char **env)
 
 	authfile = g_strdup_printf("%s/.Xauthority", home);
 	remove(authfile);
-	char *tmp = g_strdup_printf("xauth -q -f %s add %s . %s",
-                          authfile, getenv("DISPLAY"), s->mcookie);
-	g_spawn_command_line_async(tmp,NULL);
-	g_free(tmp);
+	xauth_write_file(authfile,s->mcookie);
 	replace_env(env,"XAUTHORITY=",authfile);
 	g_free(authfile);
 }
