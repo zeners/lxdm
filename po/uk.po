@@ -2,19 +2,19 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-23 13:40+0800\n"
+"POT-Creation-Date: 2010-09-27 05:57+0000\n"
 "PO-Revision-Date: 2010-01-12 23:31+0100\n"
 "Last-Translator: Y P <yupadmin@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "X-Generator: Pootle 1.1.0\n"
 
 #: ../data/lxdm.glade.h:1
@@ -22,16 +22,15 @@ msgid "Desktop:"
 msgstr "Стільниця:"
 
 #: ../data/lxdm.glade.h:2
-#, fuzzy
 msgid "Keyboard:"
-msgstr "Розкладка клавіатури:"
+msgstr "Клавіатура:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
 msgstr "Мова:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
-#: ../src/greeter.c:974
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:167 ../src/greeter.c:742
+#: ../src/greeter.c:1033
 msgid "User:"
 msgstr "Користувач:"
 
@@ -39,23 +38,23 @@ msgstr "Користувач:"
 msgid "Unspecified"
 msgstr "Невизначено"
 
-#: ../src/greeter.c:104 ../src/greeter.c:680
+#: ../src/greeter.c:135 ../src/greeter.c:728
 msgid "Password:"
 msgstr "Пароль:"
 
-#: ../src/greeter.c:233 ../src/lang.c:103
+#: ../src/greeter.c:235 ../src/lang.c:103
 msgid "Default"
 msgstr "По замовчуванню"
 
-#: ../src/greeter.c:575
+#: ../src/greeter.c:577
 msgid "_Reboot"
 msgstr "_Перезавантажити"
 
-#: ../src/greeter.c:579
+#: ../src/greeter.c:581
 msgid "_Shutdown"
 msgstr "_Виключити"
 
-#: ../src/greeter.c:767
+#: ../src/greeter.c:816
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -63,6 +62,6 @@ msgstr ""
 "\n"
 "<i>ввійшов</i>"
 
-#: ../src/greeter.c:780 ../src/lang.c:125
+#: ../src/greeter.c:829 ../src/lang.c:125
 msgid "More ..."
 msgstr "Більше..."
