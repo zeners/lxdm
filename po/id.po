@@ -2,19 +2,19 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-23 13:40+0800\n"
+"POT-Creation-Date: 2010-09-27 05:57+0000\n"
 "PO-Revision-Date: 2010-03-19 14:51+0200\n"
 "Last-Translator: Rahman Yusri Aftian <aftian@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: id\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Pootle 2.0.1\n"
 
@@ -23,16 +23,15 @@ msgid "Desktop:"
 msgstr "Desktop:"
 
 #: ../data/lxdm.glade.h:2
-#, fuzzy
 msgid "Keyboard:"
-msgstr "Tata Letak Papan Tik:"
+msgstr "Papan Tik:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
 msgstr "Bahasa:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
-#: ../src/greeter.c:974
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:167 ../src/greeter.c:742
+#: ../src/greeter.c:1033
 msgid "User:"
 msgstr "Pengguna:"
 
@@ -40,23 +39,23 @@ msgstr "Pengguna:"
 msgid "Unspecified"
 msgstr "Tak dinyatakan"
 
-#: ../src/greeter.c:104 ../src/greeter.c:680
+#: ../src/greeter.c:135 ../src/greeter.c:728
 msgid "Password:"
 msgstr "Kata Sandi:"
 
-#: ../src/greeter.c:233 ../src/lang.c:103
+#: ../src/greeter.c:235 ../src/lang.c:103
 msgid "Default"
 msgstr "Default"
 
-#: ../src/greeter.c:575
+#: ../src/greeter.c:577
 msgid "_Reboot"
 msgstr "_Boot Ulang"
 
-#: ../src/greeter.c:579
+#: ../src/greeter.c:581
 msgid "_Shutdown"
 msgstr "_Matikan"
 
-#: ../src/greeter.c:767
+#: ../src/greeter.c:816
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -64,6 +63,6 @@ msgstr ""
 "\n"
 "<i>log masuk</i>"
 
-#: ../src/greeter.c:780 ../src/lang.c:125
+#: ../src/greeter.c:829 ../src/lang.c:125
 msgid "More ..."
 msgstr "Lebih banyak ..."
