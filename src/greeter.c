@@ -916,6 +916,7 @@ static void create_win()
 		w=(GtkWidget*)gtk_builder_get_object(builder, "keyboard");
 		if((load_keyboards(w))!=FALSE)
 		{
+			fix_combobox_entry(w);
 			gtk_widget_show(w);
 			w=(GtkWidget*)gtk_builder_get_object(builder, "label_keyboard");
 			if(w) gtk_widget_show(w);
