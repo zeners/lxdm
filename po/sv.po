@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-09-23 13:40+0800\n"
-"PO-Revision-Date: 2010-08-24 12:26+0200\n"
+"PO-Revision-Date: 2010-09-28 02:28+0200\n"
 "Last-Translator: Martin <brother@bsnet.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -25,9 +25,8 @@ msgid "Desktop:"
 msgstr "Skrivbord:"
 
 #: ../data/lxdm.glade.h:2
-#, fuzzy
 msgid "Keyboard:"
-msgstr "Tangentbordsupplägg:"
+msgstr "Tangentbord:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
