@@ -2,40 +2,39 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-23 13:40+0800\n"
+"POT-Creation-Date: 2010-10-06 06:03+0000\n"
 "PO-Revision-Date: 2010-09-02 13:21+0100\n"
 "Last-Translator: Indalecio Freiría Santos <ifreiria@gmail.com>\n"
 "Language-Team: Proxecto Trasno <proxecto@trasno.net>\n"
-"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.1\n"
 "X-Poedit-Language: Galician\n"
-"X-Poedit-Country: SPAIN\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
 msgstr "Escritorio:"
 
 #: ../data/lxdm.glade.h:2
-#, fuzzy
 msgid "Keyboard:"
-msgstr "Disposición de teclado:"
+msgstr "Teclado:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
 msgstr "Idioma:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
-#: ../src/greeter.c:974
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:167 ../src/greeter.c:742
+#: ../src/greeter.c:1034
 msgid "User:"
 msgstr "Usuario:"
 
@@ -43,23 +42,23 @@ msgstr "Usuario:"
 msgid "Unspecified"
 msgstr "Sen especificar"
 
-#: ../src/greeter.c:104 ../src/greeter.c:680
+#: ../src/greeter.c:135 ../src/greeter.c:728
 msgid "Password:"
 msgstr "Contrasinal:"
 
-#: ../src/greeter.c:233 ../src/lang.c:103
+#: ../src/greeter.c:235 ../src/lang.c:103
 msgid "Default"
 msgstr "Predefinido"
 
-#: ../src/greeter.c:575
+#: ../src/greeter.c:577
 msgid "_Reboot"
 msgstr "_Reiniciar"
 
-#: ../src/greeter.c:579
+#: ../src/greeter.c:581
 msgid "_Shutdown"
 msgstr "_Apagar"
 
-#: ../src/greeter.c:767
+#: ../src/greeter.c:816
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -67,6 +66,6 @@ msgstr ""
 "\n"
 "<i>autenticado</i>"
 
-#: ../src/greeter.c:780 ../src/lang.c:125
+#: ../src/greeter.c:829 ../src/lang.c:125
 msgid "More ..."
 msgstr "Máis ..."
