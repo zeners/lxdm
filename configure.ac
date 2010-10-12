@@ -23,7 +23,7 @@ AC_CHECK_LIB([ck-connector],[ck_connector_open_session])
 
 # Checks for header files.
 AC_PATH_X
-AC_CHECK_HEADERS([shadow.h stdlib.h string.h unistd.h])
+AC_CHECK_HEADERS([shadow.h stdlib.h string.h unistd.h utmpx.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_PID_T

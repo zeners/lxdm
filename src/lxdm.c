@@ -54,7 +54,9 @@
 
 #include <execinfo.h>
 
-#include <utmp.h>
+#ifdef HAVE_UTMPX_H
+#include <utmpx.h>
+#endif
 
 #if HAVE_LIBPAM
 #include <security/pam_appl.h>
@@ -1113,21 +1115,25 @@ static void exit_cb(void)
 
 static int get_run_level(void)
 {
+#if defined(HAVE_UTMPX_H) && defined(RUN_LVL)
 	int res=0;
-	struct utmp *ut,tmp;
+	struct utmpx *ut,tmp;
 
-	setutent();
+	setutxent();
 	tmp.ut_type=RUN_LVL;
-	ut=getutid(&tmp);
+	ut=getutxid(&tmp);
 	if(!ut)
 	{
-		endutent();
+		endutxent();
 		return 5;
 	}
 	res=ut->ut_pid & 0xff;
-	endutent();
+	endutxent();
 	//g_message("runlevel %c\n",res);
 	return res;
+#else
+	return 5;
+#endif
 }
 
 static void on_session_stop(void *data,int pid, int status)
