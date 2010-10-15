@@ -1,36 +1,39 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Sérgio Cipolla <secipolla@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: LXDM 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-23 13:40+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2010-10-15 06:02+0000\n"
+"PO-Revision-Date: 2010-10-15 10:29-0300\n"
+"Last-Translator: Sérgio Cipolla <secipolla@gmail.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: BRAZIL\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
-msgstr "Área de trabalho:"
+msgstr "Ambiente:"
 
 #: ../data/lxdm.glade.h:2
-#, fuzzy
 msgid "Keyboard:"
-msgstr "Disposição do teclado:"
+msgstr "Teclado:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
 msgstr "Idioma:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
-#: ../src/greeter.c:974
+#: ../data/lxdm.glade.h:4
+#: ../src/greeter.c:167
+#: ../src/greeter.c:742
+#: ../src/greeter.c:1034
 msgid "User:"
 msgstr "Usuário:"
 
@@ -38,23 +41,25 @@ msgstr "Usuário:"
 msgid "Unspecified"
 msgstr "Não especificado"
 
-#: ../src/greeter.c:104 ../src/greeter.c:680
+#: ../src/greeter.c:135
+#: ../src/greeter.c:728
 msgid "Password:"
 msgstr "Senha:"
 
-#: ../src/greeter.c:233 ../src/lang.c:103
+#: ../src/greeter.c:235
+#: ../src/lang.c:103
 msgid "Default"
 msgstr "Padrão"
 
-#: ../src/greeter.c:575
+#: ../src/greeter.c:577
 msgid "_Reboot"
 msgstr "_Reiniciar"
 
-#: ../src/greeter.c:579
+#: ../src/greeter.c:581
 msgid "_Shutdown"
 msgstr "De_sligar"
 
-#: ../src/greeter.c:767
+#: ../src/greeter.c:816
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -62,6 +67,8 @@ msgstr ""
 "\n"
 "<i>conectado</i>"
 
-#: ../src/greeter.c:780 ../src/lang.c:125
+#: ../src/greeter.c:829
+#: ../src/lang.c:125
 msgid "More ..."
 msgstr "Mais..."
+
