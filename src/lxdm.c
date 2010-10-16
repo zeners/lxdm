@@ -153,6 +153,7 @@ void stop_pid(int pid)
     while( waitpid(-1, 0, WNOHANG) > 0 ) ;
 }
 
+#if HAVE_LIBPAM
 static void close_pam_session(pam_handle_t *pamh)
 {
     int err;
@@ -162,6 +163,7 @@ static void close_pam_session(pam_handle_t *pamh)
     pam_end(pamh, err);
     pamh = NULL;
 }
+#endif
 
 static LXSession *lxsession_find_greeter(void)
 {
