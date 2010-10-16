@@ -1355,11 +1355,13 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 	s->user=pw->pw_uid;
 	if(option)
 		s->option=g_strdup(option);
+#if HAVE_LIBCK_CONNECTOR
 	if(s->ckc)
 	{
 		ck_connector_unref(s->ckc);
 		s->ckc=NULL;
 	}
+#endif
 #if HAVE_LIBPAM
 	setup_pam_session(s,pw,session_name);
 #endif
