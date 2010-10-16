@@ -32,6 +32,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 
 #include "lxcom.h"
 
