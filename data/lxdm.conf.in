@@ -13,7 +13,7 @@
 # numlock=0
 
 ## greeter used to welcome the user
-greeter=@FULL_LIBEXECDIR@/llxdm-greeter-gtk
+greeter=@FULL_LIBEXECDIR@/lxdm-greeter-gtk
 
 [server]
 ## arg used to start xserver, not fully function
