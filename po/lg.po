@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-23 13:40+0800\n"
+"PO-Revision-Date: 2010-09-29 14:39+0200\n"
+"Last-Translator: kizito <kbirabwa@yahoo.co.uk>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: lg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.5\n"
+
+# Desktop = the place where you do your work = awakolerwa. Selects the desktop type
+#: ../data/lxdm.glade.h:1
+msgid "Desktop:"
+msgstr "Awakolerwa:"
+
+# Selects arrangement of keys on the keyboard - for a specific locale/region. Arrangement = ntegeka
+#: ../data/lxdm.glade.h:2
+msgid "Keyboard:"
+msgstr "Entegeka y'amapeesa:"
+
+# Language selection at the login screen
+#: ../data/lxdm.glade.h:3
+msgid "Language:"
+msgstr "Lulimi:"
+
+# User selection prompt at the graphical login screen
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
+#: ../src/greeter.c:974
+msgid "User:"
+msgstr "Mukozesa:"
+
+# This is an undefined entry on the login screen. It is meant to be modified by the system owner should they wish to
+#: ../src/gdm/gdm-languages.c:611
+msgid "Unspecified"
+msgstr "Ssi kitegeke"
+
+# This is the graphical login prompt for the use password.
+#: ../src/greeter.c:104 ../src/greeter.c:680
+msgid "Password:"
+msgstr "Kaama:"
+
+# This indicates the option that will automatically be set if the user does not select anything.
+#: ../src/greeter.c:233 ../src/lang.c:103
+msgid "Default"
+msgstr "Ekya bulijjo"
+
+# The machine will reboot. It will power down and back up again, to the login screen.
+#: ../src/greeter.c:575
+msgid "_Reboot"
+msgstr "_Damu-okukoleeza"
+
+# The machine will switch off and stay off.
+#: ../src/greeter.c:579
+msgid "_Shutdown"
+msgstr "_Gyako-kompyuta"
+
+# I think this is a message telling you that you are logged onto the system.
+#: ../src/greeter.c:767
+msgid ""
+"\n"
+"<i>logged in</i>"
+msgstr ""
+"\n"
+"<i>oyingidde</i>"
+
+# I think this is a hint telling you that there are more options that are currently hidden.
+#: ../src/greeter.c:780 ../src/lang.c:125
+msgid "More ..."
+msgstr "Ebirala ..."
