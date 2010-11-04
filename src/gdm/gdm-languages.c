@@ -459,8 +459,11 @@ collect_locales_from_archive (void)
 
         locales_collected = TRUE;
  out:
-
+#if GLIB_CHECK_VERSION(2,22,0)
+        g_mapped_file_unref(mapped);
+#else
         g_mapped_file_free (mapped);
+#endif
         return locales_collected;
 }
 

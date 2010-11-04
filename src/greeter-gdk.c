@@ -229,8 +229,8 @@ void ui_set_bg(void)
     /* set background */
     if( !bg_img )
     {
-        GdkColormap *map = gdk_window_get_colormap(root);
-        gdk_color_alloc(map, &screen);
+        GdkColormap *map = gdk_drawable_get_colormap(root);
+        gdk_colormap_alloc_color(map, &screen, TRUE, TRUE);
         gdk_window_set_background(root, &screen);
     }
     else

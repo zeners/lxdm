@@ -591,9 +591,17 @@ static gboolean on_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_
 {
     cairo_t *cr;
 
+#if GTK_CHECK_VERSION(2,18,0)
+    if(! gtk_widget_get_has_window(widget))
+#else
     if( !GTK_WIDGET_REALIZED(widget) )
+#endif
         return FALSE;
+#if GTK_CHECK_VERSION(2,14,0)
+    cr = gdk_cairo_create(gtk_widget_get_window(widget));
+#else
     cr = gdk_cairo_create(widget->window);
+#endif
     if( bg_img )
     {
         cairo_matrix_t matrix;
@@ -631,17 +639,34 @@ static void fix_combobox_entry(GtkWidget* combo)
 {
     GtkWidget* edit = gtk_bin_get_child(GTK_BIN(combo));
     gtk_editable_set_editable( (GtkEditable*)edit, FALSE );
+#if GTK_CHECK_VERSION(2,18,0)
+    gtk_widget_set_can_focus(edit, FALSE);
+#else
     GTK_WIDGET_UNSET_FLAGS(edit, GTK_CAN_FOCUS);
+#endif
     g_signal_connect(edit, "button-release-event", G_CALLBACK(on_combobox_entry_button_release), combo);
 }
 
 static void on_evt_box_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_data)
 {
+#if GTK_CHECK_VERSION(2,18,0)
+    if (gtk_widget_is_drawable(widget))
+#else
     if (GTK_WIDGET_DRAWABLE (widget))
+#endif
     {
         GtkWidgetClass* klass = (GtkWidgetClass*)G_OBJECT_GET_CLASS(widget);
-        gtk_paint_flat_box (widget->style, widget->window,
+        gtk_paint_flat_box (gtk_widget_get_style(widget),
+#if GTK_CHECK_VERSION(2,14,0)
+                            gtk_widget_get_window(widget),
+#else
+                            widget->window,
+#endif
+#if GTK_CHECK_VERSION(2,18,0)
+                gtk_widget_get_state(widget), GTK_SHADOW_NONE,
+#else
                 widget->state, GTK_SHADOW_NONE,
+#endif
                 &evt->area, widget, "eventbox",
                 0, 0, -1, -1);
         klass->expose_event (widget, evt);
@@ -864,7 +889,7 @@ static void create_win()
 
     if( bg_img ) /* only paint our own background if custom background image is set. */
     {
-        GTK_WIDGET_SET_FLAGS(win, GTK_APP_PAINTABLE);
+        gtk_widget_set_app_paintable(win, TRUE);
         g_signal_connect(win, "expose-event", G_CALLBACK(on_expose), NULL);
     } /* otherwise, let gtk theme paint it. */
 
@@ -892,7 +917,11 @@ static void create_win()
     if( g_key_file_get_integer(config, "display", "bottom_pane", 0) )
     {
         /* hacks to let GtkEventBox paintable with gtk pixmap engine. */
+#if GTK_CHECK_VERSION(2,18,0)
+        if(gtk_widget_get_app_paintable(w))
+#else
         if(GTK_WIDGET_APP_PAINTABLE(w))
+#endif
             g_signal_connect(w, "expose-event", G_CALLBACK(on_evt_box_expose), NULL);
     }
     else
@@ -1063,8 +1092,8 @@ void set_root_background(void)
     /* set background */
     if( !bg_img )
     {
-        GdkColormap *map = (GdkColormap*)gdk_window_get_colormap(root);
-        gdk_color_alloc(map, &bg_color);
+        GdkColormap *map = (GdkColormap*)gdk_drawable_get_colormap(root);
+        gdk_colormap_alloc_color(map, &bg_color, TRUE, TRUE);
         gdk_window_set_background(root, &bg_color);
     }
     else
