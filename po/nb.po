@@ -59,7 +59,9 @@ msgstr "Slå av"
 msgid ""
 "\n"
 "<i>logged in</i>"
-msgstr "Logget på"
+msgstr ""
+"\n"
+"<i>Logget på</i>"
 
 #: ../src/greeter.c:780 ../src/lang.c:125
 msgid "More ..."
