@@ -1366,8 +1366,15 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 	setup_pam_session(s,pw,session_name);
 #endif
 #if HAVE_LIBCK_CONNECTOR
+#if HAVE_LIBPAM
+	if(!s->ckc && (!s->pamh || !pam_getenv(s->pamh,"XDG_SESSION_COOKIE")))
+#else
 	if(!s->ckc)
+#endif
+	{
 		s->ckc = ck_connector_new();
+		printf("here?\n");
+	}
 	if( s->ckc != NULL )
 	{
 		DBusError error;
