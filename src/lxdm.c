@@ -1373,7 +1373,6 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 #endif
 	{
 		s->ckc = ck_connector_new();
-		printf("here?\n");
 	}
 	if( s->ckc != NULL )
 	{
