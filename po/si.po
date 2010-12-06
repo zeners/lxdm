@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-23 13:40+0800\n"
+"PO-Revision-Date: 2010-12-06 10:35+0200\n"
+"Last-Translator: danishka <danishka@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: si\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.5\n"
+
+#: ../data/lxdm.glade.h:1
+msgid "Desktop:"
+msgstr "වැඩතලය:"
+
+#: ../data/lxdm.glade.h:2
+msgid "Keyboard:"
+msgstr "යතුරුපුවරුව:"
+
+#: ../data/lxdm.glade.h:3
+msgid "Language:"
+msgstr "භාෂාව:"
+
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
+#: ../src/greeter.c:974
+msgid "User:"
+msgstr "පරිශීලක:"
+
+#: ../src/gdm/gdm-languages.c:611
+msgid "Unspecified"
+msgstr "නිර්චනය නොකළ"
+
+#: ../src/greeter.c:104 ../src/greeter.c:680
+msgid "Password:"
+msgstr "මුරපදය:"
+
+#: ../src/greeter.c:233 ../src/lang.c:103
+msgid "Default"
+msgstr "පෙරනිමිය"
+
+#: ../src/greeter.c:575
+msgid "_Reboot"
+msgstr "යළිඅරඹන්න (_R)"
+
+#: ../src/greeter.c:579
+msgid "_Shutdown"
+msgstr "වසා දමන්න (_S)"
+
+#: ../src/greeter.c:767
+msgid ""
+"\n"
+"<i>logged in</i>"
+msgstr ""
+"\n"
+"<i>පිවිස ඇත</i>"
+
+#: ../src/greeter.c:780 ../src/lang.c:125
+msgid "More ..."
+msgstr "තවත්..."
