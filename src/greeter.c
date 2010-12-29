@@ -776,6 +776,7 @@ static gboolean load_user_list(GtkWidget *widget)
 	GtkListStore *model;
 	GtkTreeIter iter;
 	GKeyFile *kf;
+	GtkTreePath *path;	
 	char *res=NULL;
 	char **users;
 	gsize count;
@@ -804,7 +805,7 @@ static gboolean load_user_list(GtkWidget *widget)
 			G_TYPE_STRING,G_TYPE_STRING,G_TYPE_BOOLEAN);
 	gtk_icon_view_set_model(GTK_ICON_VIEW(widget),GTK_TREE_MODEL(model));
 	g_signal_connect(G_OBJECT(widget),"item-activated",G_CALLBACK(on_user_select),NULL);
-	g_signal_connect(G_OBJECT(widget),"selection-changed",G_CALLBACK(on_user_select),NULL);
+	//g_signal_connect(G_OBJECT(widget),"selection-changed",G_CALLBACK(on_user_select),NULL);
 	
 	users=g_key_file_get_groups(kf,&count);
 	if(!users || count<=0)
@@ -853,6 +854,10 @@ static gboolean load_user_list(GtkWidget *widget)
 	// add "More ..."
 	gtk_list_store_append(model,&iter);
 	gtk_list_store_set(model,&iter,1,_("More ..."),2,"",3,"",4,FALSE,-1);
+	
+	path=gtk_tree_path_new_from_string("0");
+	gtk_icon_view_select_path(GTK_ICON_VIEW(widget),path);
+	gtk_tree_path_free(path);
 	return TRUE;
 }
 
@@ -1066,7 +1071,7 @@ static gboolean on_lxdm_command(GIOChannel *source, GIOCondition condition, gpoi
 		if(user_list)
 		{
 			gtk_widget_hide(login_entry);
-			gtk_icon_view_unselect_all(GTK_ICON_VIEW(user_list));
+			//gtk_icon_view_unselect_all(GTK_ICON_VIEW(user_list));
 			gtk_widget_show(user_list);
 		}
 		else
