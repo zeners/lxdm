@@ -857,6 +857,8 @@ static gboolean load_user_list(GtkWidget *widget)
 	
 	path=gtk_tree_path_new_from_string("0");
 	gtk_icon_view_select_path(GTK_ICON_VIEW(widget),path);
+	gtk_widget_grab_focus(widget);
+	gtk_icon_view_set_cursor(GTK_ICON_VIEW(widget),path,NULL,FALSE);
 	gtk_tree_path_free(path);
 	return TRUE;
 }
@@ -1073,6 +1075,7 @@ static gboolean on_lxdm_command(GIOChannel *source, GIOCondition condition, gpoi
 			gtk_widget_hide(login_entry);
 			//gtk_icon_view_unselect_all(GTK_ICON_VIEW(user_list));
 			gtk_widget_show(user_list);
+			gtk_widget_grab_focus(user_list);
 		}
 		else
 		{
