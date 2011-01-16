@@ -771,6 +771,11 @@ static void on_user_select(GtkIconView *iconview)
 	auto_login=0;
 }
 
+static void on_user_click(GtkIconView *iconview)
+{
+	on_user_select(iconview);
+}
+
 static gboolean load_user_list(GtkWidget *widget)
 {
 	GtkListStore *model;
@@ -806,6 +811,7 @@ static gboolean load_user_list(GtkWidget *widget)
 	gtk_icon_view_set_model(GTK_ICON_VIEW(widget),GTK_TREE_MODEL(model));
 	g_signal_connect(G_OBJECT(widget),"item-activated",G_CALLBACK(on_user_select),NULL);
 	//g_signal_connect(G_OBJECT(widget),"selection-changed",G_CALLBACK(on_user_select),NULL);
+	g_signal_connect(G_OBJECT(widget),"button-release-event",G_CALLBACK(on_user_click),NULL);
 	
 	users=g_key_file_get_groups(kf,&count);
 	if(!users || count<=0)
