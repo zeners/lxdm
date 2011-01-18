@@ -9,7 +9,7 @@ else
 	LXSESSION=/usr/bin/startlxde
 fi
 
-if [ -x /etc/X11/xinit/xinitrc-common ]; then
+if [ -f /etc/X11/xinit/xinitrc-common ]; then
 # fedora
 	. /etc/X11/xinit/xinitrc-common
 	if ! [ -z "$XDG_SESSION_COOKIE" ]; then
