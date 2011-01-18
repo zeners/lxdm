@@ -17,7 +17,7 @@ greeter=@FULL_LIBEXECDIR@/lxdm-greeter-gtk
 
 [server]
 ## arg used to start xserver, not fully function
-# arg=/usr/bin/X -nr vt1
+# arg=/usr/bin/X vt1
 
 [display]
 ## gtk theme used by greeter

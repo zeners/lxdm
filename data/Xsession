@@ -20,10 +20,10 @@ if [ -x /etc/X11/xinit/xinitrc-common ]; then
 	exec -l $SHELL -c "$CK_XINIT_SESSION \"$LXSESSION\""
 elif [ -x /etc/X11/xinit/Xsession ]; then
 # fedora
-	exec /etc/X11/xinit/Xsession $LXSESSION
+	exec /etc/X11/xinit/Xsession "$LXSESSION"
 elif [ -x /etc/X11/Xsession ]; then
 # mandriva, debian, ubuntu
-	exec /etc/X11/Xsession $LXSESSION
+	exec /etc/X11/Xsession "$LXSESSION"
 elif [ -x /etc/X11/xinit/xinitrc ]; then
 #suse
 	export WINDOWMANAGER=$LXSESSION
