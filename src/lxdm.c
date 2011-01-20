@@ -446,7 +446,9 @@ static char *lxsession_xserver_command(LXSession *s)
 	arg = g_renew(char *, arg, arc + 10);
 	arc=1;
 	if(nr_tty)
-		arg[arc++] = g_strdup("-nr");
+	{
+		arg[arc++] = g_strdup("-background");
+	}
 	arg[arc++] = g_strdup_printf(":%d",s->display);
 	if(s->tty>0)
 		arg[arc++] = g_strdup_printf("vt%02d", s->tty);
@@ -468,7 +470,11 @@ void lxdm_get_tty(void)
 	gboolean plymouth;
     
 	plymouth=plymouth_is_running();
-	if(plymouth) plymouth_prepare_transition();
+	if(plymouth)
+	{
+		g_message("found plymouth running\n");
+		plymouth_prepare_transition();
+	}
 
 	old_tty=get_active_vt();
 	if( !s ) s = g_strdup("/usr/bin/X");
@@ -483,7 +489,7 @@ void lxdm_get_tty(void)
 			def_tty = atoi(p + 2);
 			gotvtarg = 1;
 		}
-		else if(!strcmp(p,"-nr"))
+		else if(!strcmp(p,"-background"))
 		{
 			nr_tty=1;
 		}
