@@ -8,24 +8,23 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-09-23 13:40+0800\n"
-"PO-Revision-Date: 2010-01-26 03:29+0200\n"
-"Last-Translator: Kılıç <kilickoken@gmail.com>\n"
+"PO-Revision-Date: 2011-03-10 18:04+0200\n"
+"Last-Translator: Necdet <necdetyucel@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 2.0.1\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1
 msgid "Desktop:"
 msgstr "Masaüstü:"
 
 #: ../data/lxdm.glade.h:2
-#, fuzzy
 msgid "Keyboard:"
-msgstr "Tuştakımı Düzeni:"
+msgstr "Tuştakımı:"
 
 #: ../data/lxdm.glade.h:3
 msgid "Language:"
