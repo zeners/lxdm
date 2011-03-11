@@ -59,7 +59,9 @@ msgstr "_Sammuta"
 msgid ""
 "\n"
 "<i>logged in</i>"
-msgstr "Sisäänkirjautuneena"
+msgstr ""
+"\n"
+"Sisäänkirjautuneena"
 
 #: ../src/greeter.c:780 ../src/lang.c:125
 msgid "More ..."
