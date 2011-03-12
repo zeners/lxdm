@@ -438,16 +438,41 @@ static char *lxsession_xserver_command(LXSession *s)
 	if(!p) p=g_strdup("/usr/bin/X");	
 	g_shell_parse_argv(p, &arc, &arg, 0);
 	g_free(p);
-	for(i=1;i<arc;i++)
+	for(i=1;i<arc;)
 	{
-		g_free(arg[i]);
-		arg[i]=0;
+		p = arg[i];
+		if(!strncmp(p, "vt", 2) && isdigit(p[2]) &&
+			( !p[3] || (isdigit(p[3]) && !p[4]) ) )
+		{
+			g_free(arg[i]);
+			arc--;memcpy(arg+i,arg+i+1,(arc-i)*sizeof(char*));
+		}
+		else if(!strcmp(p,"-background"))
+		{
+			g_free(arg[i]);
+			arc--;memcpy(arg+i,arg+i+1,(arc-i)*sizeof(char*));
+			if(i<arc && !strcmp(arg[i],"none"))
+			{
+				g_free(arg[i]);
+				arc--;memcpy(arg+i,arg+i+1,(arc-i)*sizeof(char*));
+			}
+		}
+		else if(!strcmp(p,"-nr"))
+		{
+			g_free(arg[i]);
+			arc--;memcpy(arg+i,arg+i+1,(arc-i)*sizeof(char*));
+		}
+		else
+		{
+			i++;
+		}
 	}
+printf("arc %d\n",arc);
 	arg = g_renew(char *, arg, arc + 10);
-	arc=1;
 	if(nr_tty)
 	{
 		arg[arc++] = g_strdup("-background");
+		arg[arc++] = g_strdup("none");
 	}
 	arg[arc++] = g_strdup_printf(":%d",s->display);
 	if(s->tty>0)
@@ -489,7 +514,7 @@ void lxdm_get_tty(void)
 			def_tty = atoi(p + 2);
 			gotvtarg = 1;
 		}
-		else if(!strcmp(p,"-background"))
+		else if(!strcmp(p,"-background") || !strcmp(p,"-nr"))
 		{
 			nr_tty=1;
 		}
