@@ -649,35 +649,35 @@ static void replace_env(char** env, const char* name, const char* new_val)
 
 #ifndef DISABLE_XAUTH
 
-static inline void xauth_write_uint16(FILE *fp,uint16_t data)
+static inline void xauth_write_uint16(int fd,uint16_t data)
 {
 	uint8_t t;
 	t=data>>8;
-	fwrite(&t,1,1,fp);
+	write(fd,&t,1);
 	t=data&0xff;
-	fwrite(&t,1,1,fp);
+	write(fd,&t,1);
 }
 
-static inline void xauth_write_string(FILE *fp,const char *s)
+static inline void xauth_write_string(int fd,const char *s)
 {
 	size_t len=strlen(s);
-	xauth_write_uint16(fp,(uint16_t)len);
-	fwrite(s,len,1,fp);
+	xauth_write_uint16(fd,(uint16_t)len);
+	write(fd,s,len);
 }
 
 static void xauth_write_file(const char *file,char data[16])
 {
-	FILE *fp;
+	int fd;
 	
-	fp=fopen(file,"wb");
-	if(!fp) return;
-	xauth_write_uint16(fp,252);		//FamilyLocalHost
-	xauth_write_string(fp,"");
-	xauth_write_string(fp,"");
-	xauth_write_string(fp,"MIT-MAGIC-COOKIE-1");
-	xauth_write_uint16(fp,16);
-	fwrite(data,16,1,fp);
-	fclose(fp);
+	fd=open(file,O_CREAT|O_TRUNC|O_WRONLY,0600);
+	if(!fd==-1) return;
+	xauth_write_uint16(fd,252);		//FamilyLocalHost
+	xauth_write_string(fd,"");
+	xauth_write_string(fd,"");
+	xauth_write_string(fd,"MIT-MAGIC-COOKIE-1");
+	xauth_write_uint16(fd,16);
+	write(fd,data,16);
+	close(fd);
 }
 
 static void create_server_auth(LXSession *s)
@@ -706,6 +706,7 @@ static void create_client_auth(char *home,char **env)
 	LXSession *s;
 	char *authfile;
 	uid_t user;
+	char *path;
 	
 	if((user=getuid())== 0 ) /* root don't need it */
 		return;
@@ -714,7 +715,16 @@ static void create_client_auth(char *home,char **env)
 	if(!s)
 		return;
 
-	authfile = g_strdup_printf("%s/.Xauthority", home);
+	path=g_key_file_get_string(config,"base","xauth_path",NULL);
+	if(path)
+	{
+		authfile = g_strdup_printf("%s/.Xauth%d", path,getuid());
+		g_free(path);
+	}
+	else
+	{
+		authfile = g_strdup_printf("%s/.Xauthority", home);
+	}
 	remove(authfile);
 	xauth_write_file(authfile,s->mcookie);
 	replace_env(env,"XAUTHORITY=",authfile);
