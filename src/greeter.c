@@ -590,6 +590,7 @@ static void load_exit()
 static gboolean on_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_data)
 {
     cairo_t *cr;
+	GdkRectangle *r=&evt->area;
 
 #if GTK_CHECK_VERSION(2,18,0)
     if(! gtk_widget_get_has_window(widget))
@@ -602,22 +603,16 @@ static gboolean on_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_
 #else
     cr = gdk_cairo_create(widget->window);
 #endif
-    if( bg_img )
+    if(bg_img )
     {
-        cairo_matrix_t matrix;
-        double x = 0, y = 0, sx, sy;
-        cairo_get_matrix(cr, &matrix);
-        sx = (double)gdk_screen_width() / (double)gdk_pixbuf_get_width(bg_img);
-        sy = (double)gdk_screen_height() / (double)gdk_pixbuf_get_height(bg_img);
-        cairo_scale(cr, sx, sy);
-        gdk_cairo_set_source_pixbuf(cr, bg_img, x, y);
+        gdk_cairo_set_source_pixbuf(cr, bg_img, 0, 0);
+        gdk_cairo_rectangle (cr,r);
         cairo_paint(cr);
-        cairo_set_matrix(cr, &matrix);
     }
     else
     {
         gdk_cairo_set_source_color(cr, &bg_color);
-        cairo_rectangle( cr, 0, 0, gdk_screen_width(), gdk_screen_height() );
+        gdk_cairo_rectangle (cr,r);
         cairo_fill(cr);
     }
     cairo_destroy(cr);
