@@ -1,0 +1,66 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-23 13:40+0800\n"
+"PO-Revision-Date: 2011-03-24 14:37+0200\n"
+"Last-Translator: Praveen <mail2ipn@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: te\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.5\n"
+
+#: ../data/lxdm.glade.h:1
+msgid "Desktop:"
+msgstr "డెస్క్‍టాప్:"
+
+#: ../data/lxdm.glade.h:2
+msgid "Keyboard:"
+msgstr "కీబోర్డు:"
+
+#: ../data/lxdm.glade.h:3
+msgid "Language:"
+msgstr "భాష:"
+
+#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
+#: ../src/greeter.c:974
+msgid "User:"
+msgstr "వాడుకరి:"
+
+#: ../src/gdm/gdm-languages.c:611
+msgid "Unspecified"
+msgstr ""
+
+#: ../src/greeter.c:104 ../src/greeter.c:680
+msgid "Password:"
+msgstr "సంకేతపదం:"
+
+#: ../src/greeter.c:233 ../src/lang.c:103
+msgid "Default"
+msgstr "అప్రమేయం"
+
+#: ../src/greeter.c:575
+msgid "_Reboot"
+msgstr "పునఃప్రారంభించు(_R)"
+
+#: ../src/greeter.c:579
+msgid "_Shutdown"
+msgstr "మూసివేయి(_S)"
+
+#: ../src/greeter.c:767
+msgid ""
+"\n"
+"<i>logged in</i>"
+msgstr ""
+
+#: ../src/greeter.c:780 ../src/lang.c:125
+msgid "More ..."
+msgstr "మరిన్ని..."
