@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-09-23 13:40+0800\n"
-"PO-Revision-Date: 2011-03-24 14:37+0200\n"
+"PO-Revision-Date: 2011-03-30 04:08+0200\n"
 "Last-Translator: Praveen <mail2ipn@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: te\n"
@@ -37,7 +37,7 @@ msgstr "వాడుకరి:"
 
 #: ../src/gdm/gdm-languages.c:611
 msgid "Unspecified"
-msgstr ""
+msgstr "అనిర్దిష్ట"
 
 #: ../src/greeter.c:104 ../src/greeter.c:680
 msgid "Password:"
@@ -60,6 +60,8 @@ msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
+"\n"
+"<i>ప్రవేశించారు</i>"
 
 #: ../src/greeter.c:780 ../src/lang.c:125
 msgid "More ..."
