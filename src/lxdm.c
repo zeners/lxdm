@@ -1609,6 +1609,27 @@ static gboolean strv_find(char **strv,const char *p)
 	return FALSE;
 }
 
+static char *lxdm_get_user_face(struct passwd *pw)
+{
+	GKeyFile *kf;
+	char *face;
+	char *file;
+	face=g_strdup_printf("%s/.face",pw->pw_dir);
+	if(!access(face,R_OK))
+		return face;
+	g_free(face);
+	kf=g_key_file_new();
+	file=g_build_filename ("/var/lib/AccountsService/users/", pw->pw_name, NULL);
+	g_key_file_load_from_file (kf, file, 0, NULL);
+	g_free(file);
+	face=g_key_file_get_string(kf,"User","Icon",NULL);
+	g_key_file_free(kf);
+	if(face && !access(face,R_OK))
+		return face;
+	g_free(face);
+	return NULL;
+}
+
 GKeyFile *lxdm_user_list(void)
 {
 	struct passwd *pw;
@@ -1654,8 +1675,8 @@ GKeyFile *lxdm_user_list(void)
 			g_key_file_set_string(kf,pw->pw_name,"gecos",pw->pw_gecos);
 		if(lxsession_find_user(pw->pw_uid))
 			g_key_file_set_boolean(kf,pw->pw_name,"login",TRUE);
-		face=g_strdup_printf("%s/.face",pw->pw_dir);
-		if(!access(face,R_OK))
+		face=lxdm_get_user_face(pw);
+		if(face)
 			g_key_file_set_string(kf,pw->pw_name,"face",face);
 		g_free(face);
 	}

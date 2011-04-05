@@ -834,7 +834,11 @@ static gboolean load_user_list(GtkWidget *widget)
 		if(!face)
 		{
 			/* TODO: load some default face */
-			face=gdk_pixbuf_new_from_file_at_scale(ui_nobody,48,48,TRUE,NULL);
+			if(ui_nobody)
+				face=gdk_pixbuf_new_from_file_at_scale(ui_nobody,48,48,TRUE,NULL);
+			if(!face)
+				face=gtk_icon_theme_load_icon(gtk_icon_theme_get_default(),
+						"avatar-default", 48,GTK_ICON_LOOKUP_FORCE_SIZE,NULL);
 		}
 		display=g_strdup_printf("<span font_size=\"x-large\">%s</span>%s%s%s%s",
 			gecos?gecos:users[i],
