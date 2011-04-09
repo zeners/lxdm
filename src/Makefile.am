@@ -82,3 +82,20 @@ lxdm_numlock_CFLAGS = \
 lxdm_numlock_LDADD = \
 	$(XLIB_LIBS) \
 	$(NULL)
+
+bin_PROGRAMS = lxdm-config
+
+lxdm_config_CFLAGS = \
+	$(GTK_CFLAGS) \
+	-DCONFIG_FILE=\"@sysconfdir@/@PACKAGE@/@PACKAGE@.conf\" \
+	-DLXDM_DATA_DIR=\"@datadir@/@PACKAGE@\" \
+	$(NULL)
+
+lxdm_config_LDADD = \
+	$(GTK_LIBS) \
+	$(NULL)
+
+lxdm_config_SOURCES = \
+	config.c \
+	$(NULL)
+

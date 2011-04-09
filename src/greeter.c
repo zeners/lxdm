@@ -504,6 +504,8 @@ static char *xkb_get_current(void)
 	return symbol_string;
 }
 
+#if 0
+
 static gboolean load_keyboards(GtkWidget *w)
 {
 	GtkListStore* list;
@@ -526,6 +528,7 @@ static gboolean load_keyboards(GtkWidget *w)
 	fp=fopen(XKB_SYMBOL_DIR,"r");
 	if(!fp)
 	{
+		g_print("open xkb symbol dir fail\n");
 		g_free(cur);
 		return FALSE;
 	}
@@ -564,6 +567,68 @@ static gboolean load_keyboards(GtkWidget *w)
 
 	return TRUE;
 }
+#else
+static gboolean load_keyboards(GtkWidget *w)
+{
+	GtkListStore* list;
+	char *cur;
+	int count,active;
+	GtkTreeIter active_iter;
+	GdkScreen *scr;
+	GDir *dir;
+	const gchar *filename;
+	
+	scr=gdk_screen_get_default();
+	if(gdk_screen_get_width(scr)<1024)
+		return FALSE;
+
+	if(!w) return FALSE;
+	
+	cur=xkb_get_current();
+	if(!cur) return FALSE;
+	dir=g_dir_open("/usr/share/X11/xkb/symbols",0,FALSE);
+	if(!dir)
+	{
+		g_print("open xkb symbol dir fail\n");
+		g_free(cur);
+		return FALSE;
+	}
+	list = gtk_list_store_new(1, G_TYPE_STRING);
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(list),0,GTK_SORT_ASCENDING);
+    gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(list),0,keyboard_cmpr,NULL,NULL);
+	for(count=0,active=-1;(filename=g_dir_read_name(dir))!=NULL;)
+	{
+		GtkTreeIter iter;
+		if(strlen(filename)!=2)
+			continue;
+		gtk_list_store_append(list,&iter);
+		gtk_list_store_set(list,&iter,0,filename,-1);
+		if(!strcmp(cur,filename))
+		{
+			active=count;
+			active_iter=iter;
+		}
+		count++;
+	}
+	g_dir_close(dir);
+	g_free(cur);
+	
+	if(count==0 || active==-1)
+	{
+		g_object_unref(list);
+		return FALSE;
+	}
+	
+	gtk_combo_box_set_model(GTK_COMBO_BOX(w), GTK_TREE_MODEL(list) );
+	gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(w), 0);
+	g_object_unref(G_OBJECT(list));
+    gtk_combo_box_set_active_iter(GTK_COMBO_BOX(w), &active_iter);
+	
+	g_signal_connect(G_OBJECT(w),"changed",G_CALLBACK(on_keyboard_changed),NULL);
+
+	return TRUE;
+}
+#endif
 
 static void on_exit_clicked(GtkButton* exit_btn, gpointer user_data)
 {
@@ -899,7 +964,7 @@ static void create_win()
     }
     g_slist_free(objs);
 
-    if( bg_img ) /* only paint our own background if custom background image is set. */
+    if(g_key_file_has_key(config,"display","bg",NULL ))
     {
         gtk_widget_set_app_paintable(win, TRUE);
         g_signal_connect(win, "expose-event", G_CALLBACK(on_expose), NULL);

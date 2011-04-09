@@ -11,6 +11,7 @@ CLEANFILES = $(sbin_SCRIPTS)
 lxdmdir = $(datadir)/lxdm
 lxdm_DATA = \
 	lxdm.glade \
+	config.ui \
 	$(NULL)
 
 lxdm_confdir = /etc/lxdm

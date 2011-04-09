@@ -57,6 +57,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/lxdm/
 %{_sbindir}/lxdm
 %{_sbindir}/lxdm-binary
+%{_bindir}/lxdm-config
 %{_libexecdir}/lxdm-greeter-gtk
 %{_libexecdir}/lxdm-greeter-gdk
 %{_libexecdir}/lxdm-numlock
