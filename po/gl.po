@@ -2,63 +2,87 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-06 06:03+0000\n"
+"POT-Creation-Date: 2011-04-11 02:33+0800\n"
 "PO-Revision-Date: 2010-09-02 13:21+0100\n"
 "Last-Translator: Indalecio Freiría Santos <ifreiria@gmail.com>\n"
 "Language-Team: Proxecto Trasno <proxecto@trasno.net>\n"
+"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Language: Galician\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Country: SPAIN\n"
 "X-Generator: Pootle 2.0.1\n"
 
-#: ../data/lxdm.glade.h:1
+#: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
 msgstr "Escritorio:"
 
-#: ../data/lxdm.glade.h:2
+#: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
 msgid "Keyboard:"
 msgstr "Teclado:"
 
-#: ../data/lxdm.glade.h:3
+#: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "Idioma:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:167 ../src/greeter.c:742
-#: ../src/greeter.c:1034
+#: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
+#: ../src/greeter.c:168 ../src/greeter.c:828 ../src/greeter.c:1141
 msgid "User:"
 msgstr "Usuario:"
 
-#: ../src/gdm/gdm-languages.c:611
-msgid "Unspecified"
-msgstr "Sen especificar"
+#: ../data/config.ui.h:1
+msgid "Automatic Login"
+msgstr ""
 
-#: ../src/greeter.c:135 ../src/greeter.c:728
-msgid "Password:"
-msgstr "Contrasinal:"
+#: ../data/config.ui.h:2
+msgid "Background"
+msgstr ""
 
-#: ../src/greeter.c:235 ../src/lang.c:103
+#: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
 msgid "Default"
 msgstr "Predefinido"
 
-#: ../src/greeter.c:577
+#: ../data/config.ui.h:4
+msgid "Show keyboard layouts"
+msgstr ""
+
+#: ../data/config.ui.h:5
+msgid "Show languanges menu"
+msgstr ""
+
+#: ../data/config.ui.h:6
+msgid "Show user list"
+msgstr ""
+
+#: ../data/config.ui.h:7
+msgid "lxdm config"
+msgstr ""
+
+#: ../src/gdm/gdm-languages.c:614
+msgid "Unspecified"
+msgstr "Sen especificar"
+
+#: ../src/greeter.c:136 ../src/greeter.c:814
+msgid "Password:"
+msgstr "Contrasinal:"
+
+#: ../src/greeter.c:643
 msgid "_Reboot"
 msgstr "_Reiniciar"
 
-#: ../src/greeter.c:581
+#: ../src/greeter.c:647
 msgid "_Shutdown"
 msgstr "_Apagar"
 
-#: ../src/greeter.c:816
+#: ../src/greeter.c:913
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -66,6 +90,10 @@ msgstr ""
 "\n"
 "<i>autenticado</i>"
 
-#: ../src/greeter.c:829 ../src/lang.c:125
+#: ../src/greeter.c:926 ../src/lang.c:125
 msgid "More ..."
 msgstr "Máis ..."
+
+#: ../src/config.c:317
+msgid "Browse for more pictures..."
+msgstr ""

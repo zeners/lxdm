@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxem r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-23 13:40+0800\n"
+"POT-Creation-Date: 2011-04-11 02:33+0800\n"
 "PO-Revision-Date: 2011-03-09 17:38+0200\n"
 "Last-Translator: Alessandro <alex@amiran.it>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -19,44 +19,68 @@ msgstr ""
 "X-Generator: Pootle 2.0.5\n"
 "X-Poedit-Language: Italian\n"
 
-#: ../data/lxdm.glade.h:1
+#: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
 msgstr "Desktop:"
 
-#: ../data/lxdm.glade.h:2
+#: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
 msgid "Keyboard:"
 msgstr "Tastiera:"
 
-#: ../data/lxdm.glade.h:3
+#: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "Lingua:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
-#: ../src/greeter.c:974
+#: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
+#: ../src/greeter.c:168 ../src/greeter.c:828 ../src/greeter.c:1141
 msgid "User:"
 msgstr "Utente:"
 
-#: ../src/gdm/gdm-languages.c:611
-msgid "Unspecified"
-msgstr "Non specificato"
+#: ../data/config.ui.h:1
+msgid "Automatic Login"
+msgstr ""
 
-#: ../src/greeter.c:104 ../src/greeter.c:680
-msgid "Password:"
-msgstr "Password:"
+#: ../data/config.ui.h:2
+msgid "Background"
+msgstr ""
 
-#: ../src/greeter.c:233 ../src/lang.c:103
+#: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
 msgid "Default"
 msgstr "Predefinito"
 
-#: ../src/greeter.c:575
+#: ../data/config.ui.h:4
+msgid "Show keyboard layouts"
+msgstr ""
+
+#: ../data/config.ui.h:5
+msgid "Show languanges menu"
+msgstr ""
+
+#: ../data/config.ui.h:6
+msgid "Show user list"
+msgstr ""
+
+#: ../data/config.ui.h:7
+msgid "lxdm config"
+msgstr ""
+
+#: ../src/gdm/gdm-languages.c:614
+msgid "Unspecified"
+msgstr "Non specificato"
+
+#: ../src/greeter.c:136 ../src/greeter.c:814
+msgid "Password:"
+msgstr "Password:"
+
+#: ../src/greeter.c:643
 msgid "_Reboot"
 msgstr "_Riavvia"
 
-#: ../src/greeter.c:579
+#: ../src/greeter.c:647
 msgid "_Shutdown"
 msgstr "_Spegni"
 
-#: ../src/greeter.c:767
+#: ../src/greeter.c:913
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -64,9 +88,13 @@ msgstr ""
 "\n"
 "<i>connesso</i>"
 
-#: ../src/greeter.c:780 ../src/lang.c:125
+#: ../src/greeter.c:926 ../src/lang.c:125
 msgid "More ..."
 msgstr "Di più..."
+
+#: ../src/config.c:317
+msgid "Browse for more pictures..."
+msgstr ""
 
 #~ msgid "US English"
 #~ msgstr "Inglese US"

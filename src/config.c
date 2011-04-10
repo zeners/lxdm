@@ -487,7 +487,6 @@ static void on_show_lang_toggled(GtkToggleButton *button)
 {
 	int val;
 	val=gtk_toggle_button_get_active(button);
-	printf("%d\n",val);
 	g_key_file_set_integer(config,"display","lang",val);
 	dirty++;
 }

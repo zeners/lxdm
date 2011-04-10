@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxede.lxdm.ast\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-23 13:40+0800\n"
+"POT-Creation-Date: 2011-04-11 02:33+0800\n"
 "PO-Revision-Date: 2010-05-07 23:59+0100\n"
 "Last-Translator: astur <malditoastur@gmail.com>\n"
 "Language-Team: asturian <alministradores@softastur.org>\n"
@@ -19,50 +19,78 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Language: asturian\n"
 
-#: ../data/lxdm.glade.h:1
+#: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
 msgstr "Escritoriu:"
 
-#: ../data/lxdm.glade.h:2
+#: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
 #, fuzzy
 msgid "Keyboard:"
 msgstr "Distribución del tecláu:"
 
-#: ../data/lxdm.glade.h:3
+#: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "Llingua:"
 
-#: ../data/lxdm.glade.h:4 ../src/greeter.c:165 ../src/greeter.c:694
-#: ../src/greeter.c:974
+#: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
+#: ../src/greeter.c:168 ../src/greeter.c:828 ../src/greeter.c:1141
 msgid "User:"
 msgstr "Usuariu:"
 
-#: ../src/gdm/gdm-languages.c:611
-msgid "Unspecified"
-msgstr "Non especificáu"
+#: ../data/config.ui.h:1
+msgid "Automatic Login"
+msgstr ""
 
-#: ../src/greeter.c:104 ../src/greeter.c:680
-msgid "Password:"
-msgstr "Contraseña:"
+#: ../data/config.ui.h:2
+msgid "Background"
+msgstr ""
 
-#: ../src/greeter.c:233 ../src/lang.c:103
+#: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
 msgid "Default"
 msgstr "Predetermináu"
 
-#: ../src/greeter.c:575
+#: ../data/config.ui.h:4
+msgid "Show keyboard layouts"
+msgstr ""
+
+#: ../data/config.ui.h:5
+msgid "Show languanges menu"
+msgstr ""
+
+#: ../data/config.ui.h:6
+msgid "Show user list"
+msgstr ""
+
+#: ../data/config.ui.h:7
+msgid "lxdm config"
+msgstr ""
+
+#: ../src/gdm/gdm-languages.c:614
+msgid "Unspecified"
+msgstr "Non especificáu"
+
+#: ../src/greeter.c:136 ../src/greeter.c:814
+msgid "Password:"
+msgstr "Contraseña:"
+
+#: ../src/greeter.c:643
 msgid "_Reboot"
 msgstr "_Reaniciar"
 
-#: ../src/greeter.c:579
+#: ../src/greeter.c:647
 msgid "_Shutdown"
 msgstr "_Apagar"
 
-#: ../src/greeter.c:767
+#: ../src/greeter.c:913
 msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
 
-#: ../src/greeter.c:780 ../src/lang.c:125
+#: ../src/greeter.c:926 ../src/lang.c:125
 msgid "More ..."
 msgstr "Más ..."
+
+#: ../src/config.c:317
+msgid "Browse for more pictures..."
+msgstr ""
