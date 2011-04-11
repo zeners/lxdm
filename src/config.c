@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pwd.h>
+#include <unistd.h>
 
 #define CONFIG_UI_FILE		LXDM_DATA_DIR"/config.ui"
 //#define CONFIG_UI_FILE		"../data/config.ui"
