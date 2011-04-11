@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-04-11 02:33+0800\n"
-"PO-Revision-Date: 2010-09-02 05:25+0200\n"
+"PO-Revision-Date: 2011-04-11 15:20+0200\n"
 "Last-Translator: Sankarshan <sankarshan.mukhopadhyay@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: bn_IN\n"
@@ -23,7 +23,6 @@ msgid "Desktop:"
 msgstr "ডেস্কটপ:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
-#, fuzzy
 msgid "Keyboard:"
 msgstr "কী-বোর্ড বিন্যাস:"
 
@@ -38,11 +37,11 @@ msgstr "ব্যবহারকারী:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "সয়ংক্রীয় লগ-ইন"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "প্রেক্ষাপট"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
 msgid "Default"
@@ -50,19 +49,19 @@ msgstr "ডিফল্ট"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "কি-বোর্ড এর বিন্যাস প্রদর্শন করুন"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
-msgstr ""
+msgstr "ভাষার মেনু প্রদর্শন করুন"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "ব্যবহারকারীদের তালিকা প্রদর্শন করুন"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "lxdm config"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -94,4 +93,4 @@ msgstr "অধিক ..."
 
 #: ../src/config.c:317
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "অন্যান্য ছবি দেখুন..."
