@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-04-11 02:33+0800\n"
-"PO-Revision-Date: 2011-04-12 22:43+0200\n"
+"PO-Revision-Date: 2011-04-12 22:48+0200\n"
 "Last-Translator: Hugo <sysadmin@cips.cu>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: es\n"
@@ -60,9 +60,8 @@ msgid "Show user list"
 msgstr "Mostrar lista de usuarios"
 
 #: ../data/config.ui.h:7
-#, fuzzy
 msgid "lxdm config"
-msgstr "configuración de lxdm"
+msgstr "lxdm config"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
