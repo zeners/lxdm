@@ -582,9 +582,11 @@ int main(int arc,char *arg[])
     }
     prepare_user();
 	
+#if !GTK_CHECK_VERSION(3,0,0)
 	gtk_set_locale();
-    bindtextdomain("lxdm", "/usr/share/locale");
-    textdomain("lxdm");
+#endif
+	bindtextdomain("lxdm", "/usr/share/locale");
+	textdomain("lxdm");
 
 	gtk_init(&arc,&arg);
 	prepare_config();

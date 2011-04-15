@@ -35,6 +35,7 @@
 #include <sys/wait.h>
 
 #include "lxcom.h"
+#include "greeter-utils.h"
 
 enum {
     COL_SESSION_NAME,
@@ -241,7 +242,11 @@ static void load_sessions()
 
 	g_free(last);
 	gtk_combo_box_set_model( GTK_COMBO_BOX(sessions), GTK_TREE_MODEL(list) );
+#if GTK_CHECK_VERSION(2,24,0)
+	gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(sessions), 0);
+#else
 	gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(sessions), 0);
+#endif
 	if( active_it.stamp )
 		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(sessions), &active_it);
 	else
@@ -417,7 +422,11 @@ static void load_langs()
     }
     g_free(lang_str);
     gtk_combo_box_set_model( GTK_COMBO_BOX(lang), GTK_TREE_MODEL(list) );
+#if GTK_CHECK_VERSION(2,24,0)
+	gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(lang), 0);
+#else
     gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(lang), 0);
+#endif
     gtk_combo_box_set_active(GTK_COMBO_BOX(lang), active < 0 ? 0 : active);
     g_object_unref(list);
 
@@ -620,7 +629,11 @@ static gboolean load_keyboards(GtkWidget *w)
 	}
 	
 	gtk_combo_box_set_model(GTK_COMBO_BOX(w), GTK_TREE_MODEL(list) );
+#if GTK_CHECK_VERSION(2,24,0)
+	gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(w), 0);
+#else
 	gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(w), 0);
+#endif
 	g_object_unref(G_OBJECT(list));
     gtk_combo_box_set_active_iter(GTK_COMBO_BOX(w), &active_iter);
 	
@@ -652,6 +665,7 @@ static void load_exit()
     g_signal_connect(exit_btn, "clicked", G_CALLBACK(on_exit_clicked), NULL);
 }
 
+#if 0
 static gboolean on_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_data)
 {
     cairo_t *cr;
@@ -683,6 +697,7 @@ static gboolean on_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_
     cairo_destroy(cr);
     return FALSE;
 }
+#endif
 
 static gboolean on_combobox_entry_button_release(GtkWidget* w, GdkEventButton* evt, GtkComboBox* combo)
 {
@@ -707,7 +722,17 @@ static void fix_combobox_entry(GtkWidget* combo)
     g_signal_connect(edit, "button-release-event", G_CALLBACK(on_combobox_entry_button_release), combo);
 }
 
-static void on_evt_box_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer user_data)
+#if GTK_CHECK_VERSION(3,0,0)
+static gboolean on_evt_box_draw(GtkWidget *widget,cairo_t *cr,gpointer user_data)
+{
+	GtkStyleContext *style=gtk_widget_get_style_context(widget);
+	gtk_render_background(style,cr,0,0,
+			gtk_widget_get_allocated_width(widget),
+			gtk_widget_get_allocated_height(widget));
+    return FALSE;
+}
+#else
+static gboolean on_evt_box_expose(GtkWidget *widget, GdkEventExpose* evt, gpointer user_data)
 {
 #if GTK_CHECK_VERSION(2,18,0)
     if (gtk_widget_is_drawable(widget))
@@ -731,7 +756,9 @@ static void on_evt_box_expose(GtkWidget* widget, GdkEventExpose* evt, gpointer u
                 0, 0, -1, -1);
         klass->expose_event (widget, evt);
     }
+    return FALSE;
 }
+#endif
 
 static gboolean on_timeout(GtkLabel* label)
 {
@@ -865,7 +892,11 @@ static gboolean load_user_list(GtkWidget *widget)
 	gtk_icon_view_set_selection_mode(GTK_ICON_VIEW(widget),GTK_SELECTION_SINGLE);
 	gtk_icon_view_set_pixbuf_column(GTK_ICON_VIEW(widget),0);
 	gtk_icon_view_set_markup_column(GTK_ICON_VIEW(widget),1);
+#if GTK_CHECK_VERSION(2,22,0)
+	gtk_icon_view_set_item_orientation(GTK_ICON_VIEW(widget),GTK_ORIENTATION_HORIZONTAL);
+#else
 	gtk_icon_view_set_orientation(GTK_ICON_VIEW(widget),GTK_ORIENTATION_HORIZONTAL);
+#endif
 	model=gtk_list_store_new(5,GDK_TYPE_PIXBUF,G_TYPE_STRING,
 			G_TYPE_STRING,G_TYPE_STRING,G_TYPE_BOOLEAN);
 	gtk_icon_view_set_model(GTK_ICON_VIEW(widget),GTK_TREE_MODEL(model));
@@ -936,7 +967,6 @@ static gboolean load_user_list(GtkWidget *widget)
 static void create_win()
 {
     GtkBuilder* builder;
-    Display *dpy;
     GdkScreen* scr;
     GSList* objs, *l;
     GtkWidget* w;
@@ -950,35 +980,36 @@ static void create_win()
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, ui_file ? ui_file : LXDM_DATA_DIR "/lxdm.glade", NULL);
     win = (GtkWidget*)gtk_builder_get_object(builder, "lxdm");
+#if GTK_CHECK_VERSION(3,0,0)
+    gtk_window_set_has_resize_grip(GTK_WINDOW(win),FALSE);
+#endif
     gtk_widget_realize(win);
-    dpy=gdk_x11_get_default_xdisplay();
 
-    /* set widget names according to their object id in GtkBuilder xml */
-    objs = gtk_builder_get_objects(builder);
-    for( l = objs; l; l = l->next )
-    {
-        GtkWidget* widget = (GtkWidget*)l->data;
-        gtk_widget_set_name( widget, gtk_buildable_get_name( (GtkBuildable*)widget ) );
-        char* path;
-        gtk_widget_path(widget, NULL, &path, NULL);
-    }
-    g_slist_free(objs);
+	/* set widget names according to their object id in GtkBuilder xml */
+	objs = gtk_builder_get_objects(builder);
+	for( l = objs; l; l = l->next )
+	{
+		char* path;
+		GtkWidget* widget = (GtkWidget*)l->data;
+		gtk_widget_set_name( widget, gtk_buildable_get_name( (GtkBuildable*)widget ) );
+		gtk_widget_path(widget, NULL, &path, NULL);
+	}
+	g_slist_free(objs);
 
     if(g_key_file_has_key(config,"display","bg",NULL ))
     {
         gtk_widget_set_app_paintable(win, TRUE);
-        g_signal_connect(win, "expose-event", G_CALLBACK(on_expose), NULL);
+#if GTK_CHECK_VERSION(3,0,0)
+		//g_signal_connect(win, "draw", G_CALLBACK(on_draw), NULL);
+#else
+		//g_signal_connect(win, "expose-event", G_CALLBACK(on_expose), NULL);
+#endif
     } /* otherwise, let gtk theme paint it. */
 
     scr = gtk_widget_get_screen(win);
     g_signal_connect(scr, "size-changed", G_CALLBACK(on_screen_size_changed), win);
     
     user_list=(GtkWidget*)gtk_builder_get_object(builder,"user_list");
-    if(user_list)
-    {
-		//TODO: load user list, connect select_changed,activate signal
-		// Use GtkIconView may enough
-	}
 
     prompt = (GtkWidget*)gtk_builder_get_object(builder, "prompt");
     login_entry = (GtkWidget*)gtk_builder_get_object(builder, "login_entry");
@@ -999,7 +1030,12 @@ static void create_win()
 #else
         if(GTK_WIDGET_APP_PAINTABLE(w))
 #endif
-            g_signal_connect(w, "expose-event", G_CALLBACK(on_evt_box_expose), NULL);
+
+#if GTK_CHECK_VERSION(3,0,0)
+		g_signal_connect(w,"draw",G_CALLBACK(on_evt_box_draw),NULL);
+#else
+		g_signal_connect(w, "expose-event", G_CALLBACK(on_evt_box_expose), NULL);
+#endif
     }
     else
         gtk_event_box_set_visible_window(GTK_EVENT_BOX(w), FALSE);
@@ -1044,10 +1080,12 @@ static void create_win()
 	g_object_unref(builder);
 
 	gtk_window_set_default_size( GTK_WINDOW(win), gdk_screen_get_width(scr), gdk_screen_get_height(scr) );
-	gtk_window_present( GTK_WINDOW(win) );
-	gtk_widget_realize(login_entry);
-  
-	XSetInputFocus(dpy,GDK_WINDOW_XWINDOW(win->window),RevertToNone,CurrentTime); 
+#if GTK_CHECK_VERSION(3,0,0)
+	ui_set_bg(gtk_widget_get_window(win),config);
+#else
+	ui_set_bg(win->window,config);
+#endif
+
 	if(user_list && !g_key_file_get_integer(config,"userlist","disable",NULL) && 
 			load_user_list(user_list))
 	{
@@ -1060,8 +1098,17 @@ static void create_win()
 			gtk_widget_hide(user_list);
 			user_list=NULL;
 		}
-		gtk_widget_grab_focus(login_entry);
 	}
+
+	ui_set_cursor(gtk_widget_get_window(win),GDK_ARROW);
+	gtk_widget_show(win);
+#if GTK_CHECK_VERSION(3,0,0)
+	ui_set_focus(gtk_widget_get_window(win));
+#else
+	ui_set_focus(win->window);
+#endif
+	if(!user_list)
+		gtk_widget_grab_focus(login_entry);
 }
 
 int set_background(void)
@@ -1143,7 +1190,6 @@ static gboolean on_lxdm_command(GIOChannel *source, GIOCondition condition, gpoi
 		if(user_list)
 		{
 			gtk_widget_hide(login_entry);
-			//gtk_icon_view_unselect_all(GTK_ICON_VIEW(user_list));
 			gtk_widget_show(user_list);
 			gtk_widget_grab_focus(user_list);
 		}
@@ -1163,59 +1209,47 @@ void listen_stdin(void)
     g_io_add_watch(greeter_io, G_IO_IN, on_lxdm_command, NULL);
 }
 
-void set_root_background(void)
-{
-    GdkWindow *root = gdk_get_default_root_window();
-
-    /* set background */
-    if( !bg_img )
-    {
-        GdkColormap *map = (GdkColormap*)gdk_drawable_get_colormap(root);
-        gdk_colormap_alloc_color(map, &bg_color, TRUE, TRUE);
-        gdk_window_set_background(root, &bg_color);
-    }
-    else
-    {
-        GdkPixmap *pix = NULL;
-        gdk_pixbuf_render_pixmap_and_mask(bg_img, &pix, NULL, 0);
-        /* call x directly, because gdk will ref the pixmap */
-        //gdk_window_set_back_pixmap(root,pix,FALSE);
-        XSetWindowBackgroundPixmap( GDK_WINDOW_XDISPLAY(root),
-                                   GDK_WINDOW_XID(root), GDK_PIXMAP_XID(pix) );
-        g_object_unref(pix);
-    }
-    gdk_window_clear(root);
-}
-
 static void apply_theme(const char* theme_name)
 {
-    char* theme_dir = g_build_filename(LXDM_DATA_DIR "/themes", theme_name, NULL);
-    char* rc = g_build_filename(theme_dir, "gtkrc", NULL);
+	char* theme_dir = g_build_filename(LXDM_DATA_DIR "/themes", theme_name, NULL);
+	char* rc = g_build_filename(theme_dir, "gtkrc", NULL);
 
-    ui_file = g_build_filename(theme_dir, "greeter.ui", NULL);
+#if GTK_CHECK_VERSION(3,0,0)
+	ui_file = g_build_filename(theme_dir, "greeter-gtk3.ui", NULL);
+#else
+	ui_file = g_build_filename(theme_dir, "greeter.ui", NULL);
+#endif
 
-    if( g_file_test(rc, G_FILE_TEST_EXISTS) )
-    {
-        gtk_rc_parse(rc);
-    }
-    g_free(rc);
+	if( g_file_test(rc, G_FILE_TEST_EXISTS) )
+	{
+		gtk_rc_parse(rc);
+	}
+	g_free(rc);
 
-    if( !g_file_test(ui_file, G_FILE_TEST_EXISTS) )
-    {
-        g_free(ui_file);
-        ui_file = NULL;
-    }
-    
-    ui_nobody = g_build_filename(theme_dir, "nobody.png", NULL);
-    if( !g_file_test(ui_nobody, G_FILE_TEST_EXISTS) )
-    {
-        g_free(ui_nobody);
-        ui_nobody = NULL;
-    }
-    
-    g_free(theme_dir);
-    
-    
+	if( !g_file_test(ui_file, G_FILE_TEST_EXISTS) )
+	{
+		g_free(ui_file);
+		ui_file = NULL;
+	}
+	
+#if GTK_CHECK_VERSION(3,0,0)
+	char *path=g_build_filename(theme_dir, "gtk.css", NULL);
+	GtkCssProvider *css=gtk_css_provider_new();
+	gtk_css_provider_load_from_path(css,path,NULL);
+	g_free(path);
+	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+			GTK_STYLE_PROVIDER(css),
+			GTK_STYLE_PROVIDER_PRIORITY_USER);
+#endif
+
+	ui_nobody = g_build_filename(theme_dir, "nobody.png", NULL);
+	if( !g_file_test(ui_nobody, G_FILE_TEST_EXISTS) )
+	{
+		g_free(ui_nobody);
+		ui_nobody = NULL;
+	}
+
+	g_free(theme_dir);
 }
 
 int main(int arc, char *arg[])
@@ -1227,7 +1261,9 @@ int main(int arc, char *arg[])
     /* this will override LC_MESSAGES */
     unsetenv("LANGUAGE");
 
+#if !GTK_CHECK_VERSION(3,0,0)
     gtk_set_locale();
+#endif
     bindtextdomain("lxdm", "/usr/share/locale");
     textdomain("lxdm");
 
@@ -1254,9 +1290,6 @@ int main(int arc, char *arg[])
         gtk_settings_set_string_property(p,"gtk-im-module","gtk-im-context-simple",0);
         gtk_settings_set_long_property(p,"gtk-show-input-method-menu",0,0);
     }
-
-    set_background();
-    set_root_background();
 
     /* set gtk+ theme */
     theme_name = g_key_file_get_string(config, "display", "gtk_theme", NULL);
