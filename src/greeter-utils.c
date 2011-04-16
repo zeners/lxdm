@@ -37,11 +37,11 @@ void ui_set_bg(GdkWindow *win,GKeyFile *config)
 	char *p=g_key_file_get_string(config,"display","bg",NULL);
 	gdk_color_parse("#222E45",&bg_color);
 	if( p && p[0] != '#' )
-    {
-        bg_img = gdk_pixbuf_new_from_file(p, 0);
-    }
-    if( p && p[0] == '#' )
-    {
+	{
+		bg_img = gdk_pixbuf_new_from_file(p, 0);
+	}
+	if( p && p[0] == '#' )
+	{
 		gdk_color_parse(p, &bg_color);
 	}
 	g_free(p);
@@ -58,7 +58,7 @@ void ui_set_bg(GdkWindow *win,GKeyFile *config)
 			pb = gdk_pixbuf_scale_simple(bg_img,
 										rc.width,
 										rc.height,
-										GDK_INTERP_HYPER);
+										GDK_INTERP_BILINEAR);
 			g_object_unref(bg_img);
 			bg_img = pb;
 		}
@@ -95,9 +95,9 @@ void ui_set_bg(GdkWindow *win,GKeyFile *config)
 			gdk_colormap_alloc_color(map, &bg_color, TRUE, TRUE);
 			gdk_window_set_background(win, &bg_color);
 		}
-        map=(GdkColormap*)gdk_drawable_get_colormap(root);
+		map=(GdkColormap*)gdk_drawable_get_colormap(root);
 		gdk_colormap_alloc_color(map, &bg_color, TRUE, TRUE);
-        gdk_window_set_background(root, &bg_color);
+		gdk_window_set_background(root, &bg_color);
 #endif
 	}
 }

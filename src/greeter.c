@@ -996,7 +996,12 @@ static void create_win()
 
     if(g_key_file_has_key(config,"display","bg",NULL ))
     {
+#if GTK_CHECK_VERSION(3,0,0)
+		GtkStyleContext *style=gtk_widget_get_style_context(win);
+		gtk_style_context_remove_class(style,GTK_STYLE_PROPERTY_BACKGROUND_IMAGE);
+#endif
         gtk_widget_set_app_paintable(win, TRUE);
+        
     } /* otherwise, let gtk theme paint it. */
 
     user_list=(GtkWidget*)gtk_builder_get_object(builder,"user_list");
@@ -1147,19 +1152,26 @@ void listen_stdin(void)
 static void apply_theme(const char* theme_name)
 {
 	char* theme_dir = g_build_filename(LXDM_DATA_DIR "/themes", theme_name, NULL);
-	char* rc = g_build_filename(theme_dir, "gtkrc", NULL);
+	char *rc;
 
 #if GTK_CHECK_VERSION(3,0,0)
 	ui_file = g_build_filename(theme_dir, "greeter-gtk3.ui", NULL);
+	rc=g_build_filename(theme_dir, "gtk.css", NULL);
+	GtkCssProvider *css=gtk_css_provider_new();
+	gtk_css_provider_load_from_path(css,rc,NULL);
+	g_free(rc);
+	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+			GTK_STYLE_PROVIDER(css),
+			GTK_STYLE_PROVIDER_PRIORITY_USER);
 #else
 	ui_file = g_build_filename(theme_dir, "greeter.ui", NULL);
-#endif
-
+	rc = g_build_filename(theme_dir, "gtkrc", NULL);
 	if( g_file_test(rc, G_FILE_TEST_EXISTS) )
 	{
 		gtk_rc_parse(rc);
 	}
 	g_free(rc);
+#endif	
 
 	if( !g_file_test(ui_file, G_FILE_TEST_EXISTS) )
 	{
@@ -1168,13 +1180,7 @@ static void apply_theme(const char* theme_name)
 	}
 	
 #if GTK_CHECK_VERSION(3,0,0)
-	char *path=g_build_filename(theme_dir, "gtk.css", NULL);
-	GtkCssProvider *css=gtk_css_provider_new();
-	gtk_css_provider_load_from_path(css,path,NULL);
-	g_free(path);
-	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
-			GTK_STYLE_PROVIDER(css),
-			GTK_STYLE_PROVIDER_PRIORITY_USER);
+
 #endif
 
 	ui_nobody = g_build_filename(theme_dir, "nobody.png", NULL);
@@ -1190,7 +1196,7 @@ static void apply_theme(const char* theme_name)
 int main(int arc, char *arg[])
 {
     char* theme_name;
-    GtkSettings*p;
+    GtkSettings *settings;
     int i;
 
     /* this will override LC_MESSAGES */
@@ -1204,7 +1210,6 @@ int main(int arc, char *arg[])
 
     config = g_key_file_new();
     g_key_file_load_from_file(config, CONFIG_FILE, G_KEY_FILE_KEEP_COMMENTS, NULL);
-
     var_config = g_key_file_new();
     g_key_file_set_list_separator(var_config, ' ');
     g_key_file_load_from_file(var_config,VCONFIG_FILE,G_KEY_FILE_KEEP_COMMENTS, NULL);
@@ -1218,30 +1223,30 @@ int main(int arc, char *arg[])
 		}
 	}
 
-    p=gtk_settings_get_default();
-    if(p)
+    settings=gtk_settings_get_default();
+    if(settings)
     {
         setenv("GTK_IM_MODULE","gtk-im-context-simple",1);
-        gtk_settings_set_string_property(p,"gtk-im-module","gtk-im-context-simple",0);
-        gtk_settings_set_long_property(p,"gtk-show-input-method-menu",0,0);
+        gtk_settings_set_string_property(settings,"gtk-im-module","gtk-im-context-simple",0);
+        gtk_settings_set_long_property(settings,"gtk-show-input-method-menu",0,0);
     }
 
     /* set gtk+ theme */
-    theme_name = g_key_file_get_string(config, "display", "gtk_theme", NULL);
-    if( theme_name )
-    {
-        GtkSettings* settings = gtk_settings_get_default();
-        g_object_set(settings, "gtk-theme-name", theme_name, NULL);
-        g_free(theme_name);
-    }
+	theme_name = g_key_file_get_string(config, "display", "gtk_theme", NULL);
+	if(theme_name)
+	{
+		if(settings)
+			g_object_set(settings, "gtk-theme-name", theme_name, NULL);
+		g_free(theme_name);
+	}   
 
     /* load gtkrc-based themes */
     theme_name = g_key_file_get_string(config, "display", "theme", NULL);
-    if( theme_name ) /* theme is specified */
-    {
-        apply_theme(theme_name);
-        g_free(theme_name);
-    }
+	if( theme_name ) /* theme is specified */
+	{
+		apply_theme(theme_name);
+		g_free(theme_name);
+	}
 
     /* create the login window */
     create_win();
@@ -1254,7 +1259,6 @@ int main(int arc, char *arg[])
     {
 		g_timeout_add_seconds(auto_login,autologin_timeout,NULL);
 	}
-
     gtk_main();
 
     g_key_file_free(config);
