@@ -285,6 +285,7 @@ void ui_prepare(void)
         attr.event_mask = GDK_EXPOSURE_MASK | GDK_KEY_PRESS_MASK;
         attr.wclass = GDK_INPUT_OUTPUT;
         win = gdk_window_new(root, &attr, mask);
+        gdk_window_set_decorations(win,0);
     }
 
     /* create the font */
@@ -307,13 +308,15 @@ void ui_prepare(void)
     if( layout )
     {
         char temp[MAX_VISIBLE_CHARS + 1 + 1];
+        GdkRectangle dest;
+        ui_get_geometry(win,&dest);
         memset( temp, 'A', sizeof(temp) );
         temp[sizeof(temp) - 1] = 0;
         get_text_layout(temp, &w, &h);
         rc.width = w + 6; rc.height = h + 6;
-        rc.x = (gdk_screen_width() - rc.width) / 2;
-        rc.y = (gdk_screen_height() - rc.height) / 2;
-        gdk_window_move_resize(win, 0, 0, gdk_screen_width(), gdk_screen_height());
+        rc.x = dest.x + (dest.width - rc.width) / 2;
+        rc.y = dest.y + (dest.height - rc.height) / 2;
+        gdk_window_move_resize(win, dest.x, dest.y, dest.width, dest.height);
     }
 
     /* connect event */

@@ -74,9 +74,6 @@ static char* pass = NULL;
 static char* ui_file = NULL;
 static char *ui_nobody = NULL;
 
-static GdkPixbuf *bg_img = NULL;
-static GdkColor bg_color = {0};
-
 static GIOChannel *greeter_io;
 
 static int auto_login;
@@ -90,11 +87,6 @@ static void do_reboot(void)
 static void do_shutdown(void)
 {
     printf("shutdown\n");
-}
-
-static void on_screen_size_changed(GdkScreen* scr, GtkWindow* win)
-{
-    gtk_window_resize( win, gdk_screen_get_width(scr), gdk_screen_get_height(scr) );
 }
 
 static char *get_session_lang(void)
@@ -967,10 +959,11 @@ static gboolean load_user_list(GtkWidget *widget)
 static void create_win()
 {
     GtkBuilder* builder;
-    GdkScreen* scr;
     GSList* objs, *l;
     GtkWidget* w;
+    GdkWindow *window;
     gchar *temp;
+    GdkRectangle rc;
     
     temp=g_key_file_get_string(config,"display","datetime",NULL);
     if(temp && temp[0]=='%' && strlen(temp)<=3)
@@ -984,6 +977,11 @@ static void create_win()
     gtk_window_set_has_resize_grip(GTK_WINDOW(win),FALSE);
 #endif
     gtk_widget_realize(win);
+#if GTK_CHECK_VERSION(3,0,0)
+	window=gtk_widget_get_window(win);
+#else
+	window=win->window;
+#endif
 
 	/* set widget names according to their object id in GtkBuilder xml */
 	objs = gtk_builder_get_objects(builder);
@@ -999,16 +997,8 @@ static void create_win()
     if(g_key_file_has_key(config,"display","bg",NULL ))
     {
         gtk_widget_set_app_paintable(win, TRUE);
-#if GTK_CHECK_VERSION(3,0,0)
-		//g_signal_connect(win, "draw", G_CALLBACK(on_draw), NULL);
-#else
-		//g_signal_connect(win, "expose-event", G_CALLBACK(on_expose), NULL);
-#endif
     } /* otherwise, let gtk theme paint it. */
 
-    scr = gtk_widget_get_screen(win);
-    g_signal_connect(scr, "size-changed", G_CALLBACK(on_screen_size_changed), win);
-    
     user_list=(GtkWidget*)gtk_builder_get_object(builder,"user_list");
 
     prompt = (GtkWidget*)gtk_builder_get_object(builder, "prompt");
@@ -1079,12 +1069,10 @@ static void create_win()
 
 	g_object_unref(builder);
 
-	gtk_window_set_default_size( GTK_WINDOW(win), gdk_screen_get_width(scr), gdk_screen_get_height(scr) );
-#if GTK_CHECK_VERSION(3,0,0)
-	ui_set_bg(gtk_widget_get_window(win),config);
-#else
-	ui_set_bg(win->window,config);
-#endif
+	ui_get_geometry(window,&rc);
+	gtk_window_move(GTK_WINDOW(win),rc.x,rc.y);
+	gtk_window_set_default_size(GTK_WINDOW(win),rc.width,rc.height);
+	ui_set_bg(window,config);
 
 	if(user_list && !g_key_file_get_integer(config,"userlist","disable",NULL) && 
 			load_user_list(user_list))
@@ -1102,62 +1090,9 @@ static void create_win()
 
 	ui_set_cursor(gtk_widget_get_window(win),GDK_ARROW);
 	gtk_widget_show(win);
-#if GTK_CHECK_VERSION(3,0,0)
-	ui_set_focus(gtk_widget_get_window(win));
-#else
-	ui_set_focus(win->window);
-#endif
+	ui_set_focus(window);
 	if(!user_list)
 		gtk_widget_grab_focus(login_entry);
-}
-
-int set_background(void)
-{
-    char *bg;
-    char *style;
-    GdkWindow* root = gdk_get_default_root_window();
-    GdkCursor* cursor = gdk_cursor_new(GDK_LEFT_PTR);
-
-    gdk_window_set_cursor(root, cursor);
-
-    bg = g_key_file_get_string(config, "display", "bg", 0);
-    if( !bg )
-        bg = g_strdup("#222E45");
-    style = g_key_file_get_string(config, "display", "bg_style", 0);
-
-    if( bg )
-    {
-        if( bg[0] != '#' )
-        {
-            /* default the bg stretch */
-            if(!style || strcmp(style, "stretch") == 0 )
-            {
-                GdkPixbuf *tmp=gdk_pixbuf_new_from_file(bg,0);
-                if(tmp)
-                {
-                    bg_img=gdk_pixbuf_scale_simple(tmp,
-                                                    gdk_screen_width(),
-                                                    gdk_screen_height(),
-                                                    GDK_INTERP_HYPER);
-                    g_object_unref(tmp);
-                }
-            }
-            else
-            {
-                bg_img = gdk_pixbuf_new_from_file(bg, 0);
-            }
-            if( !bg_img )
-            {
-                g_free(bg);
-                bg = g_strdup("#222E45");
-            }
-        }
-        if( bg[0] == '#' )
-            gdk_color_parse(bg, &bg_color);
-    }
-    g_free(bg);
-    g_free(style);
-    return 0;
 }
 
 static gboolean on_lxdm_command(GIOChannel *source, GIOCondition condition, gpointer data)
