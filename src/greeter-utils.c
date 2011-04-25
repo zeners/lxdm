@@ -122,6 +122,9 @@ void ui_add_cursor(void)
     GdkWindow *root=gdk_get_default_root_window();
     cur = gdk_cursor_new(GDK_ARROW);
     gdk_window_set_cursor(root, cur);
+    XDefineCursor(gdk_x11_get_default_xdisplay(),
+    	GDK_WINDOW_XID(gdk_get_default_root_window()),
+    	GDK_CURSOR_XCURSOR(cur));
     gdk_cursor_unref(cur);
 }
 
