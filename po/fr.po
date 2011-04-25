@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-04-11 02:33+0800\n"
-"PO-Revision-Date: 2010-08-02 19:56+0200\n"
+"PO-Revision-Date: 2011-04-16 17:05+0200\n"
 "Last-Translator: Cilyan <gaknar@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr\n"
@@ -37,11 +37,11 @@ msgstr "Utilisateur:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "Connexion automatique"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "Arrière-plan"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
 msgid "Default"
@@ -49,19 +49,19 @@ msgstr "Par défaut"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Afficher les dispositions de clavier"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
-msgstr ""
+msgstr "Afficher le menu des langues"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "Afficher la liste des utilisateurs"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "Configuration de LXDM"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -93,4 +93,4 @@ msgstr "Plus ..."
 
 #: ../src/config.c:317
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Rechercher d'autres images..."
