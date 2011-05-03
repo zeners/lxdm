@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-04-11 02:33+0800\n"
-"PO-Revision-Date: 2010-01-13 00:24+0100\n"
-"Last-Translator: Christoph Wickert <christoph.wickert@googlemail.com>\n"
+"PO-Revision-Date: 2011-05-03 09:37+0200\n"
+"Last-Translator: Lutz <lthuns@opensuse.org>\n"
 "Language-Team: German\n"
-"Language: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.5\n"
 "X-Poedit-Language: German\n"
-"X-Generator: Pootle 1.1.0\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
@@ -38,12 +38,13 @@ msgid "User:"
 msgstr "Benutzer:"
 
 #: ../data/config.ui.h:1
+#, fuzzy
 msgid "Automatic Login"
-msgstr ""
+msgstr "Automatische Anmeldung"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "Hintergrund"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
 msgid "Default"
@@ -59,7 +60,7 @@ msgstr ""
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "Benutzerliste anzeigen"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
