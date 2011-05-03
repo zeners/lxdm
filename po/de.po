@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-04-11 02:33+0800\n"
-"PO-Revision-Date: 2011-05-03 09:37+0200\n"
+"PO-Revision-Date: 2011-05-03 09:55+0200\n"
 "Last-Translator: Lutz <lthuns@opensuse.org>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -51,12 +51,14 @@ msgid "Default"
 msgstr "Standard"
 
 #: ../data/config.ui.h:4
+#, fuzzy
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Tastaturbelegung anzeigen"
 
 #: ../data/config.ui.h:5
+#, fuzzy
 msgid "Show languanges menu"
-msgstr ""
+msgstr "Sprachauswahlmenü anzeigen"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
@@ -95,8 +97,9 @@ msgid "More ..."
 msgstr "Weitere…"
 
 #: ../src/config.c:317
+#, fuzzy
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Nach weiteren Bildern suchen..."
 
 #~ msgid "US English"
 #~ msgstr "Englisch (USA)"
