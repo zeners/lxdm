@@ -52,7 +52,7 @@ lxdm_greeter_gtk_SOURCES = \
 	$(NULL)
 
 lxdm_greeter_gdk_CFLAGS = \
-	$(GDK_CFLAGS) \
+	$(GTK_CFLAGS) \
 	-DCONFIG_FILE=\"@sysconfdir@/@PACKAGE@/@PACKAGE@.conf\" \
 	-DXSESSIONS_DIR=\"@datarootdir@/xsessions\" \
 	-DLXDM_DATA_DIR=\"@datadir@/@PACKAGE@\" \

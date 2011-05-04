@@ -1,9 +1,11 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtk.h>
 #include <X11/Xlib.h>
 #include <string.h>
 #include <cairo.h>
 #include <cairo-xlib.h>
+#include <unistd.h>
 
 static cairo_surface_t *cairo_surface_create_from_pixbuf (GdkWindow *root,GdkPixbuf *pixbuf)
 {
@@ -23,8 +25,16 @@ static cairo_surface_t *cairo_surface_create_from_pixbuf (GdkWindow *root,GdkPix
 
 int ui_get_geometry(GdkWindow *win,GdkRectangle *rc)
 {
+#if GTK_CHECK_VERSION(2,24,0)
 	GdkScreen *screen=gdk_window_get_screen(win);
+#else
+	GdkScreen *screen=gdk_screen_get_default();
+#endif
+#if GTK_CHECK_VERSION(2,24,0)
 	gint monitor=gdk_screen_get_primary_monitor(screen);
+#else
+	gint monitor=0;
+#endif
 	gdk_screen_get_monitor_geometry(screen,monitor,rc);
 	return 0;
 }
@@ -104,7 +114,11 @@ void ui_set_bg(GdkWindow *win,GKeyFile *config)
 
 void ui_set_focus(GdkWindow *win)
 {
+#if GTK_CHECK_VERSION(2,24,0)
 	Display *dpy=gdk_x11_display_get_xdisplay(gdk_window_get_display(win));
+#else
+	Display *dpy=gdk_x11_display_get_xdisplay(gdk_display_get_default());
+#endif
 	gdk_flush();
 	while(1)
 	{
