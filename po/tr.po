@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-04-11 02:33+0800\n"
-"PO-Revision-Date: 2011-03-10 18:04+0200\n"
+"PO-Revision-Date: 2011-05-05 14:11+0200\n"
 "Last-Translator: Necdet <necdetyucel@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: tr\n"
@@ -37,11 +37,11 @@ msgstr "Kullanıcı:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "Otomatik Oturum Aç"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "Arkaplan"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
 msgid "Default"
@@ -49,19 +49,19 @@ msgstr "Öntanımlı"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Klavye yerleşimini göster"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
-msgstr ""
+msgstr "Dil menüsünü göster"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "Kullanıcı listesini göster"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "lxdm yapılandırması"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -93,4 +93,4 @@ msgstr "Daha Fazla..."
 
 #: ../src/config.c:317
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Daha fazla resim göster"
