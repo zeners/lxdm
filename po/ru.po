@@ -37,11 +37,11 @@ msgstr "Пользователь:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "Автоматический вход"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "Фон"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
 msgid "Default"
@@ -49,19 +49,19 @@ msgstr "По умолчанию"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Показать раскладки клавиатуры"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
-msgstr ""
+msgstr "Показать меню выбора языка"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "Показать список пользователей"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "конфигурация lxdm"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -93,7 +93,7 @@ msgstr "Ещё ..."
 
 #: ../src/config.c:317
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Ещё изображения..."
 
 #~ msgid "US English"
 #~ msgstr "Английский"
