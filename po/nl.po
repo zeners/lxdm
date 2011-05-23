@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-04-11 02:33+0800\n"
-"PO-Revision-Date: 2010-08-30 11:07+0200\n"
-"Last-Translator: Sander <celettu@gmail.com>\n"
+"PO-Revision-Date: 2011-05-18 20:59+0200\n"
+"Last-Translator: Pjotr <pliniusminor@gmail.com>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -66,7 +66,7 @@ msgstr "lxdm config"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
-msgstr "Geen specificatie"
+msgstr "Niet-gespecificeerd"
 
 #: ../src/greeter.c:136 ../src/greeter.c:814
 msgid "Password:"
@@ -86,7 +86,7 @@ msgid ""
 "<i>logged in</i>"
 msgstr ""
 "\n"
-"<i>ingelogd</i>"
+"<i>aangemeld</i>"
 
 #: ../src/greeter.c:926 ../src/lang.c:125
 msgid "More ..."
