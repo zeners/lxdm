@@ -90,8 +90,8 @@ msgstr ""
 
 #: ../src/greeter.c:926 ../src/lang.c:125
 msgid "More ..."
-msgstr "Більше..."
+msgstr "Більше ..."
 
 #: ../src/config.c:317
 msgid "Browse for more pictures..."
-msgstr "Відкрити більше малюнків..."
+msgstr "Показати більше малюнків..."
