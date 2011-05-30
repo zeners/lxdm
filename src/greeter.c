@@ -1094,7 +1094,7 @@ static void create_win()
 	}
 	
 	ui_add_cursor();
-	ui_set_cursor(gtk_widget_get_window(win),GDK_ARROW);
+	ui_set_cursor(gtk_widget_get_window(win),GDK_LEFT_PTR);
 	gtk_widget_show(win);
 	ui_set_focus(window);
 	if(!user_list)
