@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-04-11 02:33+0800\n"
-"PO-Revision-Date: 2011-05-18 20:59+0200\n"
-"Last-Translator: Pjotr <pliniusminor@gmail.com>\n"
+"PO-Revision-Date: 2011-06-02 23:31+0200\n"
+"Last-Translator: Pjotr <>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -50,7 +50,7 @@ msgstr "Standaard"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr "Toon toetsenbord-indelingen"
+msgstr "Toon toetsenbordindelingen"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
