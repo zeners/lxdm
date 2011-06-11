@@ -231,6 +231,18 @@ void ui_event_cb(GdkEvent *event, gpointer data)
 	}
 }
 
+static void on_screen_size_changed(GdkScreen *screen,GdkWindow *window)
+{
+	GdkRectangle dest;
+	gdk_window_hide(window);
+	ui_get_geometry(window,&dest);
+	rc.x = dest.x + (dest.width - rc.width) / 2;
+	rc.y = dest.y + (dest.height - rc.height) / 2;
+	gdk_window_move_resize(window,dest.x,dest.y,dest.width,dest.height);
+	ui_set_bg(window,config);
+	gdk_window_show(window);
+}
+
 void ui_prepare(void)
 {
     cairo_t *cr;
@@ -278,6 +290,7 @@ void ui_prepare(void)
     /* create the window */
     if( !win )
     {
+		GdkScreen *scr;
         GdkWindowAttr attr;
         int mask = 0;
         memset( &attr, 0, sizeof(attr) );
@@ -286,6 +299,10 @@ void ui_prepare(void)
         attr.wclass = GDK_INPUT_OUTPUT;
         win = gdk_window_new(root, &attr, mask);
         gdk_window_set_decorations(win,0);
+        gdk_window_set_title(win,"lxdm-greter-gdk");
+        
+        scr=gdk_screen_get_default();
+        g_signal_connect(scr, "size-changed", G_CALLBACK(on_screen_size_changed), win);
     }
 
     /* create the font */

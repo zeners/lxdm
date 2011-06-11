@@ -53,6 +53,7 @@ enum {
 #define VCONFIG_FILE 		"/var/lib/lxdm/lxdm.conf"
 #define XKB_SYMBOL_DIR		"/usr/share/X11/xkb/symbols.dir"
 
+static GtkBuilder* builder;
 static GKeyFile *config;
 static GKeyFile * var_config;
 static GtkWidget* win;
@@ -956,14 +957,38 @@ static gboolean load_user_list(GtkWidget *widget)
 	return TRUE;
 }
 
+static void on_screen_size_changed(GdkScreen *screen,GtkWidget *win)
+{
+	GdkRectangle rc;
+	GdkWindow *window;
+#if GTK_CHECK_VERSION(3,0,0)
+	window=gtk_widget_get_window(win);
+#else
+	window=win->window;
+#endif
+	ui_get_geometry(window,&rc);
+	if(rc.width<1024 && g_key_file_get_integer(config, "display", "keyboard", 0)==1)
+	{
+		GtkWidget *w;
+		w=(GtkWidget*)gtk_builder_get_object(builder, "keyboard");
+		gtk_widget_hide(w);
+		w=(GtkWidget*)gtk_builder_get_object(builder, "label_keyboard");
+		gtk_widget_hide(w);
+	}
+	
+	gtk_window_move(GTK_WINDOW(win),rc.x,rc.y);
+	gtk_window_resize(GTK_WINDOW(win),rc.width,rc.height);
+	ui_set_bg(window,config);
+}
+
 static void create_win()
 {
-    GtkBuilder* builder;
     GSList* objs, *l;
     GtkWidget* w;
     GdkWindow *window;
     gchar *temp;
     GdkRectangle rc;
+    GdkScreen *scr;
     
     temp=g_key_file_get_string(config,"display","datetime",NULL);
     if(temp && temp[0]=='%' && strlen(temp)<=3)
@@ -1072,8 +1097,6 @@ static void create_win()
 	exit_btn = (GtkWidget*)gtk_builder_get_object(builder, "exit");
 	load_exit();
 
-	g_object_unref(builder);
-
 	ui_get_geometry(window,&rc);
 	gtk_window_move(GTK_WINDOW(win),rc.x,rc.y);
 	gtk_window_set_default_size(GTK_WINDOW(win),rc.width,rc.height);
@@ -1099,6 +1122,9 @@ static void create_win()
 	ui_set_focus(window);
 	if(!user_list)
 		gtk_widget_grab_focus(login_entry);
+		
+	scr = gtk_widget_get_screen(win);
+	g_signal_connect(scr, "size-changed", G_CALLBACK(on_screen_size_changed), win);
 }
 
 static gboolean on_lxdm_command(GIOChannel *source, GIOCondition condition, gpointer data)
