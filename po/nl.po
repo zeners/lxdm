@@ -1,4 +1,4 @@
-# Dutch translation of the lxdm package.
+# Dutch translation for the lxdm package.
 # Copyright (C) the author of the lxdm package.
 # This file is distributed under the same license as the 
 # lxdm package.
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl\n"
+"Language: nl (Dutch)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
