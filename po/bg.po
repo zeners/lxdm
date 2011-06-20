@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-04-11 02:33+0800\n"
-"PO-Revision-Date: 2011-04-24 16:49+0200\n"
+"PO-Revision-Date: 2011-06-20 18:46+0200\n"
 "Last-Translator: Радослав <Rec.ku@hotmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
 "Language: bg\n"
@@ -63,7 +63,7 @@ msgstr "Показване на лист с потребители"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "Настройка"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
