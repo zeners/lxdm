@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-11 02:33+0800\n"
+"POT-Creation-Date: 2011-06-27 19:20+0200\n"
 "PO-Revision-Date: 2010-10-07 18:43+0900\n"
 "Last-Translator: Hironao Komatsu <hironao@users.sourceforge.net>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
@@ -31,7 +31,7 @@ msgid "Language:"
 msgstr "言語:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:168 ../src/greeter.c:828 ../src/greeter.c:1141
+#: ../src/greeter.c:162 ../src/greeter.c:848 ../src/greeter.c:1155
 msgid "User:"
 msgstr "ユーザ:"
 
@@ -43,7 +43,7 @@ msgstr ""
 msgid "Background"
 msgstr ""
 
-#: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
+#: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
 msgstr "デフォルト"
 
@@ -67,19 +67,19 @@ msgstr ""
 msgid "Unspecified"
 msgstr "未指定"
 
-#: ../src/greeter.c:136 ../src/greeter.c:814
+#: ../src/greeter.c:130 ../src/greeter.c:834
 msgid "Password:"
 msgstr "パスワード:"
 
-#: ../src/greeter.c:643
+#: ../src/greeter.c:649
 msgid "_Reboot"
 msgstr "再起動(_R)"
 
-#: ../src/greeter.c:647
+#: ../src/greeter.c:653
 msgid "_Shutdown"
 msgstr "シャットダウン(_S)"
 
-#: ../src/greeter.c:913
+#: ../src/greeter.c:937
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -87,10 +87,10 @@ msgstr ""
 "\n"
 "<i>ログイン中</i>"
 
-#: ../src/greeter.c:926 ../src/lang.c:125
+#: ../src/greeter.c:950 ../src/lang.c:125
 msgid "More ..."
 msgstr "その他 ..."
 
-#: ../src/config.c:317
+#: ../src/config.c:318
 msgid "Browse for more pictures..."
 msgstr ""

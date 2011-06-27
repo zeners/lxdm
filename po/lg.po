@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-11 02:33+0800\n"
+"POT-Creation-Date: 2011-06-27 19:20+0200\n"
 "PO-Revision-Date: 2011-04-27 14:19+0200\n"
 "Last-Translator: kizito <kbirabwa@yahoo.co.uk>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr "Lulimi:"
 
 # User selection prompt at the graphical login screen
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:168 ../src/greeter.c:828 ../src/greeter.c:1141
+#: ../src/greeter.c:162 ../src/greeter.c:848 ../src/greeter.c:1155
 msgid "User:"
 msgstr "Mukozesa:"
 
@@ -48,7 +48,7 @@ msgid "Background"
 msgstr "Bwaliriro"
 
 # This indicates the option that will automatically be set if the user does not select anything.
-#: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
+#: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
 msgstr "Ekya bulijjo"
 
@@ -74,22 +74,22 @@ msgid "Unspecified"
 msgstr "Ssi kitegeke"
 
 # This is the graphical login prompt for the use password.
-#: ../src/greeter.c:136 ../src/greeter.c:814
+#: ../src/greeter.c:130 ../src/greeter.c:834
 msgid "Password:"
 msgstr "Kaama:"
 
 # The machine will reboot. It will power down and back up again, to the login screen.
-#: ../src/greeter.c:643
+#: ../src/greeter.c:649
 msgid "_Reboot"
 msgstr "_Damu-okukoleeza"
 
 # The machine will switch off and stay off.
-#: ../src/greeter.c:647
+#: ../src/greeter.c:653
 msgid "_Shutdown"
 msgstr "_Gyako-kompyuta"
 
 # I think this is a message telling you that you are logged onto the system.
-#: ../src/greeter.c:913
+#: ../src/greeter.c:937
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -98,10 +98,10 @@ msgstr ""
 "<i>oyingidde</i>"
 
 # I think this is a hint telling you that there are more options that are currently hidden.
-#: ../src/greeter.c:926 ../src/lang.c:125
+#: ../src/greeter.c:950 ../src/lang.c:125
 msgid "More ..."
 msgstr "Ebirala ..."
 
-#: ../src/config.c:317
+#: ../src/config.c:318
 msgid "Browse for more pictures..."
 msgstr "Noonya ebifaananyi ebirala..."

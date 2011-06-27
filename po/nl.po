@@ -4,19 +4,19 @@
 # lxdm package.
 # Vincent Van Houtte, 2009.
 # Pjotr, 2011.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-27 04:04+0000\n"
+"POT-Creation-Date: 2011-06-27 19:20+0200\n"
 "PO-Revision-Date: 2011-06-13 11:34+0200\n"
 "Last-Translator: Pjotr\n"
 "Language-Team: Dutch\n"
+"Language: nl (Dutch)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl (Dutch)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
@@ -32,7 +32,7 @@ msgid "Language:"
 msgstr "Taal:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:168 ../src/greeter.c:828 ../src/greeter.c:1141
+#: ../src/greeter.c:162 ../src/greeter.c:848 ../src/greeter.c:1155
 msgid "User:"
 msgstr "Gebruiker:"
 
@@ -44,7 +44,7 @@ msgstr "Automatisch Aanmelden"
 msgid "Background"
 msgstr "Achtergrond"
 
-#: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
+#: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
 msgstr "Standaard"
 
@@ -68,19 +68,19 @@ msgstr "lxdm config"
 msgid "Unspecified"
 msgstr "Niet-gespecificeerd"
 
-#: ../src/greeter.c:136 ../src/greeter.c:814
+#: ../src/greeter.c:130 ../src/greeter.c:834
 msgid "Password:"
 msgstr "Wachtwoord:"
 
-#: ../src/greeter.c:643
+#: ../src/greeter.c:649
 msgid "_Reboot"
 msgstr "_Herstarten"
 
-#: ../src/greeter.c:647
+#: ../src/greeter.c:653
 msgid "_Shutdown"
 msgstr "_Afsluiten"
 
-#: ../src/greeter.c:913
+#: ../src/greeter.c:937
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -88,11 +88,11 @@ msgstr ""
 "\n"
 "<i>aangemeld</i>"
 
-#: ../src/greeter.c:926 ../src/lang.c:125
+#: ../src/greeter.c:950 ../src/lang.c:125
 msgid "More ..."
 msgstr "Meer ..."
 
-#: ../src/config.c:317
+#: ../src/config.c:318
 msgid "Browse for more pictures..."
 msgstr "Blader voor meer foto's..."
 

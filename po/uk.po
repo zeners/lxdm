@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-11 02:33+0800\n"
+"POT-Creation-Date: 2011-06-27 19:20+0200\n"
 "PO-Revision-Date: 2011-05-24 22:01+0200\n"
 "Last-Translator: Y P <yupadmin@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,8 +15,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
@@ -32,7 +32,7 @@ msgid "Language:"
 msgstr "Мова:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:168 ../src/greeter.c:828 ../src/greeter.c:1141
+#: ../src/greeter.c:162 ../src/greeter.c:848 ../src/greeter.c:1155
 msgid "User:"
 msgstr "Користувач:"
 
@@ -44,7 +44,7 @@ msgstr "Автоматичний вхід"
 msgid "Background"
 msgstr "Тло"
 
-#: ../data/config.ui.h:3 ../src/greeter.c:236 ../src/lang.c:103
+#: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
 msgstr "По замовчуванню"
 
@@ -68,19 +68,19 @@ msgstr "Конфігурація lxdm"
 msgid "Unspecified"
 msgstr "Невизначено"
 
-#: ../src/greeter.c:136 ../src/greeter.c:814
+#: ../src/greeter.c:130 ../src/greeter.c:834
 msgid "Password:"
 msgstr "Пароль:"
 
-#: ../src/greeter.c:643
+#: ../src/greeter.c:649
 msgid "_Reboot"
 msgstr "_Перезавантажити"
 
-#: ../src/greeter.c:647
+#: ../src/greeter.c:653
 msgid "_Shutdown"
 msgstr "_Виключити"
 
-#: ../src/greeter.c:913
+#: ../src/greeter.c:937
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -88,10 +88,10 @@ msgstr ""
 "\n"
 "<i>ввійшов</i>"
 
-#: ../src/greeter.c:926 ../src/lang.c:125
+#: ../src/greeter.c:950 ../src/lang.c:125
 msgid "More ..."
 msgstr "Більше ..."
 
-#: ../src/config.c:317
+#: ../src/config.c:318
 msgid "Browse for more pictures..."
 msgstr "Показати більше малюнків..."
