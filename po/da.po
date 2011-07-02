@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-06-27 19:20+0200\n"
-"PO-Revision-Date: 2011-06-27 15:33+0200\n"
+"PO-Revision-Date: 2011-07-02 14:09+0200\n"
 "Last-Translator: Kristian <kristian9k@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -19,6 +19,7 @@ msgstr ""
 "X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
+#, fuzzy
 msgid "Desktop:"
 msgstr "Skrivebord:"
 
@@ -49,7 +50,7 @@ msgstr "Standard"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Vis tastaturlayouts"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
@@ -61,11 +62,11 @@ msgstr "Vis brugerliste"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "lxdm konfiguration"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
-msgstr "Uangivet:"
+msgstr "Ikke angivet:"
 
 #: ../src/greeter.c:130 ../src/greeter.c:834
 msgid "Password:"
@@ -85,7 +86,7 @@ msgid ""
 "<i>logged in</i>"
 msgstr ""
 "\n"
-"<i>Logget på</i>"
+"<i>Logget ind</i>"
 
 #: ../src/greeter.c:950 ../src/lang.c:125
 msgid "More ..."
@@ -93,4 +94,4 @@ msgstr "Mere..."
 
 #: ../src/config.c:318
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Se efter flere billeder..."
