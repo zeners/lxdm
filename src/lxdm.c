@@ -1239,7 +1239,27 @@ gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 		}
 		else
 		{
-			name=g_strdup(session);
+			GKeyFile *f;
+			char *file_path;
+			gboolean loaded;
+
+			f = g_key_file_new();
+			char *desktop_name = g_strconcat(session, ".desktop", NULL);
+			file_path = g_build_filename(XSESSIONS_DIR, desktop_name, NULL);
+			loaded = g_key_file_load_from_file(f, file_path, G_KEY_FILE_NONE, NULL);
+			g_free(file_path);
+			g_free(desktop_name);
+
+			if ( loaded )
+			{
+				name = g_key_file_get_locale_string(f, "Desktop Entry", "Name", NULL, NULL);
+				exec = g_key_file_get_string(f, "Desktop Entry", "Exec", NULL);
+			}
+			else
+			{
+				name=g_strdup(session);
+			}
+			g_key_file_free(f);
 		}
 	}
 	if(name && !exec)
