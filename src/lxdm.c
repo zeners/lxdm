@@ -69,6 +69,7 @@
 #include "lxdm.h"
 #include "lxcom.h"
 #include "xconn.h"
+#include "cgroup.h"
 
 #define LOGFILE "/var/log/lxdm.log"
 
@@ -347,6 +348,7 @@ static void lxsession_stop(LXSession *s)
 	{
 		lxcom_del_child_watch(s->child);
 		killpg(s->child, SIGHUP);
+		cg_kill_self();
 		stop_pid(s->child);
 		s->child = -1;
 	}
