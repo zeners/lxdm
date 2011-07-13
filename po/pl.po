@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-06-27 19:20+0200\n"
-"PO-Revision-Date: 2010-09-02 00:16+0100\n"
-"Last-Translator: Artur Kruszewski <mazdac@gmail.com>\n"
+"PO-Revision-Date: 2011-07-13 02:04+0200\n"
+"Last-Translator: Piotr <psokol@jabster.pl>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Pootle 2.0.0\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
@@ -39,11 +39,11 @@ msgstr "Nazwa użytkownika:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "Automatyczne logowanie"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "Tło"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
@@ -51,19 +51,20 @@ msgstr "Domyślny"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Wyświetlanie listy dostępnych układów klawiatury"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
-msgstr ""
+msgstr "Wyświetlanie listy dostępnych języków"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "Wyświetlanie listy użytkowników"
 
 #: ../data/config.ui.h:7
+#, fuzzy
 msgid "lxdm config"
-msgstr ""
+msgstr "Konfiguracja lxdm"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -79,7 +80,7 @@ msgstr "_Uruchom ponownie"
 
 #: ../src/greeter.c:653
 msgid "_Shutdown"
-msgstr "_Wyłącz komputer"
+msgstr "_Wyłącz"
 
 #: ../src/greeter.c:937
 msgid ""
