@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-27 19:20+0200\n"
-"PO-Revision-Date: 2011-07-14 13:50+0200\n"
+"POT-Creation-Date: 2011-07-21 16:44+0200\n"
+"PO-Revision-Date: 2011-07-22 06:36+0200\n"
 "Last-Translator: Ainur <ainur.shakirov.tt@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: tt_RU\n"
@@ -49,7 +49,7 @@ msgstr "Үрнәк"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Төймә тактасының тамга тәртибен күрсәтү"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
@@ -89,8 +89,8 @@ msgstr ""
 
 #: ../src/greeter.c:950 ../src/lang.c:125
 msgid "More ..."
-msgstr ""
+msgstr "Күбрәк ..."
 
 #: ../src/config.c:318
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Күбрәк рәсем..."

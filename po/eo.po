@@ -5,92 +5,92 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: lxede.lxdm.ast\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-21 16:44+0200\n"
-"PO-Revision-Date: 2010-05-07 23:59+0100\n"
-"Last-Translator: astur <malditoastur@gmail.com>\n"
-"Language-Team: asturian <alministradores@softastur.org>\n"
-"Language: ast\n"
+"PO-Revision-Date: 2011-06-27 21:40+0200\n"
+"Last-Translator: Christopher <shizen37@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: eo\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Pootle 2.0.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Language: asturian\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
-msgstr "Escritoriu:"
+msgstr "Laborejo:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
-#, fuzzy
 msgid "Keyboard:"
-msgstr "Distribución del tecláu:"
+msgstr "Klavaro:"
 
 #: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
-msgstr "Llingua:"
+msgstr "Lingvo:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
 #: ../src/greeter.c:162 ../src/greeter.c:848 ../src/greeter.c:1155
 msgid "User:"
-msgstr "Usuariu:"
+msgstr "Uzanto:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "Aŭtomata enregistro"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "Malantaŭplano"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
-msgstr "Predetermináu"
+msgstr "Norme"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Montri klavara aranĝo"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
-msgstr ""
+msgstr "Montri lingva menuo"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "Montri uzanta listo"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "lxdm-a kunmeto"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
-msgstr "Non especificáu"
+msgstr "Malspecife"
 
 #: ../src/greeter.c:130 ../src/greeter.c:834
 msgid "Password:"
-msgstr "Contraseña:"
+msgstr "Pasvorto:"
 
 #: ../src/greeter.c:649
 msgid "_Reboot"
-msgstr "_Reaniciar"
+msgstr "_Reekfunkciigi"
 
 #: ../src/greeter.c:653
 msgid "_Shutdown"
-msgstr "_Apagar"
+msgstr "_Malfunkciigi"
 
 #: ../src/greeter.c:937
 msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
+"\n"
+"<i>enregistra sin</i>"
 
 #: ../src/greeter.c:950 ../src/lang.c:125
 msgid "More ..."
-msgstr "Más ..."
+msgstr "Pli ..."
 
 #: ../src/config.c:318
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Serĉi pli bildojn"
