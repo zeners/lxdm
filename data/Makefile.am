@@ -46,6 +46,9 @@ theme_DATA= \
 	themes/Industrial/lang.png \
 	themes/Industrial/session.png \
 	themes/Industrial/greeter.ui \
+	themes/Industrial/greeter-gtk3.ui \
+	themes/Industrial/gtk.css \
+	themes/Industrial/nobody.png \
 	$(NULL)
 
 EXTRA_DIST= \
