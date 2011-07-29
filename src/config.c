@@ -125,24 +125,19 @@ static gboolean image_file_valid(const char *filename)
 static void update_face_image(GtkWidget *w)
 {
 	GdkPixbuf *pixbuf;
-	char *path;
-	path=g_build_filename(user->pw_dir,".face",NULL);
-	if(access(path,R_OK))
-	{
-		g_free(path);
-		if(ui_nobody)
-			pixbuf=gdk_pixbuf_new_from_file_at_scale(ui_nobody,48,48,FALSE,NULL);
-		if(!pixbuf)
-			pixbuf=gtk_icon_theme_load_icon(gtk_icon_theme_get_default(),
+	char *path=g_build_filename(user->pw_dir,".face",NULL);
+	pixbuf=gdk_pixbuf_new_from_file_at_scale(path,48,48,FALSE,NULL);
+	g_free(path);
+	if(!pixbuf && ui_nobody)
+		pixbuf=gdk_pixbuf_new_from_file_at_scale(ui_nobody,48,48,FALSE,NULL);
+	if(!pixbuf)
+		pixbuf=gtk_icon_theme_load_icon(gtk_icon_theme_get_default(),
 						"avatar-default", 48,GTK_ICON_LOOKUP_FORCE_SIZE,NULL);
-	}
-	else
+	if(pixbuf)
 	{
-		pixbuf=gdk_pixbuf_new_from_file_at_scale(path,48,48,FALSE,NULL);
-		g_free(path);
+		gtk_image_set_from_pixbuf(GTK_IMAGE(w),pixbuf);
+		g_object_unref(pixbuf);
 	}
-	gtk_image_set_from_pixbuf(GTK_IMAGE(w),pixbuf);
-	g_object_unref(pixbuf);
 }
 
 static void set_face_file(const char *filename)
