@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-21 16:44+0200\n"
-"PO-Revision-Date: 2011-07-13 02:04+0200\n"
-"Last-Translator: Piotr <psokol@jabster.pl>\n"
+"PO-Revision-Date: 2011-07-28 19:34+0200\n"
+"Last-Translator: Artur <mazdac@gmail.com>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,6 @@ msgid "Show user list"
 msgstr "Wyświetlanie listy użytkowników"
 
 #: ../data/config.ui.h:7
-#, fuzzy
 msgid "lxdm config"
 msgstr "Konfiguracja lxdm"
 
@@ -96,7 +95,7 @@ msgstr "Więcej..."
 
 #: ../src/config.c:318
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Przeglądaj w poszukiwaniu obrazów..."
 
 #~ msgid "US English"
 #~ msgstr "Angielski US"
