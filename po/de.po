@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: lxdm r2100\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-29 15:21+0200\n"
-"PO-Revision-Date: 2011-07-29 21:39+0200\n"
+"PO-Revision-Date: 2011-07-29 21:41+0200\n"
 "Last-Translator: Lutz <lthuns@opensuse.org>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -61,9 +61,11 @@ msgstr "Sprachauswahl anzeigen"
 msgid "Show user list"
 msgstr "Benutzerliste anzeigen"
 
+# Dies ist der Fenstertitel
 #: ../data/config.ui.h:7
+#, fuzzy
 msgid "lxdm config"
-msgstr ""
+msgstr "Einstellungen für den Anmeldeschirm"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
