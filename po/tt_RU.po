@@ -1,22 +1,21 @@
-# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+# Ainur Shakirov <ainur.shakirov.tt@gmail.com>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-29 15:21+0200\n"
-"PO-Revision-Date: 2011-07-22 06:36+0200\n"
-"Last-Translator: Ainur <ainur.shakirov.tt@gmail.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2011-08-18 01:52+0400\n"
+"Last-Translator: Ainur Shakirov <ainur.shakirov.tt@gmail.com>\n"
+"Language-Team: Tatar <>\n"
 "Language: tt_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 2.0.5\n"
+"X-Generator: Lokalize 1.2\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
@@ -53,11 +52,11 @@ msgstr "Төймә тактасының тамга тәртибен күрсәт
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
-msgstr "Телләр менюсын күрсәтергә"
+msgstr "Телләр менюсын күрсәтү"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr "Кулланучы исемлеген күрсәтергә"
+msgstr "Кулланучы исемлеген күрсәтү"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
@@ -69,7 +68,7 @@ msgstr "Билгеләнмәгән"
 
 #: ../src/greeter.c:130 ../src/greeter.c:834
 msgid "Password:"
-msgstr "Пароль:"
+msgstr "Серсүз:"
 
 #: ../src/greeter.c:649
 msgid "_Reboot"
@@ -93,4 +92,5 @@ msgstr "Күбрәк ..."
 
 #: ../src/config.c:318
 msgid "Browse for more pictures..."
-msgstr "Күбрәк рәсем..."
+msgstr "Башка рәсемнәр..."
+
