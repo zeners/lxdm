@@ -1,4 +1,4 @@
-# Dutch translation for the lxdm package.
+# Dutch translation of the lxdm package.
 # Copyright (C) the author of the lxdm package.
 # This file is distributed under the same license as the 
 # lxdm package.
@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-29 15:21+0200\n"
-"PO-Revision-Date: 2011-06-13 11:34+0200\n"
+"PO-Revision-Date: 2011-09-08 11:34+0200\n"
 "Last-Translator: Pjotr\n"
 "Language-Team: Dutch\n"
 "Language: nl (Dutch)\n"
@@ -38,7 +38,7 @@ msgstr "Gebruiker:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr "Automatisch Aanmelden"
+msgstr "Automatisch aanmelden"
 
 #: ../data/config.ui.h:2
 msgid "Background"
@@ -100,10 +100,10 @@ msgstr "Blader voor meer foto's..."
 #~ msgstr "Engels (Verenigde Staten)"
 
 #~ msgid "Simpllified Chinese"
-#~ msgstr "Chinees (Vereenvoudigd)"
+#~ msgstr "Chinees (vereenvoudigd)"
 
 #~ msgid "Traditional Chinese"
-#~ msgstr "Chinees (Traditioneel)"
+#~ msgstr "Chinees (traditioneel)"
 
 #~ msgid "German"
 #~ msgstr "Duits"
