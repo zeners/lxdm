@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-29 15:21+0200\n"
-"PO-Revision-Date: 2011-06-27 21:40+0200\n"
-"Last-Translator: Christopher <shizen37@gmail.com>\n"
+"PO-Revision-Date: 2011-09-25 14:19+0200\n"
+"Last-Translator: Kristjan <kristjan.schmidt@googlemail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
-msgstr "Laborejo:"
+msgstr "Labortablo:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
 msgid "Keyboard:"
@@ -37,35 +37,35 @@ msgstr "Uzanto:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr "Aŭtomata enregistro"
+msgstr "Aŭtomata ensaluto"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr "Malantaŭplano"
+msgstr "Fono"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
-msgstr "Norme"
+msgstr "Defaŭlte"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr "Montri klavara aranĝo"
+msgstr "Montri klavaran aranĝon"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
-msgstr "Montri lingva menuo"
+msgstr "Montri lingvomenuon"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr "Montri uzanta listo"
+msgstr "Montri uzantoliston"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr "lxdm-a kunmeto"
+msgstr "lxdm-a agordo"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
-msgstr "Malspecife"
+msgstr "Nespecifite"
 
 #: ../src/greeter.c:130 ../src/greeter.c:834
 msgid "Password:"
@@ -73,11 +73,11 @@ msgstr "Pasvorto:"
 
 #: ../src/greeter.c:649
 msgid "_Reboot"
-msgstr "_Reekfunkciigi"
+msgstr "_Restartigi"
 
 #: ../src/greeter.c:653
 msgid "_Shutdown"
-msgstr "_Malfunkciigi"
+msgstr "_Elŝalti"
 
 #: ../src/greeter.c:937
 msgid ""
@@ -85,7 +85,7 @@ msgid ""
 "<i>logged in</i>"
 msgstr ""
 "\n"
-"<i>enregistra sin</i>"
+"<i>ensalutite</i>"
 
 #: ../src/greeter.c:950 ../src/lang.c:125
 msgid "More ..."
@@ -93,4 +93,4 @@ msgstr "Pli ..."
 
 #: ../src/config.c:318
 msgid "Browse for more pictures..."
-msgstr "Serĉi pli bildojn"
+msgstr "Serĉi pliajn bildojn..."
