@@ -1,32 +1,29 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Hungarian translation of lxdm.
+# Copyright (C) 2010-2011 The LXDE Team
+# This file is distributed under the same license as the lxdm package.
+# Attila Szervac <sas@321.hu>, 2010.
+# Laszlo Dvornik <rezuri@zoho.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-29 15:21+0200\n"
-"PO-Revision-Date: 2010-01-17 18:24+0100\n"
-"Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
-"Language-Team: HUNGARIAN <debian-l10n-hungaria@lists.debian.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2011-09-03 15:44+0200\n"
+"Last-Translator: Laszlo Dvornik <rezuri@zoho.com>\n"
+"Language-Team: Hungarian\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n>1;\n"
-"X-Poedit-Language: Hungarian\n"
-"X-Poedit-Country: HUNGARY\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
 msgstr "Asztal:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
-#, fuzzy
 msgid "Keyboard:"
-msgstr "Billentyűkiosztás"
+msgstr "Billentyűzet:"
 
 #: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
@@ -35,39 +32,39 @@ msgstr "Nyelv:"
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
 #: ../src/greeter.c:162 ../src/greeter.c:848 ../src/greeter.c:1155
 msgid "User:"
-msgstr "Felhasználó"
+msgstr "Felhasználó:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "Automatikus bejelentkezés"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "Háttér"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
-msgstr "Alap"
+msgstr "Alapértelmezett"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Billentyűzetkiosztás megjelenítése"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
-msgstr ""
+msgstr "Nyelvek menü megjelenítése"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "Felhasználólista megjelenítése"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "lxdm beállítása"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
-msgstr "Meghatározatlan"
+msgstr "Nincs megadva"
 
 #: ../src/greeter.c:130 ../src/greeter.c:834
 msgid "Password:"
@@ -95,4 +92,4 @@ msgstr "Egyéb..."
 
 #: ../src/config.c:318
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Egyéb képek tallózása..."
