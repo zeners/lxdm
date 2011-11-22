@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-29 15:21+0200\n"
-"PO-Revision-Date: 2011-05-14 02:15+0200\n"
+"PO-Revision-Date: 2011-11-22 14:48+0200\n"
 "Last-Translator: Sérgio <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt\n"
@@ -47,7 +47,7 @@ msgstr "Fundo"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
-msgstr "Omissão"
+msgstr "Padrão"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
