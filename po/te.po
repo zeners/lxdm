@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-29 15:21+0200\n"
+"POT-Creation-Date: 2011-11-24 15:35+0100\n"
 "PO-Revision-Date: 2011-04-16 07:50+0200\n"
 "Last-Translator: Praveen <mail2ipn@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,7 +52,8 @@ msgid "Show keyboard layouts"
 msgstr "కీబోర్డు నమూనాలను చూపించు"
 
 #: ../data/config.ui.h:5
-msgid "Show languanges menu"
+#, fuzzy
+msgid "Show languages menu"
 msgstr "భాషల మెనూను చూపించు"
 
 #: ../data/config.ui.h:6
@@ -91,6 +92,6 @@ msgstr ""
 msgid "More ..."
 msgstr "మరిన్ని..."
 
-#: ../src/config.c:318
+#: ../src/config.c:313
 msgid "Browse for more pictures..."
 msgstr "మరిన్ని చిత్రాల కోసం అన్వేషించు..."

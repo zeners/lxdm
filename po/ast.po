@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxede.lxdm.ast\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-29 15:21+0200\n"
+"POT-Creation-Date: 2011-11-24 15:35+0100\n"
 "PO-Revision-Date: 2010-05-07 23:59+0100\n"
 "Last-Translator: astur <malditoastur@gmail.com>\n"
 "Language-Team: asturian <alministradores@softastur.org>\n"
@@ -54,7 +54,7 @@ msgid "Show keyboard layouts"
 msgstr ""
 
 #: ../data/config.ui.h:5
-msgid "Show languanges menu"
+msgid "Show languages menu"
 msgstr ""
 
 #: ../data/config.ui.h:6
@@ -91,6 +91,6 @@ msgstr ""
 msgid "More ..."
 msgstr "Más ..."
 
-#: ../src/config.c:318
+#: ../src/config.c:313
 msgid "Browse for more pictures..."
 msgstr ""

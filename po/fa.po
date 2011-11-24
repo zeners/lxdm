@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-29 15:21+0200\n"
+"POT-Creation-Date: 2011-11-24 15:35+0100\n"
 "PO-Revision-Date: 2011-04-24 16:44+0200\n"
 "Last-Translator: Hamidreza <n3gb0y@gmail.com>\n"
 "Language-Team: Persian <trans-fa@lists.fedoraproject.org>\n"
@@ -56,7 +56,7 @@ msgstr "نمایش روکش‌های صفحه کلید"
 
 #: ../data/config.ui.h:5
 #, fuzzy
-msgid "Show languanges menu"
+msgid "Show languages menu"
 msgstr "نمایش منوی زبان ها"
 
 #: ../data/config.ui.h:6
@@ -96,6 +96,6 @@ msgstr ""
 msgid "More ..."
 msgstr "بیشتر ..."
 
-#: ../src/config.c:318
+#: ../src/config.c:313
 msgid "Browse for more pictures..."
 msgstr "مرور برای تصاویر بیشتر..."
