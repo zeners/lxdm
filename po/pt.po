@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-24 15:35+0100\n"
-"PO-Revision-Date: 2011-11-22 14:48+0200\n"
+"PO-Revision-Date: 2011-11-24 20:37+0200\n"
 "Last-Translator: Sérgio <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt\n"
@@ -54,9 +54,8 @@ msgid "Show keyboard layouts"
 msgstr "Mostrar esquemas de teclado"
 
 #: ../data/config.ui.h:5
-#, fuzzy
 msgid "Show languages menu"
-msgstr "Mostrar menu de idioma"
+msgstr "Mostrar menu de idiomas"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
