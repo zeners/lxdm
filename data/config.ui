@@ -176,7 +176,7 @@
         </child>
         <child>
           <object class="GtkCheckButton" id="lxdm-show-lang">
-            <property name="label" translatable="yes">Show languanges menu</property>
+            <property name="label" translatable="yes">Show languages menu</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
