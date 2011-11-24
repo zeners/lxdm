@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-24 15:35+0100\n"
-"PO-Revision-Date: 2011-04-12 22:48+0200\n"
+"PO-Revision-Date: 2011-11-24 20:58+0200\n"
 "Last-Translator: Hugo <sysadmin@cips.cu>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: es\n"
@@ -52,7 +52,6 @@ msgid "Show keyboard layouts"
 msgstr "Mostrar distribuciones de teclados"
 
 #: ../data/config.ui.h:5
-#, fuzzy
 msgid "Show languages menu"
 msgstr "Mostrar menú de idiomas"
 
