@@ -1,38 +1,42 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Slovenian translation of lxdm.
+# Copyright (C) 2011 Free Software Foundation, Inc.
+# This file is distributed under the same license as the lxdm package.
+# Klemen Košir <klemen.kosir@gmx.com>, 2011.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-24 15:35+0100\n"
-"PO-Revision-Date: 2011-11-24 16:37+0200\n"
-"Last-Translator: Klemen <klemen.kosir@gmx.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2011-11-24 21:01+0100\n"
+"Last-Translator: Klemen Košir <klemen.kosir@gmx.com>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
-"n%100==4 ? 3 : 0);;\n"
-"X-Generator: Pootle 2.0.5\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0)\n"
 
-#: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
+#: ../data/lxdm.glade.h:1
+#: ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
 msgstr "Namizje:"
 
-#: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
+#: ../data/lxdm.glade.h:2
+#: ../data/themes/Industrial/greeter.ui.h:2
 msgid "Keyboard:"
 msgstr "Tipkovnica:"
 
-#: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
+#: ../data/lxdm.glade.h:3
+#: ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "Jezik:"
 
-#: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:162 ../src/greeter.c:848 ../src/greeter.c:1155
+#: ../data/lxdm.glade.h:4
+#: ../data/themes/Industrial/greeter.ui.h:4
+#: ../src/greeter.c:162
+#: ../src/greeter.c:848
+#: ../src/greeter.c:1155
 msgid "User:"
 msgstr "Uporabnik:"
 
@@ -44,17 +48,19 @@ msgstr "Samodejna prijava"
 msgid "Background"
 msgstr "Ozadje"
 
-#: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
+#: ../data/config.ui.h:3
+#: ../src/greeter.c:230
+#: ../src/lang.c:103
 msgid "Default"
 msgstr "Privzeto"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr "Pokaži razporeditve tipkovnice"
+msgstr "Pokaži razporeditve tipk"
 
 #: ../data/config.ui.h:5
 msgid "Show languages menu"
-msgstr "Pokaži meni jezikov"
+msgstr "Pokaži seznam jezikov"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
@@ -62,13 +68,14 @@ msgstr "Pokaži seznam uporabnikov"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr "Nastavitev LXDM"
+msgstr "Nastavitve LXDM"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
 msgstr "Nedoločeno"
 
-#: ../src/greeter.c:130 ../src/greeter.c:834
+#: ../src/greeter.c:130
+#: ../src/greeter.c:834
 msgid "Password:"
 msgstr "Geslo:"
 
@@ -86,12 +93,13 @@ msgid ""
 "<i>logged in</i>"
 msgstr ""
 "\n"
-"<i>prijavljen</i>"
+"<i>Prijavljen</i>"
 
-#: ../src/greeter.c:950 ../src/lang.c:125
+#: ../src/greeter.c:950
+#: ../src/lang.c:125
 msgid "More ..."
 msgstr "Več ..."
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
-msgstr "Brskaj za slike ..."
+msgstr "Brskaj ..."
