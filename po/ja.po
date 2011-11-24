@@ -37,11 +37,11 @@ msgstr "ユーザ:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "自動ログイン"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "背景"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
@@ -49,19 +49,19 @@ msgstr "デフォルト"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "キーボードのレイアウトを表示"
 
 #: ../data/config.ui.h:5
 msgid "Show languanges menu"
-msgstr ""
+msgstr "言語のメニューを表示"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "ユーザのリストを表示"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "lxdm 設定"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -92,5 +92,6 @@ msgid "More ..."
 msgstr "その他 ..."
 
 #: ../src/config.c:318
+#: ../src/config.c:313
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "他の画像を一覧する..."
