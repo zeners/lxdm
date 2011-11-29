@@ -52,9 +52,8 @@ msgid "Show keyboard layouts"
 msgstr "キーボードのレイアウトを表示"
 
 #: ../data/config.ui.h:5
-#, fuzzy
 msgid "Show languages menu"
-msgstr "言語のメニューを表示"
+msgstr "言語メニューを表示"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
