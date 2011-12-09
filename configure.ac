@@ -16,8 +16,17 @@ AM_PROG_CC_C_O
 # Checks for libraries.
 AC_CHECK_LIB([crypt], [crypt])
 
-AC_ARG_WITH(pam,AC_HELP_STRING([--without-pam],[build without pam]),
-[],[AC_CHECK_LIB([pam], [pam_open_session])])
+# Check for PAM support
+AC_ARG_WITH(pam, AC_HELP_STRING([--with-pam],[Use PAM for authentication]),
+	[USE_PAM=$withval], [USE_PAM=$use_pam_default])
+if test "x$USE_PAM" != "xno" ; then
+	AC_SEARCH_LIBS(pam_open_session,[pam])
+	AC_CHECK_FUNC(pam_open_session, 
+		[AC_DEFINE(USE_PAM,1,[Use PAM for authentication])],
+		[if test "x$USE_PAM" != "xtry" ; then
+			AC_MSG_ERROR(["PAM support requested, but pam_open_session not found."])
+		 fi])
+fi
 
 AC_CHECK_LIB([ck-connector],[ck_connector_open_session])
 
