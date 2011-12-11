@@ -9,13 +9,15 @@ msgstr ""
 "Project-Id-Version: lxdm 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-24 15:35+0100\n"
-"PO-Revision-Date: 2009-10-21 22:30+0800\n"
-"Last-Translator: dgod <dgod.osa@gmail.com>\n"
+"PO-Revision-Date: 2011-12-11 10:31+0200\n"
+"Last-Translator: Wylmer <wantinghard@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
-"Language: \n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
@@ -51,7 +53,6 @@ msgid "Show keyboard layouts"
 msgstr "显示键盘布局"
 
 #: ../data/config.ui.h:5
-#, fuzzy
 msgid "Show languages menu"
 msgstr "显示语言菜单"
 
