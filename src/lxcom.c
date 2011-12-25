@@ -89,7 +89,7 @@ static gboolean lxcom_prepare (GSource *source,gint *timeout)
 
 static gboolean lxcom_check(GSource *source)
 {
-	return TRUE;
+	return (((LXComSource*)source)->poll.revents&G_IO_IN)?TRUE:FALSE;
 }
 
 static gboolean lxcom_dispatch (GSource *source,GSourceFunc callback,gpointer user_data)
