@@ -25,7 +25,11 @@
 #include <config.h>
 #endif
 #ifndef HAVE_LIBPAM
+#ifdef USE_PAM
+#define HAVE_LIBPAM 1
+#else
 #define HAVE_LIBPAM 0
+#endif
 #endif
 
 #include <stdio.h>
