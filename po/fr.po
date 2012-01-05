@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-24 15:35+0100\n"
-"PO-Revision-Date: 2011-04-16 17:05+0200\n"
+"PO-Revision-Date: 2012-01-05 15:38+0200\n"
 "Last-Translator: Cilyan <gaknar@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr\n"
@@ -52,7 +52,6 @@ msgid "Show keyboard layouts"
 msgstr "Afficher les dispositions de clavier"
 
 #: ../data/config.ui.h:5
-#, fuzzy
 msgid "Show languages menu"
 msgstr "Afficher le menu des langues"
 
