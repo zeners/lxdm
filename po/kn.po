@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-24 15:35+0100\n"
-"PO-Revision-Date: 2012-01-22 14:59+0200\n"
+"PO-Revision-Date: 2012-02-12 14:35+0200\n"
 "Last-Translator: Prashanth <pacchiee@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: kn\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 msgid "Desktop:"
-msgstr "ಮುಂತೆರೆ"
+msgstr "ಡೆಸ್ಕ್-ಟಾಪ್"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
 msgid "Keyboard:"
@@ -37,31 +37,31 @@ msgstr "ಬಳಕೆದಾರ"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "ಆಟೋಮ್ಯಾಟಿಕ್ ಲಾಗ್-ಇನ್"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr "ಹಿನ್ನೆಲೆ"
+msgstr "ಬ್ಯಾಕ್-ಗ್ರೌಂಡ್"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
-msgstr ""
+msgstr "ಡೀಫಾಲ್ಟ್"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "ಕೀಲಿಮಣೆ ಲೇಔಟ್ ಪ್ರದರ್ಶಿಸು"
 
 #: ../data/config.ui.h:5
 msgid "Show languages menu"
-msgstr ""
+msgstr "ಭಾಷೆಯ ಮೆನು ಪ್ರದರ್ಶಿಸು"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "ಬಳಕೆದಾರರ ಪಟ್ಟಿ ಪ್ರದರ್ಶಿಸು"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "lxdm ಕಾನ್ಫಿಗ್"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
