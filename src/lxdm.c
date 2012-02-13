@@ -672,15 +672,20 @@ static inline void xauth_write_string(int fd,const char *s)
 	write(fd,s,len);
 }
 
-static void xauth_write_file(const char *file,char data[16])
+static void xauth_write_file(const char *file,int dpy,char data[16])
 {
 	int fd;
+	char addr[128];
+	char buf[16];
+	
+	sprintf(buf,"%d",dpy);
+	gethostname(addr,sizeof(addr));
 	
 	fd=open(file,O_CREAT|O_TRUNC|O_WRONLY,0600);
 	if(!fd==-1) return;
-	xauth_write_uint16(fd,252);		//FamilyLocalHost
-	xauth_write_string(fd,"");
-	xauth_write_string(fd,"");
+	xauth_write_uint16(fd,256);		//FamilyLocalHost
+	xauth_write_string(fd,addr);
+	xauth_write_string(fd,buf);
 	xauth_write_string(fd,"MIT-MAGIC-COOKIE-1");
 	xauth_write_uint16(fd,16);
 	write(fd,data,16);
@@ -704,7 +709,7 @@ static void create_server_auth(LXSession *s)
 
 	setenv("XAUTHORITY",authfile,1);
 	remove(authfile);
-	xauth_write_file(authfile,s->mcookie);
+	xauth_write_file(authfile,s->display,s->mcookie);
 	g_free(authfile);
 }
 
@@ -733,7 +738,7 @@ static void create_client_auth(char *home,char **env)
 		authfile = g_strdup_printf("%s/.Xauthority", home);
 	}
 	remove(authfile);
-	xauth_write_file(authfile,s->mcookie);
+	xauth_write_file(authfile,s->display,s->mcookie);
 	replace_env(env,"XAUTHORITY=",authfile);
 	g_free(authfile);
 }
