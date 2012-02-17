@@ -153,7 +153,7 @@ static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpo
 		char *pass = greeter_param(str, "pass");
 		char *session = greeter_param(str, "session");
 		char *lang = greeter_param(str, "lang");
-		if( user && pass )
+		if( user/* && pass */)
 		{
 			struct passwd *pw;
 			int ret = lxdm_auth_user(user, pass, &pw);
@@ -163,7 +163,12 @@ static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpo
 				lxdm_do_login(pw, session, lang,NULL);
 			}
 			else
-				xwrite(greeter_pipe[0], "reset\n", 6);
+			{
+				if(pass!=NULL)
+					xwrite(greeter_pipe[0], "reset\n", 6);
+				else
+					xwrite(greeter_pipe[0], "password\n", 9);
+			}
 		}
 		g_free(user);
 		g_free(pass);

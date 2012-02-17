@@ -120,12 +120,39 @@ static char *get_session_exec(void)
 	return res;
 }
 
+static void switch_to_input_passwd(void)
+{
+	if(user_list!=NULL)
+		gtk_widget_hide(user_list);
+	gtk_label_set_text( GTK_LABEL(prompt), _("Password:") );
+	gtk_entry_set_text(GTK_ENTRY(login_entry), "");
+	gtk_entry_set_visibility(GTK_ENTRY(login_entry), FALSE);
+	gtk_widget_show(login_entry);
+	gtk_widget_grab_focus(login_entry);
+}
+
+static void try_login_user(const char *user)
+{
+	char *session_exec=get_session_exec();
+	char *session_lang=get_session_lang();
+	
+	printf("login user=%s session=%s lang=%s\n",
+			user, session_exec, session_lang);
+			
+	g_free(session_lang);
+	g_free(session_exec);
+			
+}
+	
+
 static void on_entry_activate(GtkEntry* entry)
 {
 	char* tmp;
 	if( !user )
 	{
 		user = g_strdup( gtk_entry_get_text( GTK_ENTRY(entry) ) );
+		
+#if 0
 		gtk_entry_set_text(GTK_ENTRY(entry), "");
 		gtk_label_set_text( GTK_LABEL(prompt), _("Password:") );
 		if(strchr(user, ' '))
@@ -135,6 +162,16 @@ static void on_entry_activate(GtkEntry* entry)
 			return;
 		}
 		gtk_entry_set_visibility(entry, FALSE);
+#endif
+		if(g_key_file_get_integer(config,"base","skip_password",NULL)!=0)
+		{
+			gtk_label_set_text( GTK_LABEL(prompt), "");
+			try_login_user(user);
+		}
+		else
+		{
+			switch_to_input_passwd();
+		}
 	}
 	else
 	{
@@ -825,6 +862,13 @@ static void on_user_select(GtkIconView *iconview)
 			gtk_widget_hide( GTK_WIDGET(login_entry) );
 			return;
 		}
+		if(g_key_file_get_integer(config,"base","skip_password",NULL)!=0)
+		{
+			gtk_label_set_text( GTK_LABEL(prompt), "");
+			user=name;
+			try_login_user(user);
+			return;
+		}
 		gtk_entry_set_text(GTK_ENTRY(login_entry),name);
 		g_free(name);
 		on_entry_activate(GTK_ENTRY(login_entry));
@@ -1165,6 +1209,10 @@ static gboolean on_lxdm_command(GIOChannel *source, GIOCondition condition, gpoi
 			gtk_widget_show(login_entry);
 			gtk_widget_grab_focus(login_entry);
 		}
+	}
+	else if( !strncmp(str, "password", 8))
+	{
+		switch_to_input_passwd();
 	}
 	g_free(str);
 	return TRUE;

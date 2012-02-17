@@ -760,7 +760,8 @@ static int do_conv(int num, const struct pam_message **msg,struct pam_response *
 			resp[i]->resp=strdup(user_pass[0]?user_pass[0]:"");
 			break;
 		case PAM_PROMPT_ECHO_OFF:
-			resp[i]->resp=strdup(user_pass[1]?user_pass[1]:"");
+			//resp[i]->resp=strdup(user_pass[1]?user_pass[1]:"");
+			resp[i]->resp=user_pass[1]?strdup(user_pass[1]):NULL;
 			break;
 		case PAM_ERROR_MSG:
 		case PAM_TEXT_INFO:
@@ -801,7 +802,7 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         g_debug("user %s not found\n",user);
         return AUTH_BAD_USER;
     }
-    if( !pass )
+    if( !pass && !g_key_file_get_integer(config,"base","skip_password",NULL))
     {
         *ppw = pw;
         g_debug("user %s auth ok\n",user);
@@ -820,7 +821,7 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
     real = sp->sp_pwdp;
     if( !real || !real[0] )
     {
-        if( !pass[0] )
+        if( !pass || !pass[0] )
         {
             *ppw = pw;
             g_debug("user %s auth with no password ok\n",user);
@@ -1463,7 +1464,17 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 							  "x11-display", &n,
 							  "is-local",&is_local,
 							  NULL))
-		setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(s->ckc), 1);
+		{
+			setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(s->ckc), 1);
+		}
+		else
+		{
+			g_message("create ConsoleKit session fail\n");
+		}
+	}
+	else
+	{
+		g_message("create ConsoleKit connector fail\n");
 	}
 #endif
 	char** env, *path;
