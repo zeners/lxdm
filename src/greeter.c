@@ -25,6 +25,10 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+#include <gdk/gdkkeysyms.h>
+#ifdef ENABLE_GTK3
+#include <gdk/gdkkeysyms-compat.h>
+#endif
 #include <glib/gi18n.h>
 #include <X11/XKBlib.h>
 
@@ -120,6 +124,33 @@ static char *get_session_exec(void)
 	return res;
 }
 
+static void switch_to_input_user(void)
+{
+	if(user)
+	{
+		g_free(user);
+		user=NULL;
+	}
+	if(pass)
+	{
+		g_free(pass);
+		pass=NULL;
+	}
+	gtk_label_set_text( GTK_LABEL(prompt), _("User:"));
+	gtk_widget_show(prompt);
+	if(user_list)
+	{
+		gtk_widget_hide(login_entry);
+		gtk_widget_show(user_list);
+		gtk_widget_grab_focus(user_list);
+	}
+	else
+	{
+		gtk_widget_show(login_entry);
+		gtk_widget_grab_focus(login_entry);
+	}
+}
+
 static void switch_to_input_passwd(void)
 {
 	if(user_list!=NULL)
@@ -142,8 +173,7 @@ static void try_login_user(const char *user)
 	g_free(session_lang);
 	g_free(session_exec);
 			
-}
-	
+}	
 
 static void on_entry_activate(GtkEntry* entry)
 {
@@ -1025,6 +1055,13 @@ static void on_screen_size_changed(GdkScreen *screen,GtkWidget *win)
 	ui_set_bg(window,config);
 }
 
+static gint login_entry_on_key_press (GtkWidget *widget,GdkEventKey *event)
+{
+	if(event->keyval == GDK_Escape)
+		switch_to_input_user();
+	return FALSE;
+}		     
+
 static void create_win()
 {
     GSList* objs, *l;
@@ -1077,6 +1114,10 @@ static void create_win()
 
     prompt = (GtkWidget*)gtk_builder_get_object(builder, "prompt");
     login_entry = (GtkWidget*)gtk_builder_get_object(builder, "login_entry");
+    if(login_entry!=NULL)
+    {
+		g_signal_connect_after(login_entry,"key-press-event",G_CALLBACK(login_entry_on_key_press),NULL);
+	}
 
     g_signal_connect(login_entry, "activate", G_CALLBACK(on_entry_activate), NULL);
 
@@ -1186,29 +1227,7 @@ static gboolean on_lxdm_command(GIOChannel *source, GIOCondition condition, gpoi
 	gtk_main_quit();
 	else if( !strncmp(str, "reset", 5) )
 	{
-		if(user)
-		{
-			g_free(user);
-			user=NULL;
-		}
-		if(pass)
-		{
-			g_free(pass);
-			pass=NULL;
-		}
-		gtk_label_set_text( GTK_LABEL(prompt), _("User:"));
-		gtk_widget_show(prompt);
-		if(user_list)
-		{
-			gtk_widget_hide(login_entry);
-			gtk_widget_show(user_list);
-			gtk_widget_grab_focus(user_list);
-		}
-		else
-		{
-			gtk_widget_show(login_entry);
-			gtk_widget_grab_focus(login_entry);
-		}
+		switch_to_input_user();
 	}
 	else if( !strncmp(str, "password", 8))
 	{

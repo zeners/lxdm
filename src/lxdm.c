@@ -654,6 +654,19 @@ static void replace_env(char** env, const char* name, const char* new_val)
     *(penv + 1) = NULL;
 }
 
+static const char *get_env(char **env, const char *name)
+{
+	register char** penv;
+    for(penv = env; *penv; ++penv)
+    {
+        if(g_str_has_prefix(*penv, name))
+        {
+            return *penv+strlen(name);
+        }
+    }
+    return NULL;
+}
+
 #ifndef DISABLE_XAUTH
 
 static inline void xauth_write_uint16(int fd,uint16_t data)
@@ -707,7 +720,7 @@ static void create_server_auth(LXSession *s)
 
 	authfile = g_strdup_printf("/var/run/lxdm/lxdm-:%d.auth",s->display);
 
-	setenv("XAUTHORITY",authfile,1);
+	//setenv("XAUTHORITY",authfile,1);
 	remove(authfile);
 	xauth_write_file(authfile,s->display,s->mcookie);
 	g_free(authfile);
@@ -718,24 +731,32 @@ static void create_client_auth(char *home,char **env)
 	LXSession *s;
 	char *authfile;
 	uid_t user;
-	char *path;
 	
-	if((user=getuid())== 0 ) /* root don't need it */
+	if((user=getuid())==0) /* root don't need it */
 		return;
         
 	s=lxsession_find_user(user);
 	if(!s)
 		return;
-
-	path=g_key_file_get_string(config,"base","xauth_path",NULL);
-	if(path)
+	
+	/* pam_mktemp may provide XAUTHORITY to DM, just use it */
+	if((authfile=(char*)get_env(env,"XAUTHORITY="))!=NULL)
 	{
-		authfile = g_strdup_printf("%s/.Xauth%d", path,getuid());
-		g_free(path);
+		authfile=g_strdup(authfile);
 	}
 	else
 	{
-		authfile = g_strdup_printf("%s/.Xauthority", home);
+		char *path;
+		path=g_key_file_get_string(config,"base","xauth_path",NULL);
+		if(path)
+		{
+			authfile = g_strdup_printf("%s/.Xauth%d", path,user);
+			g_free(path);
+		}
+		else
+		{
+			authfile = g_strdup_printf("%s/.Xauthority", home);
+		}
 	}
 	remove(authfile);
 	xauth_write_file(authfile,s->display,s->mcookie);

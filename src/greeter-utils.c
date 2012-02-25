@@ -139,12 +139,20 @@ void ui_add_cursor(void)
     XDefineCursor(gdk_x11_get_default_xdisplay(),
     	GDK_WINDOW_XID(gdk_get_default_root_window()),
     	GDK_CURSOR_XCURSOR(cur));
+#if GTK_CHECK_VERSION(3,0,0)
+	g_object_unref(cur);
+#else
     gdk_cursor_unref(cur);
+#endif
 }
 
 void ui_set_cursor(GdkWindow *win,int which)
 {
 	GdkCursor *cursor=gdk_cursor_new(which);
 	gdk_window_set_cursor (win,cursor);
+#if GTK_CHECK_VERSION(3,0,0)
+	g_object_unref(cursor);
+#else
 	gdk_cursor_unref(cursor);
+#endif
 }
