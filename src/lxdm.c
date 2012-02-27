@@ -1232,6 +1232,11 @@ static void on_session_stop(void *data,int pid, int status)
 	{
 		lxsession_free(s);
 	}
+	else if(g_key_file_get_integer(config,"server","reset",NULL)==1)
+	{
+		lxsession_free(s);
+		lxsession_greeter();
+	}
 	gchar *argv[] = { "/etc/lxdm/PostLogout", NULL };
 	g_spawn_async(NULL, argv, s->env, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
 }
