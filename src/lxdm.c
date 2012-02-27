@@ -529,11 +529,9 @@ void lxdm_get_tty(void)
 	if(!gotvtarg)
 	{
 		/* support plymouth */
-		nr_tty = g_file_test("/var/spool/gdm/force-display-on-active-vt", G_FILE_TEST_EXISTS);
-		if( nr_tty || g_key_file_get_integer(config, "server", "active_vt", 0) )
+		if(g_key_file_get_integer(config, "server", "active_vt", 0) )
 			/* use the active vt */
 			def_tty = old_tty;
-		if( nr_tty ) unlink("/var/spool/gdm/force-display-on-active-vt");
 		if(plymouth)
 		{
 			nr_tty=1;
