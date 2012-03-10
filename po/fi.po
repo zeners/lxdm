@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-24 15:35+0100\n"
-"PO-Revision-Date: 2011-03-10 19:31+0200\n"
-"Last-Translator: Jesse <jesse.jaara@gmail.com>\n"
+"PO-Revision-Date: 2012-03-10 20:26+0200\n"
+"Last-Translator: Juhani <juhaninumminen0@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
@@ -37,11 +37,11 @@ msgstr "Käyttäjä:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "Automaattinen kirjautuminen"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "Tausta"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
@@ -49,19 +49,19 @@ msgstr "Oletus"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Näytä näppäimistöasettelut"
 
 #: ../data/config.ui.h:5
 msgid "Show languages menu"
-msgstr ""
+msgstr "Näytä kielivalikko"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "Näytä käyttäjälista"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "lxdm asetukset"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -85,12 +85,12 @@ msgid ""
 "<i>logged in</i>"
 msgstr ""
 "\n"
-"Sisäänkirjautuneena"
+"<i>sisäänkirjautuneena</i>"
 
 #: ../src/greeter.c:950 ../src/lang.c:125
 msgid "More ..."
-msgstr "Lisää..."
+msgstr "Lisää ..."
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Selaa lisää kuvia..."
