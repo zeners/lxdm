@@ -3,7 +3,7 @@
 }
 
 #bottom_pane {
-	background-image: url("shade.png");
+	background-color: rgba(0,0,0,0.24);
 }
 
 #time {
