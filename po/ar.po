@@ -21,7 +21,6 @@ msgid "Desktop:"
 msgstr "سطح المكتب:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
-#, fuzzy
 msgid "Keyboard:"
 msgstr "تخطيط لوحة المفاتيح:"
 
@@ -36,11 +35,11 @@ msgstr "المستخدم:"
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
-msgstr ""
+msgstr "ولوج تلقائي"
 
 #: ../data/config.ui.h:2
 msgid "Background"
-msgstr ""
+msgstr "الخلفية"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
 msgid "Default"
@@ -48,19 +47,19 @@ msgstr "افتراضي"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "إظهار تخطيط لوحة مفاتيح"
 
 #: ../data/config.ui.h:5
 msgid "Show languages menu"
-msgstr ""
+msgstr "عرض قائمة اللغات"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
-msgstr ""
+msgstr "عرض قائمة المستخدمين"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "ضبط lxdm"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -83,6 +82,8 @@ msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
+"\n"
+"<i>سجل الدخول في</i>"
 
 #: ../src/greeter.c:950 ../src/lang.c:125
 msgid "More ..."
@@ -90,4 +91,4 @@ msgstr "المزيد..."
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "تصفح المزيد من الصور..."
