@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-24 15:35+0100\n"
+"POT-Creation-Date: 2012-04-08 01:17+0200\n"
 "PO-Revision-Date: 2011-12-27 10:08+0200\n"
 "Last-Translator: mjjzf <mjjzf@syntaktisk.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -31,7 +31,7 @@ msgid "Language:"
 msgstr "Sprog:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:162 ../src/greeter.c:848 ../src/greeter.c:1155
+#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
 msgid "User:"
 msgstr "Bruger:"
 
@@ -43,7 +43,7 @@ msgstr "Automatisk login"
 msgid "Background"
 msgstr "Baggrund"
 
-#: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
+#: ../data/config.ui.h:3 ../src/greeter.c:297 ../src/lang.c:103
 msgid "Default"
 msgstr "Standard"
 
@@ -67,19 +67,19 @@ msgstr "lxdm konfiguration"
 msgid "Unspecified"
 msgstr "Ikke angivet:"
 
-#: ../src/greeter.c:130 ../src/greeter.c:834
+#: ../src/greeter.c:158 ../src/greeter.c:187 ../src/greeter.c:908
 msgid "Password:"
 msgstr "Adgangskode:"
 
-#: ../src/greeter.c:649
+#: ../src/greeter.c:716
 msgid "_Reboot"
 msgstr "_Genstart"
 
-#: ../src/greeter.c:653
+#: ../src/greeter.c:720
 msgid "_Shutdown"
 msgstr "_Luk computeren"
 
-#: ../src/greeter.c:937
+#: ../src/greeter.c:1011
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -87,7 +87,7 @@ msgstr ""
 "\n"
 "<i>Logget ind</i>"
 
-#: ../src/greeter.c:950 ../src/lang.c:125
+#: ../src/greeter.c:1024 ../src/lang.c:125
 msgid "More ..."
 msgstr "Mere..."
 

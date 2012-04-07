@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-24 15:35+0100\n"
+"POT-Creation-Date: 2012-04-08 01:17+0200\n"
 "PO-Revision-Date: 2011-12-31 23:27+0200\n"
 "Last-Translator: Радослав <Rec.ku@hotmail.com>\n"
 "Language-Team: MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgid "Language:"
 msgstr "Език:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:162 ../src/greeter.c:848 ../src/greeter.c:1155
+#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
 msgid "User:"
 msgstr "Потребител:"
 
@@ -45,7 +45,7 @@ msgstr "Автоматично вписване"
 msgid "Background"
 msgstr "Фон"
 
-#: ../data/config.ui.h:3 ../src/greeter.c:230 ../src/lang.c:103
+#: ../data/config.ui.h:3 ../src/greeter.c:297 ../src/lang.c:103
 msgid "Default"
 msgstr "По подразбиране"
 
@@ -69,19 +69,19 @@ msgstr "Настройка"
 msgid "Unspecified"
 msgstr "Не е зададен"
 
-#: ../src/greeter.c:130 ../src/greeter.c:834
+#: ../src/greeter.c:158 ../src/greeter.c:187 ../src/greeter.c:908
 msgid "Password:"
 msgstr "Парола:"
 
-#: ../src/greeter.c:649
+#: ../src/greeter.c:716
 msgid "_Reboot"
 msgstr "_Рестартирай"
 
-#: ../src/greeter.c:653
+#: ../src/greeter.c:720
 msgid "_Shutdown"
 msgstr "_Изключи"
 
-#: ../src/greeter.c:937
+#: ../src/greeter.c:1011
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -89,7 +89,7 @@ msgstr ""
 "\n"
 "<i>вписан</i>"
 
-#: ../src/greeter.c:950 ../src/lang.c:125
+#: ../src/greeter.c:1024 ../src/lang.c:125
 msgid "More ..."
 msgstr "Още..."
 
