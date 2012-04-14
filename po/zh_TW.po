@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: lxdm 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-04-08 01:17+0200\n"
-"PO-Revision-Date: 2012-04-14 07:14+0200\n"
+"PO-Revision-Date: 2012-04-14 07:58+0200\n"
 "Last-Translator: Walter <wwycheuk@gmail.com>\n"
 "Language-Team: Chinese (traditional)\n"
 "Language: zh_TW\n"
@@ -34,7 +34,7 @@ msgstr "語言："
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
 #: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
 msgid "User:"
-msgstr "使用者:"
+msgstr "使用者："
 
 #: ../data/config.ui.h:1
 msgid "Automatic Login"
@@ -50,7 +50,7 @@ msgstr "預設"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "顯示鍵盤配置"
 
 #: ../data/config.ui.h:5
 msgid "Show languages menu"
@@ -62,7 +62,7 @@ msgstr "顯示使用者清單"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr ""
+msgstr "lxdm 設定"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -74,11 +74,11 @@ msgstr "密碼："
 
 #: ../src/greeter.c:716
 msgid "_Reboot"
-msgstr "重新開機 (_R)"
+msgstr "重新開機(_R)"
 
 #: ../src/greeter.c:720
 msgid "_Shutdown"
-msgstr "關機 (_S)"
+msgstr "關機(_S)"
 
 #: ../src/greeter.c:1011
 msgid ""
