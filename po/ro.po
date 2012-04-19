@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LXDE\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-04-08 01:17+0200\n"
-"PO-Revision-Date: 2012-03-07 15:43+0200\n"
+"PO-Revision-Date: 2012-04-19 16:30+0200\n"
 "Last-Translator: Mișu <dumol@l10n.ro>\n"
 "Language-Team: Romanian <LL@li.org>\n"
 "Language: ro\n"
@@ -41,7 +41,7 @@ msgstr "Fundal"
 
 #: ../data/config.ui.h:3 ../src/greeter.c:297 ../src/lang.c:103
 msgid "Default"
-msgstr "Implicit"
+msgstr "Implicit(ă)"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
@@ -57,7 +57,7 @@ msgstr "Arată lista utilizatorilor"
 
 #: ../data/config.ui.h:7
 msgid "lxdm config"
-msgstr "fișier de configurare lxdm"
+msgstr "Configurare LXDM"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
