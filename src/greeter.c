@@ -114,7 +114,7 @@ static char *get_session_exec(void)
 	GtkTreeModel* model;
 	GtkTreeIter it;
 	gchar *res;
-	if(!lang)
+	if(!sessions)
 		return g_strdup("");
 	
 	if(!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(sessions), &it))
