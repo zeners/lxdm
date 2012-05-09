@@ -1005,7 +1005,7 @@ static gboolean load_user_list(GtkWidget *widget)
 		}
 		display=g_strdup_printf("<span font_size=\"x-large\">%s</span>%s%s%s%s",
 			gecos?gecos:users[i],
-			(gecos&&strcmp(gecos,users[i]))?"(":"",
+			(gecos&&strcmp(gecos,users[i]))?" (":"",
 			(gecos&&strcmp(gecos,users[i]))?users[i]:"",
 			(gecos&&strcmp(gecos,users[i]))?")":"",
 			login?_("\n<i>logged in</i>"):"");
