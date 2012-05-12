@@ -1566,7 +1566,7 @@ void lxdm_do_shutdown(void)
 	char *cmd;
 	cmd = g_key_file_get_string(config, "cmd", "shutdown", 0);
 	if( !cmd ) cmd = g_strdup("shutdown -h now");
-	g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
+	g_spawn_command_line_sync("/etc/lxdm/PreShutdown",0,0,0,0);
 	g_spawn_command_line_async(cmd,0);
 	g_free(cmd);
 	lxdm_quit_self(0);
