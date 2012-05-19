@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-04-08 01:17+0200\n"
-"PO-Revision-Date: 2011-07-28 19:34+0200\n"
-"Last-Translator: Artur <mazdac@gmail.com>\n"
+"PO-Revision-Date: 2012-05-19 17:21+0200\n"
+"Last-Translator: Piotr <psokol@jabster.pl>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
@@ -51,12 +51,11 @@ msgstr "Domyślny"
 
 #: ../data/config.ui.h:4
 msgid "Show keyboard layouts"
-msgstr "Wyświetlanie listy dostępnych układów klawiatury"
+msgstr "Wyświetlanie listy układów klawiatury"
 
 #: ../data/config.ui.h:5
-#, fuzzy
 msgid "Show languages menu"
-msgstr "Wyświetlanie listy dostępnych języków"
+msgstr "Wyświetlanie listy języków"
 
 #: ../data/config.ui.h:6
 msgid "Show user list"
