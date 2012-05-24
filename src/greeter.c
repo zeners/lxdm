@@ -992,6 +992,12 @@ static gboolean load_user_list(GtkWidget *widget)
 		gecos=g_key_file_get_string(kf,users[i],"gecos",0);
 		face_path=g_key_file_get_string(kf,users[i],"face",0);
 		login=g_key_file_get_boolean(kf,users[i],"login",0);
+		if(gecos!=NULL)
+		{
+			char *comma=gecos?strchr(gecos,','):NULL;
+			if (comma)
+				*comma='\0';
+		}
 		if(face_path)
 			face=gdk_pixbuf_new_from_file_at_scale(face_path,48,48,TRUE,NULL);
 		if(!face)
