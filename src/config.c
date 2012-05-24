@@ -479,6 +479,82 @@ void prepare_bg(GtkBuilder *builder)
 	g_signal_connect(w,"toggled",on_bg_type_toggled,NULL);
 }
 
+static void on_enable_pane_toggled(GtkToggleButton *button)
+{
+        int val;
+        val=gtk_toggle_button_get_active(button);
+        g_key_file_set_integer(config,"display","bottom_pane",val);
+        GtkWidget *w;
+        w=(GtkWidget*)gtk_builder_get_object(builder,"vbox2");
+        gtk_widget_set_sensitive(w,val?TRUE:FALSE);
+	dirty++;
+}
+
+static void prepare_enable_pane(GtkBuilder *builder)
+{
+        gint val;
+        GtkWidget *w;
+        w=(GtkWidget*)gtk_builder_get_object(builder,"lxdm-enable-bottom-pane");
+        val=g_key_file_get_integer(config,"display","bottom_pane",NULL);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),val?TRUE:FALSE);
+        if(!root) gtk_widget_set_sensitive(w,FALSE);
+        g_signal_connect(w,"toggled",G_CALLBACK(on_enable_pane_toggled),NULL);
+}
+
+static void prepare_vbox2(GtkBuilder *builder)
+{
+        gint val;
+        GtkWidget *w;
+        w=(GtkWidget*)gtk_builder_get_object(builder,"vbox2");
+        val=g_key_file_get_integer(config,"display","bottom_pane",NULL);
+        if(!root) 
+	{
+		gtk_widget_set_sensitive(w,FALSE);
+	}
+	else
+	{
+		gtk_widget_set_sensitive(w,val?TRUE:FALSE);
+	}
+}
+
+static void on_transparent_pane_toggled(GtkToggleButton *button)
+{
+        int val;
+        val=gtk_toggle_button_get_active(button);
+        g_key_file_set_integer(config,"display","transparent_pane",val);
+        dirty++;
+}
+
+static void prepare_transparent_pane(GtkBuilder *builder)
+{
+        gint val;
+        GtkWidget *w;
+        w=(GtkWidget*)gtk_builder_get_object(builder,"lxdm-transparent-pane");
+        val=g_key_file_get_integer(config,"display","transparent_pane",NULL);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),val?TRUE:FALSE);
+        if(!root) gtk_widget_set_sensitive(w,FALSE);
+        g_signal_connect(w,"toggled",G_CALLBACK(on_transparent_pane_toggled),NULL);
+}
+
+static void on_hide_sessions_toggled(GtkToggleButton *button)
+{
+        int val;
+        val=gtk_toggle_button_get_active(button);
+        g_key_file_set_integer(config,"display","hide_sessions",val);
+        dirty++;
+}
+
+static void prepare_hide_sessions(GtkBuilder *builder)
+{
+        gint val;
+        GtkWidget *w;
+        w=(GtkWidget*)gtk_builder_get_object(builder,"lxdm-hide-sessions");
+        val=g_key_file_get_integer(config,"display","hide_sessions",NULL);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),val?TRUE:FALSE);
+        if(!root) gtk_widget_set_sensitive(w,FALSE);
+        g_signal_connect(w,"toggled",G_CALLBACK(on_hide_sessions_toggled),NULL);
+}
+
 static void on_show_lang_toggled(GtkToggleButton *button)
 {
 	int val;
@@ -517,6 +593,44 @@ static void prepare_show_keyboard(GtkBuilder *builder)
 	g_signal_connect(w,"toggled",G_CALLBACK(on_show_keyboard_toggled),NULL);
 }
 
+static void on_hide_exit_toggled(GtkToggleButton *button)
+{
+        int val;
+        val=gtk_toggle_button_get_active(button);
+        g_key_file_set_integer(config,"display","hide_exit",val);
+        dirty++;
+}
+
+static void prepare_hide_exit(GtkBuilder *builder)
+{
+        gint val;
+        GtkWidget *w;
+        w=(GtkWidget*)gtk_builder_get_object(builder,"lxdm-hide-exit");
+        val=g_key_file_get_integer(config,"display","hide_exit",NULL);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),val?TRUE:FALSE);
+        if(!root) gtk_widget_set_sensitive(w,FALSE);
+        g_signal_connect(w,"toggled",G_CALLBACK(on_hide_exit_toggled),NULL);
+}
+
+static void on_hide_time_toggled(GtkToggleButton *button)
+{
+        int val;
+        val=gtk_toggle_button_get_active(button);
+        g_key_file_set_integer(config,"display","hide_time",val);
+        dirty++;
+}
+
+static void prepare_hide_time(GtkBuilder *builder)
+{
+        gint val;
+        GtkWidget *w;
+        w=(GtkWidget*)gtk_builder_get_object(builder,"lxdm-hide-time");
+        val=g_key_file_get_integer(config,"display","hide_time",NULL);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),val?TRUE:FALSE);
+        if(!root) gtk_widget_set_sensitive(w,FALSE);
+        g_signal_connect(w,"toggled",G_CALLBACK(on_hide_time_toggled),NULL);
+}
+
 static void on_show_userlist_toggled(GtkToggleButton *button)
 {
 	int val;
@@ -548,8 +662,14 @@ GtkDialog *dialog_create(void)
 	prepare_user_name(builder);
 	prepare_user_autologin(builder);
 	prepare_bg(builder);
+	prepare_enable_pane(builder);
+	prepare_vbox2(builder);
+	prepare_transparent_pane(builder);
+	prepare_hide_sessions(builder);
 	prepare_show_lang(builder);
 	prepare_show_keyboard(builder);
+	prepare_hide_exit(builder);
+	prepare_hide_time(builder);
 	prepare_show_userlist(builder);
 
 	return dlg;

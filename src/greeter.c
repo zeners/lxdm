@@ -1127,56 +1127,78 @@ static void create_win()
 
     g_signal_connect(login_entry, "activate", G_CALLBACK(on_entry_activate), NULL);
 
-    sessions = (GtkWidget*)gtk_builder_get_object(builder, "sessions");
-    gtk_widget_set_name(sessions, "sessions");
-    fix_combobox_entry(sessions);
-    load_sessions();
-
-    w = (GtkWidget*)gtk_builder_get_object(builder, "bottom_pane");
-    if( g_key_file_get_integer(config, "display", "bottom_pane", 0) )
+    if( g_key_file_get_integer(config, "display", "bottom_pane", 0)==1)
     {
         /* hacks to let GtkEventBox paintable with gtk pixmap engine. */
+        w = (GtkWidget*)gtk_builder_get_object(builder, "bottom_pane");
+        if(g_key_file_get_integer(config, "display", "transparent_pane", 0)==1)
+		{
+		}
+        else
+		{
 #if GTK_CHECK_VERSION(2,18,0)
-        if(gtk_widget_get_app_paintable(w))
+			if(gtk_widget_get_app_paintable(w))
 #else
-        if(GTK_WIDGET_APP_PAINTABLE(w))
+			if(GTK_WIDGET_APP_PAINTABLE(w))
 #endif
 
 #if GTK_CHECK_VERSION(3,0,0)
-		g_signal_connect(w,"draw",G_CALLBACK(on_evt_box_draw),NULL);
+				g_signal_connect(w,"draw",G_CALLBACK(on_evt_box_draw),NULL);
 #else
-		g_signal_connect(w, "expose-event", G_CALLBACK(on_evt_box_expose), NULL);
+				g_signal_connect(w, "expose-event", G_CALLBACK(on_evt_box_expose), NULL);
 #endif
-    }
-    else
-        gtk_event_box_set_visible_window(GTK_EVENT_BOX(w), FALSE);
-
-    if( g_key_file_get_integer(config, "display", "lang", 0) == 0 )
-    {
-        w = (GtkWidget*)gtk_builder_get_object(builder, "lang_box");
-        if( w )
-            gtk_widget_hide(w);
-    }
-    else
-    {
-        lang = (GtkWidget*)gtk_builder_get_object(builder, "lang");
-        gtk_widget_set_name(lang, "lang");
-        fix_combobox_entry(lang);
-        load_langs();
-    }
-    
-    if(g_key_file_get_integer(config, "display", "keyboard", 0)==1)
-    {
-		w=(GtkWidget*)gtk_builder_get_object(builder, "keyboard");
-		if((load_keyboards(w))!=FALSE)
-		{
-			fix_combobox_entry(w);
-			gtk_widget_show(w);
-			w=(GtkWidget*)gtk_builder_get_object(builder, "label_keyboard");
-			if(w) gtk_widget_show(w);
 		}
-	}
+        if( g_key_file_get_integer(config, "display", "hide_sessions", 0)==1)
+        {
+            w = (GtkWidget*)gtk_builder_get_object(builder, "sessions_box");
+            if(w) gtk_widget_hide(w);
+		}
+		else
+		{
+			sessions = (GtkWidget*)gtk_builder_get_object(builder, "sessions");
+			gtk_widget_set_name(sessions, "sessions");
+			fix_combobox_entry(sessions);
+			load_sessions();
+		}
 
+		if( g_key_file_get_integer(config, "display", "lang", 0) == 0 )
+		{
+			w = (GtkWidget*)gtk_builder_get_object(builder, "lang_box");
+			if(w) gtk_widget_hide(w);
+		}
+		else
+		{
+			lang = (GtkWidget*)gtk_builder_get_object(builder, "lang");
+			gtk_widget_set_name(lang, "lang");
+			fix_combobox_entry(lang);
+			load_langs();
+		}
+
+		if(g_key_file_get_integer(config, "display", "keyboard", 0)==1)
+		{
+			w=(GtkWidget*)gtk_builder_get_object(builder, "keyboard");
+			if((load_keyboards(w))!=FALSE)
+			{
+				fix_combobox_entry(w);
+				gtk_widget_show(w);
+				w=(GtkWidget*)gtk_builder_get_object(builder, "label_keyboard");
+				if(w) gtk_widget_show(w);
+			}
+		}
+    }
+    else
+    {
+    	w = (GtkWidget*)gtk_builder_get_object(builder, "bottom_pane");
+	gtk_widget_hide(w);
+    }
+
+    if(g_key_file_get_integer(config, "display", "hide_time", 0)==1)
+    {
+        w = (GtkWidget*)gtk_builder_get_object(builder, "time");
+        gtk_widget_hide(w);
+    }
+    else
+    {
 	if( (w = (GtkWidget*)gtk_builder_get_object(builder, "time"))!=NULL )
 	{
 		guint timeout = g_timeout_add(1000, (GSourceFunc)on_timeout, w);
@@ -1184,9 +1206,18 @@ static void create_win()
 			G_CALLBACK(g_source_remove), GUINT_TO_POINTER(timeout));
 		on_timeout((GtkLabel*)w);
 	}
+    }
 
-	exit_btn = (GtkWidget*)gtk_builder_get_object(builder, "exit");
-	load_exit();
+    if(g_key_file_get_integer(config, "display", "hide_exit", 0)==1)
+    {
+		w=(GtkWidget*)gtk_builder_get_object(builder, "exit");
+        gtk_widget_hide(w);
+    }
+    else
+    {
+		exit_btn = (GtkWidget*)gtk_builder_get_object(builder, "exit");
+		load_exit();
+    }
 
 	ui_get_geometry(window,&rc);
 	gtk_window_move(GTK_WINDOW(win),rc.x,rc.y);
