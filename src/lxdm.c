@@ -1249,7 +1249,7 @@ gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 		name=g_key_file_get_string(config, "base", "session", 0);
 		if(!name && getenv("PREFERRED"))
 			name = g_strdup(getenv("PREFERRED"));
-		if(!session && getenv("DESKTOP"))
+		if(!name && getenv("DESKTOP"))
 			name = g_strdup(getenv("DESKTOP"));
 		if(!name) name=g_strdup("LXDE");
 	}
