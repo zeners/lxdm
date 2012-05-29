@@ -964,6 +964,10 @@ static gboolean load_user_list(GtkWidget *widget)
 #else
 	gtk_icon_view_set_orientation(GTK_ICON_VIEW(widget),GTK_ORIENTATION_HORIZONTAL);
 #endif
+	// FIXME: this should be done at greeter-gtk3.ui
+	// but set there will cause "Floating point exception"
+	gtk_icon_view_set_columns(GTK_ICON_VIEW(widget),1);
+	
 	model=gtk_list_store_new(5,GDK_TYPE_PIXBUF,G_TYPE_STRING,
 			G_TYPE_STRING,G_TYPE_STRING,G_TYPE_BOOLEAN);
 	gtk_icon_view_set_model(GTK_ICON_VIEW(widget),GTK_TREE_MODEL(model));
@@ -1034,6 +1038,7 @@ static gboolean load_user_list(GtkWidget *widget)
 	gtk_widget_grab_focus(widget);
 	gtk_icon_view_set_cursor(GTK_ICON_VIEW(widget),path,NULL,FALSE);
 	gtk_tree_path_free(path);
+		
 	return TRUE;
 }
 
