@@ -100,6 +100,7 @@ typedef struct{
 
 GKeyFile *config;
 static int old_tty=1,def_tty = 7,nr_tty=0;
+static int def_display=0;
 static GSList *session_list;
 
 static void lxdm_startx(LXSession *s);
@@ -275,7 +276,7 @@ static int lxsession_alloc_tty(void)
 static int lxsession_alloc_display(void)
 {
 	int i;
-	for(i=0;i<11;i++)
+	for(i=def_display;i<11;i++)
 	{
 		if(!display_is_used(i))
 			return i;
@@ -524,6 +525,10 @@ void lxdm_get_tty(void)
 		else if(!strcmp(p,"-background") || !strcmp(p,"-nr"))
 		{
 			nr_tty=1;
+		}
+		else if(p[0]==':' && isdigit(p[1]))
+		{
+			def_display=atoi(p+1);
 		}
 	}
 	if(!gotvtarg)
