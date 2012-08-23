@@ -990,6 +990,7 @@ static gboolean load_user_list(GtkWidget *widget)
 	for(i=0;i<count;i++)
 	{		
 		char *gecos,*face_path,*display;
+		gchar *gecos_escape;
 		gboolean login;
 		GdkPixbuf *face=NULL;
 		gtk_list_store_append(model,&iter);
@@ -1013,13 +1014,15 @@ static gboolean load_user_list(GtkWidget *widget)
 				face=gtk_icon_theme_load_icon(gtk_icon_theme_get_default(),
 						"avatar-default", 48,GTK_ICON_LOOKUP_FORCE_SIZE,NULL);
 		}
+		gecos_escape=g_markup_escape_text(gecos?gecos:users[i],-1);
 		display=g_strdup_printf("<span font_size=\"x-large\">%s</span>%s%s%s%s",
-			gecos?gecos:users[i],
+			gecos_escape,
 			(gecos&&strcmp(gecos,users[i]))?" (":"",
 			(gecos&&strcmp(gecos,users[i]))?users[i]:"",
 			(gecos&&strcmp(gecos,users[i]))?")":"",
 			login?_("\n<i>logged in</i>"):"");
 		// don't translate it now, not freeze
+		g_free(gecos_escape);
 		gtk_list_store_set(model,&iter,0,face,1,display,2,users[i],3,gecos,4,login,-1);
 		if(face) g_object_unref(G_OBJECT(face));
 		g_free(display);
