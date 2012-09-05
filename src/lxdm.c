@@ -1514,6 +1514,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 		g_message("create ConsoleKit connector fail\n");
 	}
 #endif
+
 	char** env, *path;
 	int n_env,i;
 	n_env  = g_strv_length(environ);
@@ -1633,7 +1634,7 @@ int lxdm_do_auto_login(void)
 	}
 	g_strfreev(users);
 	g_free(pass);
-	return success;;
+	return success;
 }
 
 static void log_sigsegv(void)

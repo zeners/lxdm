@@ -272,6 +272,7 @@ void lxcom_init(const char *sock)
 
 	s->poll.fd=self_server_fd;
 	s->poll.events=G_IO_IN;
+	s->poll.revents=0;
 	g_source_add_poll((GSource*)s,&s->poll);	
 	self_source_id=g_source_attach((GSource*)s,NULL);
 
