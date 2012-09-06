@@ -1738,8 +1738,23 @@ GKeyFile *lxdm_user_list(void)
 	g_key_file_set_comment(kf,NULL,NULL,"lxdm user list",NULL);
 	while((pw=getpwent())!=NULL)
 	{
+		char *valid_shell;
+		gboolean ret;
+	
 		if(strstr(pw->pw_shell, "nologin"))
 			continue;
+
+		ret = FALSE;
+		setusershell();
+		while ((valid_shell = getusershell()) != NULL) {
+			if (g_strcmp0 (pw->pw_shell, valid_shell) != 0)
+				continue;
+			ret = TRUE;
+		}
+		endusershell();
+		if(!ret)
+			continue;
+
 		if(strncmp(pw->pw_dir,"/home/",6))
 		{
 			if(!strv_find(white,pw->pw_name))
