@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-08 01:17+0200\n"
+"POT-Creation-Date: 2012-09-23 15:01+0200\n"
 "PO-Revision-Date: 2012-05-19 17:21+0200\n"
 "Last-Translator: Piotr <psokol@jabster.pl>\n"
 "Language-Team: Polish\n"
@@ -21,49 +21,77 @@ msgstr ""
 "X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
-msgid "Desktop:"
-msgstr "Pulpit:"
+#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
+msgid "User:"
+msgstr "Nazwa użytkownika:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
-msgid "Keyboard:"
-msgstr "Układ klawiatury:"
+msgid "Desktop:"
+msgstr "Pulpit:"
 
 #: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "Język:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
-msgid "User:"
-msgstr "Nazwa użytkownika:"
+msgid "Keyboard:"
+msgstr "Układ klawiatury:"
 
 #: ../data/config.ui.h:1
+msgid "lxdm config"
+msgstr "Konfiguracja lxdm"
+
+#: ../data/config.ui.h:2
 msgid "Automatic Login"
 msgstr "Automatyczne logowanie"
 
-#: ../data/config.ui.h:2
+#: ../data/config.ui.h:3
 msgid "Background"
 msgstr "Tło"
 
-#: ../data/config.ui.h:3 ../src/greeter.c:297 ../src/lang.c:103
+#: ../data/config.ui.h:4 ../src/greeter.c:297 ../src/lang.c:103
 msgid "Default"
 msgstr "Domyślny"
 
-#: ../data/config.ui.h:4
-msgid "Show keyboard layouts"
-msgstr "Wyświetlanie listy układów klawiatury"
-
 #: ../data/config.ui.h:5
+msgid "Enable bottom panel"
+msgstr ""
+
+#: ../data/config.ui.h:6
+msgid "Bottom Panel Options"
+msgstr ""
+
+#: ../data/config.ui.h:7
+msgid "Transparent panel"
+msgstr ""
+
+#: ../data/config.ui.h:8
+msgid "Hide sessions"
+msgstr ""
+
+#: ../data/config.ui.h:9
 msgid "Show languages menu"
 msgstr "Wyświetlanie listy języków"
 
-#: ../data/config.ui.h:6
+#: ../data/config.ui.h:10
+msgid "Show keyboard layouts"
+msgstr "Wyświetlanie listy układów klawiatury"
+
+#: ../data/config.ui.h:11
+msgid "Hide quit button"
+msgstr ""
+
+#: ../data/config.ui.h:12
+msgid "Other Options"
+msgstr ""
+
+#: ../data/config.ui.h:13
 msgid "Show user list"
 msgstr "Wyświetlanie listy użytkowników"
 
-#: ../data/config.ui.h:7
-msgid "lxdm config"
-msgstr "Konfiguracja lxdm"
+#: ../data/config.ui.h:14
+msgid "Hide time"
+msgstr ""
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -81,7 +109,7 @@ msgstr "_Uruchom ponownie"
 msgid "_Shutdown"
 msgstr "_Wyłącz"
 
-#: ../src/greeter.c:1011
+#: ../src/greeter.c:1023
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -89,7 +117,7 @@ msgstr ""
 "\n"
 "<i>zalogowany</i>"
 
-#: ../src/greeter.c:1024 ../src/lang.c:125
+#: ../src/greeter.c:1037 ../src/lang.c:125
 msgid "More ..."
 msgstr "Więcej..."
 

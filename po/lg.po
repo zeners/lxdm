@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-08 01:17+0200\n"
+"POT-Creation-Date: 2012-09-23 15:01+0200\n"
 "PO-Revision-Date: 2012-07-07 21:16+0200\n"
 "Last-Translator: kizito <kbirabwa@yahoo.co.uk>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,55 +18,83 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.5\n"
 
-# Desktop = the place where you do your work = awakolerwa. Selects the desktop type
+# User selection prompt at the graphical login screen
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
+#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
+msgid "User:"
+msgstr "Mukozesa:"
+
+# Desktop = the place where you do your work = awakolerwa. Selects the desktop type
+#: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
 msgid "Desktop:"
 msgstr "Awakolerwa:"
-
-# Selects arrangement of keys on the keyboard - for a specific locale/region. Arrangement = ntegeka
-#: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
-msgid "Keyboard:"
-msgstr "Entegeka y'amapeesa:"
 
 # Language selection at the login screen
 #: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "Lulimi:"
 
-# User selection prompt at the graphical login screen
+# Selects arrangement of keys on the keyboard - for a specific locale/region. Arrangement = ntegeka
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
-msgid "User:"
-msgstr "Mukozesa:"
+msgid "Keyboard:"
+msgstr "Entegeka y'amapeesa:"
 
 #: ../data/config.ui.h:1
+msgid "lxdm config"
+msgstr "Kuteekateeka lxdm"
+
+#: ../data/config.ui.h:2
 msgid "Automatic Login"
 msgstr "Okuyingira okwereetawo kwokka"
 
-#: ../data/config.ui.h:2
+#: ../data/config.ui.h:3
 msgid "Background"
 msgstr "Bwaliriro"
 
 # This indicates the option that will automatically be set if the user does not select anything.
-#: ../data/config.ui.h:3 ../src/greeter.c:297 ../src/lang.c:103
+#: ../data/config.ui.h:4 ../src/greeter.c:297 ../src/lang.c:103
 msgid "Default"
 msgstr "Ekya bulijjo"
 
-#: ../data/config.ui.h:4
-msgid "Show keyboard layouts"
-msgstr "Entegeka ez'amapeesa ziragibwe"
-
 #: ../data/config.ui.h:5
+msgid "Enable bottom panel"
+msgstr ""
+
+#: ../data/config.ui.h:6
+msgid "Bottom Panel Options"
+msgstr ""
+
+#: ../data/config.ui.h:7
+msgid "Transparent panel"
+msgstr ""
+
+#: ../data/config.ui.h:8
+msgid "Hide sessions"
+msgstr ""
+
+#: ../data/config.ui.h:9
 msgid "Show languages menu"
 msgstr "Wabewo menyu ey'ennimi"
 
-#: ../data/config.ui.h:6
+#: ../data/config.ui.h:10
+msgid "Show keyboard layouts"
+msgstr "Entegeka ez'amapeesa ziragibwe"
+
+#: ../data/config.ui.h:11
+msgid "Hide quit button"
+msgstr ""
+
+#: ../data/config.ui.h:12
+msgid "Other Options"
+msgstr ""
+
+#: ../data/config.ui.h:13
 msgid "Show user list"
 msgstr "Olukalala lw'abakozesa lulagibwe"
 
-#: ../data/config.ui.h:7
-msgid "lxdm config"
-msgstr "Kuteekateeka lxdm"
+#: ../data/config.ui.h:14
+msgid "Hide time"
+msgstr ""
 
 # This is an undefined entry on the login screen. It is meant to be modified by the system owner should they wish to
 #: ../src/gdm/gdm-languages.c:614
@@ -89,7 +117,7 @@ msgid "_Shutdown"
 msgstr "_Gyako-kompyuta"
 
 # I think this is a message telling you that you are logged onto the system.
-#: ../src/greeter.c:1011
+#: ../src/greeter.c:1023
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -98,7 +126,7 @@ msgstr ""
 "<i>oyingidde</i>"
 
 # I think this is a hint telling you that there are more options that are currently hidden.
-#: ../src/greeter.c:1024 ../src/lang.c:125
+#: ../src/greeter.c:1037 ../src/lang.c:125
 msgid "More ..."
 msgstr "Ebirala ..."
 

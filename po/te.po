@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-08 01:17+0200\n"
+"POT-Creation-Date: 2012-09-23 15:01+0200\n"
 "PO-Revision-Date: 2012-04-11 03:55+0200\n"
 "Last-Translator: PraveenIlla <mail2ipn@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,49 +19,77 @@ msgstr ""
 "X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
-msgid "Desktop:"
-msgstr "డెస్క్‍టాప్:"
+#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
+msgid "User:"
+msgstr "వాడుకరి:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
-msgid "Keyboard:"
-msgstr "కీబోర్డు:"
+msgid "Desktop:"
+msgstr "డెస్క్‍టాప్:"
 
 #: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "భాష:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
-msgid "User:"
-msgstr "వాడుకరి:"
+msgid "Keyboard:"
+msgstr "కీబోర్డు:"
 
 #: ../data/config.ui.h:1
+msgid "lxdm config"
+msgstr "lxdm స్వరూపణం"
+
+#: ../data/config.ui.h:2
 msgid "Automatic Login"
 msgstr "స్వయంచాలక లాగిన్"
 
-#: ../data/config.ui.h:2
+#: ../data/config.ui.h:3
 msgid "Background"
 msgstr "నేపథ్యం"
 
-#: ../data/config.ui.h:3 ../src/greeter.c:297 ../src/lang.c:103
+#: ../data/config.ui.h:4 ../src/greeter.c:297 ../src/lang.c:103
 msgid "Default"
 msgstr "అప్రమేయం"
 
-#: ../data/config.ui.h:4
-msgid "Show keyboard layouts"
-msgstr "కీబోర్డు నమూనాలను చూపించు"
-
 #: ../data/config.ui.h:5
+msgid "Enable bottom panel"
+msgstr ""
+
+#: ../data/config.ui.h:6
+msgid "Bottom Panel Options"
+msgstr ""
+
+#: ../data/config.ui.h:7
+msgid "Transparent panel"
+msgstr ""
+
+#: ../data/config.ui.h:8
+msgid "Hide sessions"
+msgstr ""
+
+#: ../data/config.ui.h:9
 msgid "Show languages menu"
 msgstr "భాషల మెనూను చూపించు"
 
-#: ../data/config.ui.h:6
+#: ../data/config.ui.h:10
+msgid "Show keyboard layouts"
+msgstr "కీబోర్డు నమూనాలను చూపించు"
+
+#: ../data/config.ui.h:11
+msgid "Hide quit button"
+msgstr ""
+
+#: ../data/config.ui.h:12
+msgid "Other Options"
+msgstr ""
+
+#: ../data/config.ui.h:13
 msgid "Show user list"
 msgstr "వాడుకరి జాబితా చూపించు"
 
-#: ../data/config.ui.h:7
-msgid "lxdm config"
-msgstr "lxdm స్వరూపణం"
+#: ../data/config.ui.h:14
+msgid "Hide time"
+msgstr ""
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -79,7 +107,7 @@ msgstr "పునఃప్రారంభించు(_R)"
 msgid "_Shutdown"
 msgstr "మూసివేయి(_S)"
 
-#: ../src/greeter.c:1011
+#: ../src/greeter.c:1023
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -87,7 +115,7 @@ msgstr ""
 "\n"
 "<i>ప్రవేశించారు</i>"
 
-#: ../src/greeter.c:1024 ../src/lang.c:125
+#: ../src/greeter.c:1037 ../src/lang.c:125
 msgid "More ..."
 msgstr "మరిన్ని..."
 

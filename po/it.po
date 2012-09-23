@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxem r2100\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-08 01:17+0200\n"
+"POT-Creation-Date: 2012-09-23 15:01+0200\n"
 "PO-Revision-Date: 2012-08-25 17:46+0200\n"
 "Last-Translator: Daniele Forsi <daniele@forsi.it>\n"
 "Language-Team: Italian\n"
@@ -20,49 +20,77 @@ msgstr ""
 "X-Poedit-Language: Italian\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
-msgid "Desktop:"
-msgstr "Desktop:"
+#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
+msgid "User:"
+msgstr "Utente:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
-msgid "Keyboard:"
-msgstr "Tastiera:"
+msgid "Desktop:"
+msgstr "Desktop:"
 
 #: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "Lingua:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
-msgid "User:"
-msgstr "Utente:"
+msgid "Keyboard:"
+msgstr "Tastiera:"
 
 #: ../data/config.ui.h:1
+msgid "lxdm config"
+msgstr "lxdm config"
+
+#: ../data/config.ui.h:2
 msgid "Automatic Login"
 msgstr "Accesso automatico"
 
-#: ../data/config.ui.h:2
+#: ../data/config.ui.h:3
 msgid "Background"
 msgstr "Sfondo"
 
-#: ../data/config.ui.h:3 ../src/greeter.c:297 ../src/lang.c:103
+#: ../data/config.ui.h:4 ../src/greeter.c:297 ../src/lang.c:103
 msgid "Default"
 msgstr "Predefinito"
 
-#: ../data/config.ui.h:4
-msgid "Show keyboard layouts"
-msgstr "Mostra disposizioni tastiera"
-
 #: ../data/config.ui.h:5
+msgid "Enable bottom panel"
+msgstr ""
+
+#: ../data/config.ui.h:6
+msgid "Bottom Panel Options"
+msgstr ""
+
+#: ../data/config.ui.h:7
+msgid "Transparent panel"
+msgstr ""
+
+#: ../data/config.ui.h:8
+msgid "Hide sessions"
+msgstr ""
+
+#: ../data/config.ui.h:9
 msgid "Show languages menu"
 msgstr "Mostra menu lingue"
 
-#: ../data/config.ui.h:6
+#: ../data/config.ui.h:10
+msgid "Show keyboard layouts"
+msgstr "Mostra disposizioni tastiera"
+
+#: ../data/config.ui.h:11
+msgid "Hide quit button"
+msgstr ""
+
+#: ../data/config.ui.h:12
+msgid "Other Options"
+msgstr ""
+
+#: ../data/config.ui.h:13
 msgid "Show user list"
 msgstr "Mostra elenco utenti"
 
-#: ../data/config.ui.h:7
-msgid "lxdm config"
-msgstr "lxdm config"
+#: ../data/config.ui.h:14
+msgid "Hide time"
+msgstr ""
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -80,7 +108,7 @@ msgstr "_Riavvia"
 msgid "_Shutdown"
 msgstr "_Spegni"
 
-#: ../src/greeter.c:1011
+#: ../src/greeter.c:1023
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -88,7 +116,7 @@ msgstr ""
 "\n"
 "<i>connesso</i>"
 
-#: ../src/greeter.c:1024 ../src/lang.c:125
+#: ../src/greeter.c:1037 ../src/lang.c:125
 msgid "More ..."
 msgstr "Di più..."
 

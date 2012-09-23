@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-08 01:17+0200\n"
+"POT-Creation-Date: 2012-09-23 15:01+0200\n"
 "PO-Revision-Date: 2011-04-11 15:20+0200\n"
 "Last-Translator: Sankarshan <sankarshan.mukhopadhyay@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,50 +19,78 @@ msgstr ""
 "X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
-msgid "Desktop:"
-msgstr "ডেস্কটপ:"
+#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
+msgid "User:"
+msgstr "ব্যবহারকারী:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
-msgid "Keyboard:"
-msgstr "কী-বোর্ড বিন্যাস:"
+msgid "Desktop:"
+msgstr "ডেস্কটপ:"
 
 #: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "ভাষা:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
-msgid "User:"
-msgstr "ব্যবহারকারী:"
+msgid "Keyboard:"
+msgstr "কী-বোর্ড বিন্যাস:"
 
 #: ../data/config.ui.h:1
+msgid "lxdm config"
+msgstr "lxdm config"
+
+#: ../data/config.ui.h:2
 msgid "Automatic Login"
 msgstr "সয়ংক্রীয় লগ-ইন"
 
-#: ../data/config.ui.h:2
+#: ../data/config.ui.h:3
 msgid "Background"
 msgstr "প্রেক্ষাপট"
 
-#: ../data/config.ui.h:3 ../src/greeter.c:297 ../src/lang.c:103
+#: ../data/config.ui.h:4 ../src/greeter.c:297 ../src/lang.c:103
 msgid "Default"
 msgstr "ডিফল্ট"
 
-#: ../data/config.ui.h:4
-msgid "Show keyboard layouts"
-msgstr "কি-বোর্ড এর বিন্যাস প্রদর্শন করুন"
-
 #: ../data/config.ui.h:5
+msgid "Enable bottom panel"
+msgstr ""
+
+#: ../data/config.ui.h:6
+msgid "Bottom Panel Options"
+msgstr ""
+
+#: ../data/config.ui.h:7
+msgid "Transparent panel"
+msgstr ""
+
+#: ../data/config.ui.h:8
+msgid "Hide sessions"
+msgstr ""
+
+#: ../data/config.ui.h:9
 #, fuzzy
 msgid "Show languages menu"
 msgstr "ভাষার মেনু প্রদর্শন করুন"
 
-#: ../data/config.ui.h:6
+#: ../data/config.ui.h:10
+msgid "Show keyboard layouts"
+msgstr "কি-বোর্ড এর বিন্যাস প্রদর্শন করুন"
+
+#: ../data/config.ui.h:11
+msgid "Hide quit button"
+msgstr ""
+
+#: ../data/config.ui.h:12
+msgid "Other Options"
+msgstr ""
+
+#: ../data/config.ui.h:13
 msgid "Show user list"
 msgstr "ব্যবহারকারীদের তালিকা প্রদর্শন করুন"
 
-#: ../data/config.ui.h:7
-msgid "lxdm config"
-msgstr "lxdm config"
+#: ../data/config.ui.h:14
+msgid "Hide time"
+msgstr ""
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -80,7 +108,7 @@ msgstr "রিবুট(_R)"
 msgid "_Shutdown"
 msgstr "শাটডাউন(_S)"
 
-#: ../src/greeter.c:1011
+#: ../src/greeter.c:1023
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -88,7 +116,7 @@ msgstr ""
 "\n"
 "<i>লগ-ইন করা হয়েছে</i>"
 
-#: ../src/greeter.c:1024 ../src/lang.c:125
+#: ../src/greeter.c:1037 ../src/lang.c:125
 msgid "More ..."
 msgstr "অধিক ..."
 

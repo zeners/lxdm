@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LXDE\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-08 01:17+0200\n"
+"POT-Creation-Date: 2012-09-23 15:01+0200\n"
 "PO-Revision-Date: 2012-04-19 16:30+0200\n"
 "Last-Translator: Mișu <dumol@l10n.ro>\n"
 "Language-Team: Romanian <LL@li.org>\n"
@@ -15,49 +15,77 @@ msgstr ""
 "X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
-msgid "Desktop:"
-msgstr "Desktop:"
+#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
+msgid "User:"
+msgstr "Utilizator:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
-msgid "Keyboard:"
-msgstr "Tastatură:"
+msgid "Desktop:"
+msgstr "Desktop:"
 
 #: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "Limbă:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
-#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
-msgid "User:"
-msgstr "Utilizator:"
+msgid "Keyboard:"
+msgstr "Tastatură:"
 
 #: ../data/config.ui.h:1
+msgid "lxdm config"
+msgstr "Configurare LXDM"
+
+#: ../data/config.ui.h:2
 msgid "Automatic Login"
 msgstr "Autentificare automată"
 
-#: ../data/config.ui.h:2
+#: ../data/config.ui.h:3
 msgid "Background"
 msgstr "Fundal"
 
-#: ../data/config.ui.h:3 ../src/greeter.c:297 ../src/lang.c:103
+#: ../data/config.ui.h:4 ../src/greeter.c:297 ../src/lang.c:103
 msgid "Default"
 msgstr "Implicit(ă)"
 
-#: ../data/config.ui.h:4
-msgid "Show keyboard layouts"
-msgstr "Arată aranjamentele de tastatură"
-
 #: ../data/config.ui.h:5
+msgid "Enable bottom panel"
+msgstr ""
+
+#: ../data/config.ui.h:6
+msgid "Bottom Panel Options"
+msgstr ""
+
+#: ../data/config.ui.h:7
+msgid "Transparent panel"
+msgstr ""
+
+#: ../data/config.ui.h:8
+msgid "Hide sessions"
+msgstr ""
+
+#: ../data/config.ui.h:9
 msgid "Show languages menu"
 msgstr "Arată meniul cu limbile disponibile"
 
-#: ../data/config.ui.h:6
+#: ../data/config.ui.h:10
+msgid "Show keyboard layouts"
+msgstr "Arată aranjamentele de tastatură"
+
+#: ../data/config.ui.h:11
+msgid "Hide quit button"
+msgstr ""
+
+#: ../data/config.ui.h:12
+msgid "Other Options"
+msgstr ""
+
+#: ../data/config.ui.h:13
 msgid "Show user list"
 msgstr "Arată lista utilizatorilor"
 
-#: ../data/config.ui.h:7
-msgid "lxdm config"
-msgstr "Configurare LXDM"
+#: ../data/config.ui.h:14
+msgid "Hide time"
+msgstr ""
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -75,7 +103,7 @@ msgstr "_Repornire"
 msgid "_Shutdown"
 msgstr "_Oprire"
 
-#: ../src/greeter.c:1011
+#: ../src/greeter.c:1023
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -83,7 +111,7 @@ msgstr ""
 "\n"
 "<i>autentificat în</i>"
 
-#: ../src/greeter.c:1024 ../src/lang.c:125
+#: ../src/greeter.c:1037 ../src/lang.c:125
 msgid "More ..."
 msgstr "Mai mult..."
 
