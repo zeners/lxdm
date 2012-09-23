@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-23 15:01+0200\n"
-"PO-Revision-Date: 2011-11-24 16:37+0200\n"
+"PO-Revision-Date: 2012-09-23 15:03+0200\n"
 "Last-Translator: Martin <brother@bsnet.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -55,19 +55,19 @@ msgstr "Standard"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "Aktivera panel i nederkant"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "Alternativ för panel i nederkant"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "Genomskinlig panel"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "Göm sessioner"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -79,11 +79,11 @@ msgstr "Visa tangentbordsuppsättningar"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "Göm knapp för att avsluta"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "Andra alternativ"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -91,7 +91,7 @@ msgstr "Visa användarlista"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "Göm tid"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
