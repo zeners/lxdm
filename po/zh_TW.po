@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: lxdm 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-23 15:01+0200\n"
-"PO-Revision-Date: 2012-04-14 07:58+0200\n"
+"PO-Revision-Date: 2012-09-30 05:32+0200\n"
 "Last-Translator: Walter <wwycheuk@gmail.com>\n"
 "Language-Team: Chinese (traditional)\n"
 "Language: zh_TW\n"
@@ -54,19 +54,19 @@ msgstr "預設"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "啟用底面板"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "底面板選項"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "透明面板"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "隱藏工作階段"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -78,11 +78,11 @@ msgstr "顯示鍵盤配置"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "隱藏結束按鈕"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "其他選項"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -90,7 +90,7 @@ msgstr "顯示使用者清單"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "隱藏時間"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
