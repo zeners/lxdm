@@ -14,7 +14,8 @@ Source0:	lxdm-%{version}.tar.gz
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}
 
-BuildRequires:	gtk2-devel pam-devel intltool
+BuildRequires:	gtk3-devel pam-devel intltool
+Provides:       service(graphical-login) = lxdm
 
 %description
 Light weight X11 display manager
@@ -26,7 +27,7 @@ Light weight X11 display manager
 export CFLAGS="$RPM_OPT_FLAGS"
 export CXXFLAGS="$RPM_OPT_FLAGS"
 
-%configure
+%configure --enable-gtk3
 
 %__make
 
@@ -64,6 +65,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/lxdm/Xsession
 %config %{_sysconfdir}/lxdm/lxdm.conf
 %{_sysconfdir}/pam.d/lxdm
+%{_unitdir}/lxdm.service
 
 %changelog
 

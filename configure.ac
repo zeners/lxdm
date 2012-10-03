@@ -157,6 +157,7 @@ AC_CONFIG_FILES([
 	src/Makefile
 	po/Makefile.in
 	pam/Makefile
+	systemd/Makefile
 	data/Makefile
 	data/PostLogin
 	data/PostLogout

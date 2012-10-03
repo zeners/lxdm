@@ -3,6 +3,7 @@ SUBDIRS= \
 	src \
 	po \
 	pam \
+	systemd \
 	data \
 	$(NULL)
 
