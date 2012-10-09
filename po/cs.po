@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-23 15:01+0200\n"
-"PO-Revision-Date: 2012-08-14 12:20+0200\n"
+"PO-Revision-Date: 2012-10-09 17:16+0200\n"
 "Last-Translator: ALIUM <info@aloisnespor.info>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -52,19 +52,19 @@ msgstr "Výchozí"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "Zobrazit spodní panel"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "Nastavení spodního panelu"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "Průhledný panel"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "Skrýt sezení"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -76,11 +76,11 @@ msgstr "Zobrazit rozložení klávesnice"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "Skrýt zavírací tlačítko"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "Jiné nastavení"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -88,7 +88,7 @@ msgstr "Zobrazit seznam uživatelů"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "Skrýt čas"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
