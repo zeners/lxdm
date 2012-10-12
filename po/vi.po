@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LXDE\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-23 15:01+0200\n"
-"PO-Revision-Date: 2011-12-13 07:23+0200\n"
+"PO-Revision-Date: 2012-10-12 05:04+0200\n"
 "Last-Translator: Duy Hung <nguyentieuhau@gmail.com>\n"
 "Language-Team: Viet <nguyentieuhau@gmail.com>\n"
 "Language: vi\n"
@@ -55,19 +55,19 @@ msgstr "Mặc định"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "Bật bảng điều khiển dưới cùng"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "Tùy chọn bảng điều khiển dưới cùng"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "Bảng điều khiển trong suốt"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "Ẩn phiên làm việc"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -79,11 +79,11 @@ msgstr "Hiển thị kiểu bàn phím"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "Ẩn nút thoát"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "Tùy chọn khác"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -91,7 +91,7 @@ msgstr "Hiển thị danh sách người dùng"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "Ẩn thời gian"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
