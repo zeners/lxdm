@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-23 15:01+0200\n"
-"PO-Revision-Date: 2011-12-24 13:54+0200\n"
+"PO-Revision-Date: 2012-10-15 15:59+0200\n"
 "Last-Translator: mbouzada <mbouzada@gmail.com>\n"
 "Language-Team: Proxecto Trasno <proxecto@trasno.net>\n"
 "Language: gl\n"
@@ -56,19 +56,19 @@ msgstr "Predeterminado"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "Activar o panel inferior"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "Opcións do panel inferior"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "Panel transparente"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "Agochar as sesións"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -80,11 +80,11 @@ msgstr "Amosar as distribucións de teclado"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "Agochar o botón «Saír»"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "Outras opcións"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -92,7 +92,7 @@ msgstr "Amosar a lista de usuarios"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "Agochar a hora"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
