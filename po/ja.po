@@ -53,19 +53,19 @@ msgstr "デフォルト"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "下部パネルを有効にする"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "下部パネルのオプション"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "パネルを透明にする"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "セッションを隠す"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -77,11 +77,11 @@ msgstr "キーボードのレイアウトを表示"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "終了ボタンを隠す"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "その他のオプション"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -89,7 +89,7 @@ msgstr "ユーザのリストを表示"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "時刻を隠す"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
