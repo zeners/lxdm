@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-23 15:01+0200\n"
-"PO-Revision-Date: 2012-04-08 12:57+0200\n"
-"Last-Translator: enginmanap <enginmanap@gmail.com>\n"
+"PO-Revision-Date: 2012-10-08 12:36+0200\n"
+"Last-Translator: Necdet <necdetyucel@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -53,19 +53,19 @@ msgstr "Öntanımlı"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "Alt paneli etkinleştir"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "Alt Panel Seçenekleri"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "Şeffaf panel"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "Oturumları gizle"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -77,11 +77,11 @@ msgstr "Klavye yerleşimini göster"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "Çıkış düğmesini gizle"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "Diğer Seçenekler"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -89,7 +89,7 @@ msgstr "Kullanıcı listesini göster"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "Zamanı gizle"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"

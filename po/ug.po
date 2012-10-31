@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-23 15:01+0200\n"
-"PO-Revision-Date: 2011-11-29 08:35+0200\n"
+"PO-Revision-Date: 2012-10-03 11:00+0200\n"
 "Last-Translator: Gheyret <gheyret@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: ug\n"
@@ -53,19 +53,19 @@ msgstr "كۆڭۈلدىكى"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "ئاستى كۆزنەكنى ئىناۋەتلىك قىلىش"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "ئاستى كۆزنەك تاللانمىلىرى"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "سۈزۈك كۆزنەك"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "ئەڭگىمەلەرنى يوشۇر"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -77,11 +77,11 @@ msgstr "ھەرپتاختا جايلاشتۇرۇلۇشىنى كۆرسىتىش"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "ئاخىرلاشتۇرۇش توپچىسىنى يوشۇر"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "باشقا تاللانمىلار"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -89,7 +89,7 @@ msgstr "ئىشلەتكۈچى تىزىمىنى كۆرسىتىش"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "ۋاقىتنى يوشۇر"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"

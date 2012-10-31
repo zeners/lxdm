@@ -9,28 +9,34 @@ msgstr ""
 "Project-Id-Version: lxdm.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-23 15:01+0200\n"
-"PO-Revision-Date: 2012-04-06 06:44+0900\n"
+"PO-Revision-Date: 2012-10-16 17:30+0900\n"
 "Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
-#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
+#: ../data/lxdm.glade.h:1
+#: ../data/themes/Industrial/greeter.ui.h:1
+#: ../src/greeter.c:139
+#: ../src/greeter.c:229
+#: ../src/greeter.c:922
 msgid "User:"
 msgstr "사용자:"
 
-#: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
+#: ../data/lxdm.glade.h:2
+#: ../data/themes/Industrial/greeter.ui.h:2
 msgid "Desktop:"
 msgstr "데스크톱:"
 
-#: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
+#: ../data/lxdm.glade.h:3
+#: ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
 msgstr "언어:"
 
-#: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
+#: ../data/lxdm.glade.h:4
+#: ../data/themes/Industrial/greeter.ui.h:4
 msgid "Keyboard:"
 msgstr "키보드:"
 
@@ -46,25 +52,27 @@ msgstr "자동 로그인"
 msgid "Background"
 msgstr "비경"
 
-#: ../data/config.ui.h:4 ../src/greeter.c:297 ../src/lang.c:103
+#: ../data/config.ui.h:4
+#: ../src/greeter.c:297
+#: ../src/lang.c:103
 msgid "Default"
 msgstr "기본값"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "하단 창 활성화"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "하단 창 옵션"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "투명 창"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "세션 숨기기"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -76,11 +84,11 @@ msgstr "키보드 배치 표시"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "나가기 단추 숨기기"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "다른 옵션"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -88,13 +96,15 @@ msgstr "사용자 목록 표시"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "시간 숨기기"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
 msgstr "미분류"
 
-#: ../src/greeter.c:158 ../src/greeter.c:187 ../src/greeter.c:908
+#: ../src/greeter.c:158
+#: ../src/greeter.c:187
+#: ../src/greeter.c:908
 msgid "Password:"
 msgstr "암호:"
 
@@ -114,10 +124,12 @@ msgstr ""
 "\n"
 "<i>로그인 함</i>"
 
-#: ../src/greeter.c:1037 ../src/lang.c:125
+#: ../src/greeter.c:1037
+#: ../src/lang.c:125
 msgid "More ..."
 msgstr "다음 ..."
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
 msgstr "다음 그림 찾아보기..."
+
