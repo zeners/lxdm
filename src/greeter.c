@@ -40,6 +40,7 @@
 
 #include "lxcom.h"
 #include "greeter-utils.h"
+#include "lxcommon.h"
 
 enum {
     COL_SESSION_NAME,
@@ -54,7 +55,6 @@ enum {
     N_LANG_COLS
 };
 
-#define VCONFIG_FILE 		"/var/lib/lxdm/lxdm.conf"
 #define XKB_SYMBOL_DIR		"/usr/share/X11/xkb/symbols.dir"
 
 static GtkBuilder* builder;

@@ -73,6 +73,7 @@
 #include "lxdm.h"
 #include "lxcom.h"
 #include "xconn.h"
+#include "lxcommon.h"
 
 #define LOGFILE "/var/log/lxdm.log"
 
@@ -1341,7 +1342,7 @@ static void lxdm_save_login(char *session,char *lang)
 		lang="";
 	var=g_key_file_new();
 	g_key_file_set_list_separator(var, ' ');
-	g_key_file_load_from_file(var,"/var/lib/lxdm/lxdm.conf",0,NULL);
+	g_key_file_load_from_file(var,VCONFIG_FILE,0,NULL);
 	old=g_key_file_get_string(var,"base","last_session",0);
 	if(0!=g_strcmp0(old,session))
 	{
@@ -1393,7 +1394,7 @@ static void lxdm_save_login(char *session,char *lang)
         char* data = g_key_file_to_data(var, &len, NULL);
 		mkdir("/var/lib/lxdm",0755);
 		chmod("/var/lib/lxdm",0755);
-        g_file_set_contents("/var/lib/lxdm/lxdm.conf", data, len, NULL);
+        g_file_set_contents(VCONFIG_FILE, data, len, NULL);
         g_free(data);
 	}
 	g_key_file_free(var);
@@ -1609,10 +1610,30 @@ int lxdm_do_auto_login(void)
 	if(count==1)
 		pass = g_key_file_get_string(config, "base", "password", 0);
 	#endif
+
+	/* get defaults from last login */
+	GKeyFile *var_config = g_key_file_new();
+	g_key_file_set_list_separator(var_config, ' ');
+	g_key_file_load_from_file(var_config,VCONFIG_FILE,G_KEY_FILE_KEEP_COMMENTS, NULL);
+
+	char* last_session = g_key_file_get_string(var_config, "base", "last_session", NULL);
+	if(last_session != NULL && last_session[0] == 0)
+	{
+		g_free(last_session);
+		last_session = NULL;
+	}
+
+	char* last_lang = g_key_file_get_string(var_config, "base", "last_lang", NULL);
+
+	g_key_file_free(var_config);
+
 	for(i=0;i<count;i++)
 	{
 		char *user,*session=NULL,*lang=NULL,*option=NULL;
 		p=users[i];
+		/* autologin users starting with '@' get own config section with
+		 * user=, session= and lang= entry
+		 */
 		if(p[0]=='@')	
 		{
 			option=p+1;
@@ -1620,9 +1641,14 @@ int lxdm_do_auto_login(void)
 			session=g_key_file_get_string(config,option,"session",0);
 			lang=g_key_file_get_string(config,option,"lang",0);
 		}
+		/* autologin users not starting with '@' get user, session, lang section
+                 * from last login
+                 */
 		else
 		{
 			user=g_strdup(p);
+			session=g_strdup(last_session);
+			lang=g_strdup(last_lang);
 		}
 		ret=lxdm_auth_user(user, pass, &pw);
 		if(ret==AUTH_SUCCESS)
@@ -1632,6 +1658,8 @@ int lxdm_do_auto_login(void)
 		}
 		g_free(user);g_free(session);g_free(lang);
 	}
+	g_free(last_lang);
+	g_free(last_session);
 	g_strfreev(users);
 	g_free(pass);
 	return success;
