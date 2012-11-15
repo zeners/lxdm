@@ -1,11 +1,15 @@
 NULL =
+
 SUBDIRS= \
 	src \
 	po \
 	pam \
-	systemd \
 	data \
 	$(NULL)
+
+if HAVE_SYSTEMD
+SUBDIRS += systemd
+endif
 
 rpm: dist @PACKAGE_NAME@.spec
 	rpmbuild -bb \

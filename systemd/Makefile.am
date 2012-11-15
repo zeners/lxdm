@@ -1,6 +1,6 @@
 NULL= 
 
-lxdm_systemddir = /usr/lib/systemd/system/
+lxdm_systemddir = @systemdsystemunitdir@
 lxdm_systemd_DATA = \
 	lxdm.service \
 	$(NULL)

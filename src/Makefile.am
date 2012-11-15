@@ -20,7 +20,7 @@ lxdm_binary_LDADD = \
 	$(NULL)
 
 lxdm_binary_SOURCES = \
-	lxdm.c lxdm.h ui.c lxcom.c lxcom.h xconn.c xconn.h \
+	lxdm.c lxdm.h ui.c lxcom.c lxcom.h xconn.c xconn.h lxcommon.h \
 	$(NULL)
 
 libexec_PROGRAMS = lxdm-greeter-gdk lxdm-numlock lxdm-greeter-gtk
@@ -49,6 +49,7 @@ lxdm_greeter_gtk_SOURCES = \
 	gdm/locarchive.h \
 	lxcom.c lxcom.h \
 	greeter-utils.c greeter-utils.h \
+	lxcommon.h \
 	$(NULL)
 
 lxdm_greeter_gdk_CFLAGS = \
