@@ -20,8 +20,6 @@
  */
 
 
-#include <X11/Xlib.h>
-
 #include <string.h>
 #include <poll.h>
 #include <grp.h>

@@ -163,7 +163,16 @@ void stop_pid(int pid)
 
 // just hack to work with some bad pam module
 static guint first_pam_source=2;
-static void clean_pam_glib_source(void)
+static gboolean clean_pam_func(void)
+{
+	return FALSE;
+}
+static void clean_pam_glib_source_prepare(pam_handle_t *pamh)
+{
+	if(pamh) return;
+	first_pam_source=g_idle_add((GSourceFunc)clean_pam_func,NULL);
+}
+static void clean_pam_glib_source_run(void)
 {
 	int i,end=first_pam_source+256;
 	for(i=first_pam_source;i<end;i++)
@@ -171,7 +180,6 @@ static void clean_pam_glib_source(void)
 		if(g_source_remove(i)==TRUE)
 		{
 			first_pam_source=i+1;
-			g_message("some bad pam add glib source to lxdm\n");
 		}
 	}
 }
@@ -816,6 +824,7 @@ static int do_conv(int num, const struct pam_message **msg,struct pam_response *
 }
 
 static struct pam_conv conv={.conv=do_conv,.appdata_ptr=user_pass};
+
 #endif
 
 int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
@@ -891,6 +900,7 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         exit(0);
     }
 	if(s->pamh) pam_end(s->pamh,0);
+	clean_pam_glib_source_prepare(NULL);
 	if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &s->pamh))
 	{
 		s->pamh=NULL;
@@ -928,6 +938,7 @@ void setup_pam_session(LXSession *s,struct passwd *pw,char *session_name)
     int err;
     char x[256];
  
+	clean_pam_glib_source_prepare(s->pamh);
     if(!s->pamh && PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &s->pamh))
     {
         s->pamh = NULL;
@@ -951,7 +962,7 @@ void setup_pam_session(LXSession *s,struct passwd *pw,char *session_name)
     if( err != PAM_SUCCESS )
         g_warning( "pam open session error \"%s\"\n", pam_strerror(s->pamh, err));
         
-	clean_pam_glib_source();
+	clean_pam_glib_source_run();
 }
 
 static char **append_pam_environ(pam_handle_t *pamh,char **env)
