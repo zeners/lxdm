@@ -160,6 +160,22 @@ void stop_pid(int pid)
 }
 
 #if HAVE_LIBPAM
+
+// just hack to work with some bad pam module
+static guint first_pam_source=2;
+static void clean_pam_glib_source(void)
+{
+	int i,end=first_pam_source+256;
+	for(i=first_pam_source;i<end;i++)
+	{
+		if(g_source_remove(i)==TRUE)
+		{
+			first_pam_source=i+1;
+			g_message("some bad pam add glib source to lxdm\n");
+		}
+	}
+}
+
 static void close_pam_session(pam_handle_t *pamh)
 {
     int err;
@@ -934,6 +950,8 @@ void setup_pam_session(LXSession *s,struct passwd *pw,char *session_name)
     err = pam_open_session(s->pamh, 0); /* FIXME pam session failed */
     if( err != PAM_SUCCESS )
         g_warning( "pam open session error \"%s\"\n", pam_strerror(s->pamh, err));
+        
+	clean_pam_glib_source();
 }
 
 static char **append_pam_environ(pam_handle_t *pamh,char **env)
