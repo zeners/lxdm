@@ -89,11 +89,21 @@ PKG_CHECK_MODULES(GTK, [$pkg_modules])
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
-PKG_CHECK_MODULES(CONSOLEKIT, "ck-connector",[
+
+AC_ARG_ENABLE(consolekit,
+	AC_HELP_STRING([--disable-consolekit],[disable ConsoleKit support]),
+	[enable_consolekit=$enableval],
+	[enable_consolekit=yes]
+)
+
+if test "x$enable_consolekit" = "xyes" ; then
+  PKG_CHECK_MODULES(CONSOLEKIT, "ck-connector",[
 	AC_SUBST(CONSOLEKIT_CFLAGS)
 	AC_SUBST(CONSOLEKIT_LIBS)],[
 	echo "ConsoleKit devel package not found"
 	])
+fi
+
 
 AC_ARG_ENABLE(password,
 AC_HELP_STRING([--enable-password],[enable to load autologin password store at config file]),
