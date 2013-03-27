@@ -61,8 +61,10 @@ static GtkBuilder* builder;
 static GKeyFile *config;
 static GKeyFile * var_config;
 static GtkWidget* win;
+static GtkWidget* alignment2;
 static GtkWidget* prompt;
 static GtkWidget* login_entry;
+static GtkWidget* user_list_scrolled;
 static GtkWidget* user_list;
 
 static GtkWidget* sessions;
@@ -141,7 +143,10 @@ static void switch_to_input_user(void)
 	if(user_list)
 	{
 		gtk_widget_hide(login_entry);
-		gtk_widget_show(user_list);
+		if(user_list_scrolled)
+			gtk_widget_show(user_list_scrolled);
+		else
+			gtk_widget_hide(user_list);
 		gtk_widget_grab_focus(user_list);
 	}
 	else
@@ -154,7 +159,12 @@ static void switch_to_input_user(void)
 static void switch_to_input_passwd(void)
 {
 	if(user_list!=NULL)
-		gtk_widget_hide(user_list);
+	{
+		if(user_list_scrolled)
+			gtk_widget_hide(user_list_scrolled);
+		else
+			gtk_widget_hide(user_list);
+	}
 	gtk_label_set_text( GTK_LABEL(prompt), _("Password:") );
 	gtk_entry_set_text(GTK_ENTRY(login_entry), "");
 	gtk_entry_set_visibility(GTK_ENTRY(login_entry), FALSE);
@@ -872,7 +882,10 @@ static void on_user_select(GtkIconView *iconview)
 	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free (list);
 	gtk_tree_model_get(model,&iter,2,&name,-1);
-	gtk_widget_hide(user_list);
+	if(user_list_scrolled)
+		gtk_widget_hide(user_list_scrolled);
+	else
+		gtk_widget_hide(user_list);
 	if(name && name[0])
 	{
 		if(auto_login && is_autologin_user(name))
@@ -984,8 +997,12 @@ static gboolean load_user_list(GtkWidget *widget)
 	}
 	if(count>3)
 	{
-		// TODO: better ui needed
+#if GTK_CHECK_VERSION(3,0,0)
+		gtk_alignment_set(GTK_ALIGNMENT(alignment2), 0.5, 0.1, 0, 0.3);
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(user_list_scrolled), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+#else
 		count=3;
+#endif
 	}
 	for(i=0;i<count;i++)
 	{		
@@ -1031,11 +1048,11 @@ static gboolean load_user_list(GtkWidget *widget)
 	}
 	g_strfreev(users);
 	g_key_file_free(kf);
-	
+
 	// add "More ..."
 	gtk_list_store_append(model,&iter);
 	gtk_list_store_set(model,&iter,1,_("More ..."),2,"",3,"",4,FALSE,-1);
-	
+
 	path=gtk_tree_path_new_from_string("0");
 	gtk_icon_view_select_path(GTK_ICON_VIEW(widget),path);
 	gtk_widget_grab_focus(widget);
@@ -1124,6 +1141,8 @@ static void create_win()
         
     } /* otherwise, let gtk theme paint it. */
 
+    alignment2=(GtkWidget*)gtk_builder_get_object(builder,"alignment2");
+    user_list_scrolled=(GtkWidget*)gtk_builder_get_object(builder,"user_list_scrolled");
     user_list=(GtkWidget*)gtk_builder_get_object(builder,"user_list");
 
     prompt = (GtkWidget*)gtk_builder_get_object(builder, "prompt");
@@ -1241,7 +1260,10 @@ static void create_win()
 	{
 		if(user_list)
 		{
-			gtk_widget_hide(user_list);
+			if(user_list_scrolled)
+				gtk_widget_hide(user_list_scrolled);
+			else
+				gtk_widget_hide(user_list);
 			user_list=NULL;
 		}
 	}
