@@ -997,12 +997,13 @@ static gboolean load_user_list(GtkWidget *widget)
 	}
 	if(count>3)
 	{
-#if GTK_CHECK_VERSION(3,0,0)
-		gtk_alignment_set(GTK_ALIGNMENT(alignment2), 0.5, 0.1, 0, 0.3);
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(user_list_scrolled), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-#else
-		count=3;
-#endif
+		if(user_list_scrolled)
+		{
+			gtk_alignment_set(GTK_ALIGNMENT(alignment2), 0.5, 0.1, 0, 0.3);
+			gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(user_list_scrolled), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+		}
+		else
+			count=3;
 	}
 	for(i=0;i<count;i++)
 	{		

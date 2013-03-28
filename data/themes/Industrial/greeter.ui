@@ -54,6 +54,7 @@
                           <object class="GtkLabel" id="prompt">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">User:</property>
+                            <property name="yalign">0.2</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
