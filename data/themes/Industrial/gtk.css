@@ -1,5 +1,6 @@
 #lxdm {
-	background-image: url("wave.svg")
+	background-image: url("wave.svg");
+	background-size: 100%;
 }
 
 #bottom_pane {
