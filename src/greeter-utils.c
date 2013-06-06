@@ -42,17 +42,29 @@ int ui_get_geometry(GdkWindow *win,GdkRectangle *rc)
 void ui_set_bg(GdkWindow *win,GKeyFile *config)
 {
 	GdkPixbuf *bg_img=NULL;
+#if GTK_CHECK_VERSION(3,4,0)
+	GdkRGBA bg_color;
+#else
 	GdkColor bg_color;
+#endif
 	GdkWindow *root=gdk_get_default_root_window();
 	char *p=g_key_file_get_string(config,"display","bg",NULL);
+#if GTK_CHECK_VERSION(3,4,0)
+	gdk_rgba_parse(&bg_color,"#222E45");
+#else
 	gdk_color_parse("#222E45",&bg_color);
+#endif
 	if( p && p[0] != '#' )
 	{
 		bg_img = gdk_pixbuf_new_from_file(p, 0);
 	}
 	if( p && p[0] == '#' )
 	{
-		gdk_color_parse(p, &bg_color);
+#if GTK_CHECK_VERSION(3,4,0)
+		gdk_rgba_parse(&bg_color,p);
+#else
+		gdk_color_parse(p,&bg_color);
+#endif
 	}
 	g_free(p);
 
@@ -95,8 +107,13 @@ void ui_set_bg(GdkWindow *win,GKeyFile *config)
 	else
 	{
 #ifdef ENABLE_GTK3
+#if GTK_CHECK_VERSION(3,4,0)
+		if(win) gdk_window_set_background_rgba(win,&bg_color);
+		gdk_window_set_background_rgba(root,&bg_color);
+#else
 		if(win) gdk_window_set_background(win,&bg_color);
 		gdk_window_set_background(root,&bg_color);
+#endif	
 #else
 		GdkColormap *map;
 		if(win)

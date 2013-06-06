@@ -1250,7 +1250,6 @@ static void create_win()
 	ui_get_geometry(window,&rc);
 	gtk_window_move(GTK_WINDOW(win),rc.x,rc.y);
 	gtk_window_set_default_size(GTK_WINDOW(win),rc.width,rc.height);
-	ui_set_bg(window,config);
 
 	if(user_list && !g_key_file_get_integer(config,"userlist","disable",NULL) && 
 			load_user_list(user_list))
@@ -1272,6 +1271,8 @@ static void create_win()
 	ui_add_cursor();
 	ui_set_cursor(gtk_widget_get_window(win),GDK_LEFT_PTR);
 	gtk_widget_show(win);
+	ui_set_bg(window,config);
+	
 	ui_set_focus(window);
 	if(!user_list)
 		gtk_widget_grab_focus(login_entry);
