@@ -28,8 +28,6 @@ if test "x$USE_PAM" != "xno" ; then
 		 fi])
 fi
 
-AC_CHECK_LIB([ck-connector],[ck_connector_open_session])
-
 # Checks for header files.
 AC_PATH_X
 AC_CHECK_HEADERS([shadow.h stdlib.h string.h unistd.h utmpx.h])
@@ -102,6 +100,7 @@ if test "x$enable_consolekit" = "xyes" ; then
 	AC_SUBST(CONSOLEKIT_LIBS)],[
 	echo "ConsoleKit devel package not found"
 	])
+  AC_CHECK_LIB([ck-connector],[ck_connector_open_session])
 fi
 
 
