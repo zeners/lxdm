@@ -951,6 +951,15 @@ void setup_pam_session(LXSession *s,struct passwd *pw,char *session_name)
     pam_set_item(s->pamh, PAM_XDISPLAY, getenv("DISPLAY") );
 #endif
 
+#if !defined(DISABLE_XAUTH) && defined(PAM_XAUTHDATA)
+	struct pam_xauth_data value;
+	value.name="MIT-MAGIC-COOKIE-1";
+	value.namelen=18;
+	value.data=s->mcookie;
+	value.datalen=sizeof(s->mcookie);
+	pam_set_item (s->pamh, PAM_XAUTHDATA, &value);
+#endif
+
     if(session_name && session_name[0])
     {
         char *env;
