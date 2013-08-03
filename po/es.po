@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-23 15:01+0200\n"
-"PO-Revision-Date: 2011-11-24 20:58+0200\n"
-"Last-Translator: Hugo <sysadmin@cips.cu>\n"
+"PO-Revision-Date: 2013-07-27 17:54+0000\n"
+"Last-Translator: Adolfo <fitoschido@ubuntu.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.5\n"
+"X-Generator: Pootle 2.5.0\n"
+"X-POOTLE-MTIME: 1374947652.0\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 #: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
@@ -41,7 +42,7 @@ msgstr "lxdm config"
 
 #: ../data/config.ui.h:2
 msgid "Automatic Login"
-msgstr "Inicio automático"
+msgstr "Inicio de sesión automático"
 
 #: ../data/config.ui.h:3
 msgid "Background"
@@ -53,19 +54,19 @@ msgstr "Predeterminado"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "Activar el panel inferior"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "Opciones del panel inferior"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "Panel transparente"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "Ocultar las sesiones"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -73,15 +74,15 @@ msgstr "Mostrar menú de idiomas"
 
 #: ../data/config.ui.h:10
 msgid "Show keyboard layouts"
-msgstr "Mostrar distribuciones de teclados"
+msgstr "Mostrar distribuciones del teclado"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "Ocultar el botón «Salir»"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "Otras opciones"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -89,7 +90,7 @@ msgstr "Mostrar lista de usuarios"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "Ocultar la hora"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -117,8 +118,8 @@ msgstr ""
 
 #: ../src/greeter.c:1037 ../src/lang.c:125
 msgid "More ..."
-msgstr "Más ..."
+msgstr "Más…"
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
-msgstr "Explorar más imágenes..."
+msgstr "Examinar imágenes…"
