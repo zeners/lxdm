@@ -8,32 +8,33 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-23 15:01+0200\n"
-"PO-Revision-Date: 2012-01-05 15:38+0200\n"
-"Last-Translator: Cilyan <gaknar@gmail.com>\n"
+"PO-Revision-Date: 2013-08-12 20:02+0000\n"
+"Last-Translator: Julien <Julius22@laposte.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Pootle 2.0.5\n"
+"X-Generator: Pootle 2.5.0\n"
+"X-POOTLE-MTIME: 1376337751.0\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 #: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
 msgid "User:"
-msgstr "Utilisateur:"
+msgstr "Utilisateur :"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
 msgid "Desktop:"
-msgstr "Bureau"
+msgstr "Bureau :"
 
 #: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
-msgstr "Langage:"
+msgstr "Langue :"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
 msgid "Keyboard:"
-msgstr "Clavier:"
+msgstr "Clavier :"
 
 #: ../data/config.ui.h:1
 msgid "lxdm config"
@@ -52,20 +53,21 @@ msgid "Default"
 msgstr "Par défaut"
 
 #: ../data/config.ui.h:5
+#, fuzzy
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "Autoriser le panneau inférieur"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "Options du panneau inférieur"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "Panneau transparent"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "Cacher les sessions"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
@@ -77,11 +79,11 @@ msgstr "Afficher les dispositions de clavier"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "Cacher le bouton « Quitter »"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "Autres options"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
@@ -89,7 +91,7 @@ msgstr "Afficher la liste des utilisateurs"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "Cacher l'heure"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
@@ -97,7 +99,7 @@ msgstr "Non spécifié"
 
 #: ../src/greeter.c:158 ../src/greeter.c:187 ../src/greeter.c:908
 msgid "Password:"
-msgstr "Mot de passe:"
+msgstr "Mot de passe :"
 
 #: ../src/greeter.c:716
 msgid "_Reboot"
@@ -117,7 +119,7 @@ msgstr ""
 
 #: ../src/greeter.c:1037 ../src/lang.c:125
 msgid "More ..."
-msgstr "Plus ..."
+msgstr "Plus..."
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
