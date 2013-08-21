@@ -592,6 +592,7 @@ static void log_init(void)
 	if(fd_log == -1) return;
 	dup2(fd_log, 1);
 	dup2(fd_log, 2);
+	close(fd_log);
 }
 
 static void log_ignore(const gchar *log_domain, GLogLevelFlags log_level,
@@ -1029,6 +1030,12 @@ static void close_left_fds(void)
 		close(fd);
 	}
 	free(list);
+	
+	int fd = open("/dev/null", O_WRONLY);
+	if(fd == -1) return;
+	dup2(fd, 1);
+	dup2(fd, 2);
+	close(fd);
 }
 
 void switch_user(struct passwd *pw, char *run, char **env)
