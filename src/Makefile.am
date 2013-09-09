@@ -8,6 +8,7 @@ lxdm_binary_CFLAGS = \
 	-DXSESSIONS_DIR=\"@datarootdir@/xsessions\" \
 	-DLXDM_DATA_DIR=@datadir@/@PACKAGE@ \
 	-DLXDM_NUMLOCK_PATH=\"@libexecdir@/lxdm-numlock\" \
+	-DLXDM_SESSION_PATH=\"@libexecdir@/lxdm-session\" \
 	$(CONSOLEKIT_CFLAGS) \
 	-Werror-implicit-function-declaration \
 	-Wall \
@@ -20,10 +21,10 @@ lxdm_binary_LDADD = \
 	$(NULL)
 
 lxdm_binary_SOURCES = \
-	lxdm.c lxdm.h ui.c lxcom.c lxcom.h xconn.c xconn.h lxcommon.h \
+	lxdm.c lxdm.h ui.c lxcom.c lxcom.h xconn.c xconn.h auth.c lxcommon.h \
 	$(NULL)
 
-libexec_PROGRAMS = lxdm-greeter-gdk lxdm-numlock lxdm-greeter-gtk
+libexec_PROGRAMS = lxdm-greeter-gdk lxdm-numlock lxdm-greeter-gtk lxdm-session
 
 lxdm_greeter_gtk_CFLAGS = \
 	$(GTK_CFLAGS) \
@@ -85,6 +86,18 @@ lxdm_numlock_LDADD = \
 	$(XLIB_LIBS) \
 	$(NULL)
 
+lxdm_session_SOURCES = \
+	pam.c \
+	$(NULL)
+
+lxdm_session_CFLAGS = \
+	$(GLIB_CFLAGS) \
+	$(NULL)
+
+lxdm_session_LDFLAGS = \
+	$(GLIB_LIBS) \
+	$(NULL)
+
 bin_PROGRAMS = lxdm-config
 
 lxdm_config_CFLAGS = \
@@ -100,4 +113,5 @@ lxdm_config_LDADD = \
 lxdm_config_SOURCES = \
 	config.c \
 	$(NULL)
+
 

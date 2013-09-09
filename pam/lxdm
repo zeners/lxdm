@@ -4,7 +4,6 @@ auth       optional	pam_gnome_keyring.so
 account    include	system-auth
 session    optional	pam_keyinit.so force revoke
 session    include	system-auth
-session    required	pam_loginuid.so
 session    optional	pam_console.so
 session    optional	pam_gnome_keyring.so auto_start
 session    optional	pam_selinux.so

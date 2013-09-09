@@ -1,5 +1,5 @@
 /*
- *      lxdm.h - interface of lxdm
+ *      lxdm.c - main entry of lxdm
  *
  *      Copyright 2009 dgod <dgod.osa@gmail.com>
  *
@@ -19,47 +19,20 @@
  *      MA 02110-1301, USA.
  */
 
-#ifndef _LXDM_H_
-#define _LXDM_H_
-
-#include <glib.h>
-#include <pwd.h>
-
-G_BEGIN_DECLS
-
-extern GKeyFile *config;
-
-int lxdm_auth_user(char *user,char *pass,struct passwd **ppw);
-void lxdm_do_login(struct passwd *pw,char *session,char *lang,char *option);
-void lxdm_do_reboot(void);
-void lxdm_do_shutdown(void);
-int lxdm_do_auto_login(void);
-void lxdm_quit_self(int code);
-
-enum AuthResult
-{
-    AUTH_SUCCESS,
-    AUTH_BAD_USER,
-    AUTH_FAIL,
-    AUTH_PRIV,
-    AUTH_ERROR
-};
-
-void ui_drop(void);
-int ui_main(void);
-void ui_prepare(void);
-int ui_greeter_user(void);
+#pragma once
 
 typedef struct{
-	char *name;
-	char *exec;
-	char* desktop_file;
-}Session;
+	void *handle;
+	struct passwd pw;
+	int pipe[2];
+	int child;
+}LXDM_AUTH;
 
-GSList *do_scan_xsessions(void);
-void free_xsessions(GSList *);
-
-G_END_DECLS
-
-#endif/*_LXDM_H_*/
-
+int lxdm_auth_init(LXDM_AUTH *a);
+int lxdm_auth_cleanup(LXDM_AUTH *a);
+int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *u,const char *p);
+int lxdm_auth_session_begin(LXDM_AUTH *a,const char *name,int tty,int display,char mcookie[16]);
+int lxdm_auth_session_end(LXDM_AUTH *a);
+int lxdm_auth_clean_for_child(LXDM_AUTH *a);
+char **lxdm_auth_append_env(LXDM_AUTH *a,char **env);
+int lxdm_auth_session_run(LXDM_AUTH *a,const char *session_exec,char **env);

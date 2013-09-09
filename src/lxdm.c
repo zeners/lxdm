@@ -24,13 +24,6 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef HAVE_LIBPAM
-#ifdef USE_PAM
-#define HAVE_LIBPAM 1
-#else
-#define HAVE_LIBPAM 0
-#endif
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,18 +55,27 @@
 #include <utmpx.h>
 #endif
 
-#if HAVE_LIBPAM
-#include <security/pam_appl.h>
-#endif
-
 #if HAVE_LIBCK_CONNECTOR
 #include <ck-connector.h>
+#endif
+
+#ifndef HAVE_LIBPAM
+#ifdef USE_PAM
+#define HAVE_LIBPAM 1
+#else
+#define HAVE_LIBPAM 0
+#endif
+#endif
+
+#if HAVE_LIBPAM
+#include <security/pam_appl.h>
 #endif
 
 #include "lxdm.h"
 #include "lxcom.h"
 #include "xconn.h"
 #include "lxcommon.h"
+#include "auth.h"
 
 #define LOGFILE "/var/log/lxdm.log"
 
@@ -87,9 +89,7 @@ typedef struct{
 	int display;
 	char *option;	/* hold option in config file */
 	xconn_t dpy;	/* hold this, or X crack */
-#if HAVE_LIBPAM
-	pam_handle_t *pamh;
-#endif
+	LXDM_AUTH auth;
 #if HAVE_LIBCK_CONNECTOR
 	CkConnector *ckc;
 #endif
@@ -158,42 +158,6 @@ void stop_pid(int pid)
     }
     while( waitpid(-1, 0, WNOHANG) > 0 ) ;
 }
-
-#if HAVE_LIBPAM
-
-// just hack to work with some bad pam module
-static guint first_pam_source=2;
-static gboolean clean_pam_func(void)
-{
-	return FALSE;
-}
-static void clean_pam_glib_source_prepare(pam_handle_t *pamh)
-{
-	if(pamh) return;
-	first_pam_source=g_idle_add((GSourceFunc)clean_pam_func,NULL);
-}
-static void clean_pam_glib_source_run(void)
-{
-	int i,end=first_pam_source+256;
-	for(i=first_pam_source;i<end;i++)
-	{
-		if(g_source_remove(i)==TRUE)
-		{
-			first_pam_source=i+1;
-		}
-	}
-}
-
-static void close_pam_session(pam_handle_t *pamh)
-{
-    int err;
-    if( !pamh ) return;
-    err = pam_close_session(pamh, 0);
-    //err=pam_setcred(pamh, PAM_DELETE_CRED);
-    pam_end(pamh, err);
-    pamh = NULL;
-}
-#endif
 
 static LXSession *lxsession_find_greeter(void)
 {
@@ -329,6 +293,7 @@ static LXSession *lxsession_add(void)
 		return NULL;
 	}
 	s->env=NULL;
+	lxdm_auth_init(&s->auth);
 	session_list=g_slist_prepend(session_list,s);
 	lxdm_startx(s);
 	return s;
@@ -384,10 +349,7 @@ static void lxsession_stop(LXSession *s)
 	{
 		xconn_clean(s->dpy);
 	}
-#if HAVE_LIBPAM
-	close_pam_session(s->pamh);
-	s->pamh=NULL;
-#endif
+	lxdm_auth_session_end(&s->auth);
 #if HAVE_LIBCK_CONNECTOR
 	if( s->ckc != NULL )
 	{
@@ -585,7 +547,6 @@ void lxdm_quit_self(int code)
 static void log_init(void)
 {
 	int fd_log;
-
 	g_unlink(LOGFILE ".old");
 	g_rename(LOGFILE, LOGFILE ".old");
 	fd_log = open(LOGFILE, O_CREAT|O_APPEND|O_TRUNC|O_WRONLY|O_EXCL, 0640);
@@ -755,16 +716,15 @@ static void create_server_auth(LXSession *s)
 	g_free(authfile);
 }
 
-static void create_client_auth(char *home,char **env)
+static void create_client_auth(struct passwd *pw,char **env)
 {
 	LXSession *s;
 	char *authfile;
-	uid_t user;
 	
-	if((user=getuid())==0) /* root don't need it */
+	if(pw->pw_uid==0) /* root don't need it */
 		return;
         
-	s=lxsession_find_user(user);
+	s=lxsession_find_user(pw->pw_uid);
 	if(!s)
 		return;
 	
@@ -779,119 +739,26 @@ static void create_client_auth(char *home,char **env)
 		path=g_key_file_get_string(config,"base","xauth_path",NULL);
 		if(path)
 		{
-			authfile = g_strdup_printf("%s/.Xauth%d", path,user);
+			authfile = g_strdup_printf("%s/.Xauth%d", path,pw->pw_uid);
 			g_free(path);
 		}
 		else
 		{
-			authfile = g_strdup_printf("%s/.Xauthority", home);
+			authfile = g_strdup_printf("%s/.Xauthority", pw->pw_dir);
 		}
 	}
 	remove(authfile);
 	xauth_write_file(authfile,s->display,s->mcookie);
 	replace_env(env,"XAUTHORITY=",authfile);
+	chown(authfile,pw->pw_uid,pw->pw_gid);
 	g_free(authfile);
 }
 #endif
 
-#if HAVE_LIBPAM
-static char *user_pass[2];
-
-static int do_conv(int num, const struct pam_message **msg,struct pam_response **resp, void *arg)
-{
-	int result = PAM_SUCCESS;
-	int i;
-	*resp = (struct pam_response *) calloc(num, sizeof(struct pam_response));
-	for(i=0;i<num;i++)
-	{
-		//printf("MSG: %d %s\n",msg[i]->msg_style,msg[i]->msg);
-		switch(msg[i]->msg_style){
-		case PAM_PROMPT_ECHO_ON:
-			resp[i]->resp=strdup(user_pass[0]?user_pass[0]:"");
-			break;
-		case PAM_PROMPT_ECHO_OFF:
-			//resp[i]->resp=strdup(user_pass[1]?user_pass[1]:"");
-			resp[i]->resp=user_pass[1]?strdup(user_pass[1]):NULL;
-			break;
-		case PAM_ERROR_MSG:
-		case PAM_TEXT_INFO:
-			//printf("PAM: %s\n",msg[i]->msg);
-			break;
-		default:
-			break;
-		}
-	}
-	return result;
-}
-
-static struct pam_conv conv={.conv=do_conv,.appdata_ptr=user_pass};
-
-#endif
-
 int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
 {
-    struct passwd *pw;
-#if !HAVE_LIBPAM
-    struct spwd *sp;
-    char *real;
-    char *enc;
-#endif
-    if( !user )
-    {
-        g_debug("user==NULL\n");
-        return AUTH_ERROR;
-    }
-    if( !user[0] )
-    {
-        g_debug("user[0]==0\n");
-        return AUTH_BAD_USER;
-    }
-    pw = getpwnam(user);
-    endpwent();
-    if( !pw )
-    {
-        g_debug("user %s not found\n",user);
-        return AUTH_BAD_USER;
-    }
-    if( !pass && !g_key_file_get_integer(config,"base","skip_password",NULL))
-    {
-        *ppw = pw;
-        g_debug("user %s auth ok\n",user);
-        return AUTH_SUCCESS;
-    }
-    if(strstr(pw->pw_shell, "nologin"))
-    {
-        g_debug("user %s have nologin shell\n",user);
-        return AUTH_PRIV;
-    }
-#if !HAVE_LIBPAM
-    sp = getspnam(user);
-    if( !sp )
-        return AUTH_FAIL;
-    endspent();
-    real = sp->sp_pwdp;
-    if( !real || !real[0] )
-    {
-        if( !pass || !pass[0] )
-        {
-            *ppw = pw;
-            g_debug("user %s auth with no password ok\n",user);
-            return AUTH_SUCCESS;
-        }
-        else
-        {
-            g_debug("user %s password not match\n",user);
-            return AUTH_FAIL;
-        }
-    }
-    enc = crypt(pass, real);
-    if( strcmp(real, enc) )
-    {
-        g_debug("user %s password not match\n",user);
-        return AUTH_FAIL;
-    }
-#else
     LXSession *s;
+    int ret;
     s=lxsession_find_greeter();
     if(!s) s=lxsession_find_idle();
     if(!s) s=lxsession_add();
@@ -900,117 +767,11 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         g_critical("lxsession_add fail\n");
         exit(0);
     }
-	if(s->pamh) pam_end(s->pamh,0);
-	clean_pam_glib_source_prepare(NULL);
-	if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &s->pamh))
-	{
-		s->pamh=NULL;
-		g_debug("user %s start pam fail\n",user);
-		return AUTH_FAIL;
-	}
-	else
-	{
-		int ret;
-		user_pass[0]=user;user_pass[1]=pass;
-		ret=pam_authenticate(s->pamh,PAM_SILENT);
-		user_pass[0]=0;user_pass[1]=0;
-		if(ret!=PAM_SUCCESS)
-		{
-			g_debug("user %s auth fail with %d\n",user,ret);
-			return AUTH_FAIL;
-		}
-		ret=pam_acct_mgmt(s->pamh,PAM_SILENT);
-		if(ret!=PAM_SUCCESS)
-		{
-			g_debug("user %s acct mgmt fail with %d\n",user,ret);
-			return AUTH_FAIL;
-		}
-		//ret=pam_setcred(s->pamh, PAM_ESTABLISH_CRED);
-	}
-#endif
-    *ppw = pw;
-    g_debug("user %s auth ok\n",pw->pw_name);
-    return AUTH_SUCCESS;
+	ret=lxdm_auth_user_authenticate(&s->auth,user,pass);
+	if(ret==AUTH_SUCCESS)
+		*ppw=&s->auth.pw;
+	return ret;
 }
-
-#if HAVE_LIBPAM
-void setup_pam_session(LXSession *s,struct passwd *pw,char *session_name)
-{
-    int err;
-    char x[256];
- 
-	clean_pam_glib_source_prepare(s->pamh);
-    if(!s->pamh && PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, &s->pamh))
-    {
-        s->pamh = NULL;
-        return;
-    }
-    if(!s->pamh) return;
-    sprintf(x, "tty%d", s->tty);
-    pam_set_item(s->pamh, PAM_TTY, x);
-#ifdef PAM_XDISPLAY
-    pam_set_item(s->pamh, PAM_XDISPLAY, getenv("DISPLAY") );
-#endif
-
-#if !defined(DISABLE_XAUTH) && defined(PAM_XAUTHDATA)
-	struct pam_xauth_data value;
-	value.name="MIT-MAGIC-COOKIE-1";
-	value.namelen=18;
-	value.data=s->mcookie;
-	value.datalen=sizeof(s->mcookie);
-	pam_set_item (s->pamh, PAM_XAUTHDATA, &value);
-#endif
-
-    if(session_name && session_name[0])
-    {
-        char *env;
-        env = g_strdup_printf ("DESKTOP_SESSION=%s", session_name);
-        pam_putenv (s->pamh, env);
-        g_free (env);
-    }
-    err = pam_open_session(s->pamh, 0); /* FIXME pam session failed */
-    if( err != PAM_SUCCESS )
-        g_warning( "pam open session error \"%s\"\n", pam_strerror(s->pamh, err));
-        
-	clean_pam_glib_source_run();
-}
-
-static char **append_pam_environ(pam_handle_t *pamh,char **env)
-{
-	int i,j,n,a;
-	char **penv;
-	if(!pamh) return env;
-	penv=pam_getenvlist(pamh);
-	if(!penv) return env;
-	a=g_strv_length(penv);
-	if(a==0)
-	{
-		free(penv);
-		return env;
-	}
-	env=g_renew(char *,env,g_strv_length(env)+1+a+10);
-	for(i=0;penv[i]!=NULL;i++)
-	{
-		fprintf(stderr,"PAM %s\n",penv[i]);
-		n=strcspn(penv[i],"=")+1;
-		for(j=0;env[j]!=NULL;j++)
-		{
-			if(!strncmp(penv[i],env[j],n))
-				break;
-			if(env[j+1]==NULL)
-			{
-				env[j+1]=g_strdup(penv[i]);
-				env[j+2]=NULL;
-				break;
-			}
-		}
-		free(penv[i]);
-	}
-	free(penv);
-	return env;
-}
-
-#endif
 
 static void close_left_fds(void)
 {
@@ -1038,7 +799,7 @@ static void close_left_fds(void)
 	close(fd);
 }
 
-void switch_user(struct passwd *pw, char *run, char **env)
+void switch_user(struct passwd *pw, const char *run, char **env)
 {
     int fd;
     
@@ -1059,9 +820,6 @@ void switch_user(struct passwd *pw, char *run, char **env)
         dup2(fd,STDERR_FILENO);
         close(fd);
     }
-#ifndef DISABLE_XAUTH
-    create_client_auth(pw->pw_dir,env);
-#endif
 
 	/* reset signal */
 	signal(SIGCHLD, SIG_DFL);
@@ -1519,12 +1277,10 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 		s->ckc=NULL;
 	}
 #endif
-#if HAVE_LIBPAM
-	setup_pam_session(s,pw,session_name);
-#endif
+	lxdm_auth_session_begin(&s->auth,session_name,s->tty,s->display,s->mcookie);
 #if HAVE_LIBCK_CONNECTOR
 #if HAVE_LIBPAM
-	if(!s->ckc && (!s->pamh || !pam_getenv(s->pamh,"XDG_SESSION_COOKIE")))
+	if(!s->ckc && (!s->auth.handle || !pam_getenv(s->auth.handle,"XDG_SESSION_COOKIE")))
 #else
 	if(!s->ckc)
 #endif
@@ -1590,17 +1346,22 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 		replace_env(env, "LANGUAGE=", lang);
 	}
 	s->env = env;
+	
+#ifndef DISABLE_XAUTH
+	create_client_auth(pw,env);
+#endif
 
-	s->child = pid = fork();
+	/*s->child = pid = fork();
 	if(s->child==0)
 	{
-#if HAVE_LIBPAM
-		env=append_pam_environ(s->pamh,env);
-		pam_end(s->pamh,0);
-#endif
+		env=lxdm_auth_append_env(&s->auth,env);
+		lxdm_auth_clean_for_child(&s->auth);
 		switch_user(pw, session_exec, env);
 		lxdm_quit_self(4);
-	}
+	}*/
+	
+	s->child = pid = lxdm_auth_session_run(&s->auth,session_exec,env);
+	
 	g_free(session_name);
 	g_free(session_exec);
 	if(alloc_session)
