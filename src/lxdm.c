@@ -963,7 +963,7 @@ void lxdm_startx(LXSession *s)
 	g_strfreev(args);
 	lxcom_add_child_watch(s->server, on_xserver_stop, s);
 
-	g_message("add xserver watch\n");
+	g_message("%ld: add xserver watch\n",time(NULL));
 	for( i = 0; i < 100; i++ )
 	{
 		if(lxcom_last_sig==SIGINT || lxcom_last_sig==SIGTERM)
@@ -973,6 +973,7 @@ void lxdm_startx(LXSession *s)
 		g_usleep(50 * 1000);
 		//g_message("retry %d\n",i);
 	}
+	g_message("%ld: start xserver in %d retry",time(NULL),i);
 	if(s->dpy==NULL)
 		exit(EXIT_FAILURE);
 	
