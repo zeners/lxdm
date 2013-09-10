@@ -136,7 +136,7 @@ if test "x$enable_debug" = "x$yes" ; then
 fi
 
 AC_ARG_WITH(xconn,
-	[AC_HELP_STRING([-with-xconn=@<:@xlib/xcb@:>@],[use xlib or xcb to use])],
+	[AC_HELP_STRING([--with-xconn=@<:@xlib/xcb@:>@],[use xlib or xcb to use])],
 	[if test "x$with_xconn" = "xxlib"; then
 		PKG_CHECK_MODULES(XCONN,"x11")
 		AC_SUBST(XCONN_CFLAGS)
