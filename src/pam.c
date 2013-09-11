@@ -85,7 +85,7 @@ int lxdm_auth_cleanup(LXDM_AUTH *a)
 	return 0;
 }
 
-int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
+int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,int type)
 {
 	struct passwd *pw;
 	struct spwd *sp;
@@ -108,6 +108,10 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
         g_debug("user %s have nologin shell\n",user);
         return AUTH_PRIV;
     }
+    if(type==AUTH_TYPE_AUTO_LOGIN && !pass)
+    {
+		goto out;
+	}
     sp = getspnam(user);
     if( !sp )
     {
@@ -206,7 +210,7 @@ int lxdm_auth_cleanup(LXDM_AUTH *a)
 	return 0;
 }
 
-int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
+int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,int type)
 {
 	struct passwd *pw;
 	if(!user || !user[0])
@@ -222,10 +226,10 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
 		return AUTH_BAD_USER;
 	}
 	if(strstr(pw->pw_shell, "nologin"))
-    {
-        g_debug("user %s have nologin shell\n",user);
-        return AUTH_PRIV;
-    }
+	{
+		g_debug("user %s have nologin shell\n",user);
+		return AUTH_PRIV;
+	}
 	if(a->handle) pam_end(a->handle,0);
 	if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, (pam_handle_t**)&a->handle))
 	{
@@ -236,6 +240,8 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
 	else
 	{
 		int ret;
+		if(type==AUTH_TYPE_AUTO_LOGIN && !pass)
+			goto out;
 		user_pass[0]=(char*)user;user_pass[1]=(char*)pass;
 		ret=pam_authenticate(a->handle,PAM_SILENT);
 		user_pass[0]=0;user_pass[1]=0;
@@ -251,6 +257,7 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
 			return AUTH_FAIL;
 		}
 	}
+out:
 	passwd_copy(&a->pw,pw);
 	return AUTH_SUCCESS;
 }
@@ -492,12 +499,23 @@ int main(int arc,char *arg[])
 		//fprintf(stderr,"begin %s\n",cmd);
 		if(!strcmp(cmd,"auth"))
 		{
-			char user[64],pass[64];
+			char temp[8],user[64],pass[64];
+			int type;
+			ret=file_get_line(temp,sizeof(temp),stdin);
+			if(ret<0) break;
+			type=atoi(temp);
 			ret=file_get_line(user,sizeof(user),stdin);
 			if(ret<0) break;
-			ret=file_get_line(pass,sizeof(pass),stdin);
-			if(ret<0) break;
-			ret=lxdm_auth_user_authenticate(&a,user,pass);
+			if(type==AUTH_TYPE_NORMAL)
+			{
+				ret=file_get_line(pass,sizeof(pass),stdin);
+				if(ret<0) break;
+				ret=lxdm_auth_user_authenticate(&a,user,pass,type);
+			}
+			else
+			{
+				ret=lxdm_auth_user_authenticate(&a,user,NULL,type);
+			}
 			printf("%d\n",ret);
 			if(ret==AUTH_SUCCESS)
 			{

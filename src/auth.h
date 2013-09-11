@@ -28,9 +28,15 @@ typedef struct{
 	int child;
 }LXDM_AUTH;
 
+enum{
+	AUTH_TYPE_NORMAL=0,
+	AUTH_TYPE_AUTO_LOGIN,
+	AUTH_TYPE_NULL_PASS
+};
+
 int lxdm_auth_init(LXDM_AUTH *a);
 int lxdm_auth_cleanup(LXDM_AUTH *a);
-int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *u,const char *p);
+int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,int type);
 int lxdm_auth_session_begin(LXDM_AUTH *a,const char *name,int tty,int display,char mcookie[16]);
 int lxdm_auth_session_end(LXDM_AUTH *a);
 int lxdm_auth_clean_for_child(LXDM_AUTH *a);

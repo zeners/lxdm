@@ -32,6 +32,7 @@
 
 #include "lxdm.h"
 #include "lxcom.h"
+#include "auth.h"
 
 static pid_t greeter = -1;
 static int greeter_pipe[2];
@@ -154,7 +155,7 @@ static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpo
 		if( user/* && pass */)
 		{
 			struct passwd *pw;
-			int ret = lxdm_auth_user(user, pass, &pw);
+			int ret = lxdm_auth_user(AUTH_TYPE_NORMAL, user, pass, &pw);
 			if( AUTH_SUCCESS == ret && pw != NULL )
 			{
 				ui_drop();
@@ -183,7 +184,7 @@ static gboolean on_greeter_input(GIOChannel *source, GIOCondition condition, gpo
 		if(user)
 		{
 			struct passwd *pw;
-			int ret = lxdm_auth_user(user, pass, &pw);
+			int ret = lxdm_auth_user(AUTH_TYPE_AUTO_LOGIN, user, pass, &pw);
 			if( AUTH_SUCCESS == ret && pw != NULL )
 			{
 				ui_drop();

@@ -755,7 +755,7 @@ static void create_client_auth(struct passwd *pw,char **env)
 }
 #endif
 
-int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
+int lxdm_auth_user(int type,char *user, char *pass, struct passwd **ppw)
 {
     LXSession *s;
     int ret;
@@ -767,7 +767,7 @@ int lxdm_auth_user(char *user, char *pass, struct passwd **ppw)
         g_critical("lxsession_add fail\n");
         exit(0);
     }
-	ret=lxdm_auth_user_authenticate(&s->auth,user,pass);
+	ret=lxdm_auth_user_authenticate(&s->auth,user,pass,type);
 	if(ret==AUTH_SUCCESS)
 		*ppw=&s->auth.pw;
 	return ret;
@@ -1457,7 +1457,7 @@ int lxdm_do_auto_login(void)
 			session=g_strdup(last_session);
 			lang=g_strdup(last_lang);
 		}
-		ret=lxdm_auth_user(user, pass, &pw);
+		ret=lxdm_auth_user(AUTH_TYPE_AUTO_LOGIN, user, pass, &pw);
 		if(ret==AUTH_SUCCESS)
 		{
 			lxdm_do_login(pw,session,lang,option);

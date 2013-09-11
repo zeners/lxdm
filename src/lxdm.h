@@ -29,7 +29,7 @@ G_BEGIN_DECLS
 
 extern GKeyFile *config;
 
-int lxdm_auth_user(char *user,char *pass,struct passwd **ppw);
+int lxdm_auth_user(int type,char *user,char *pass,struct passwd **ppw);
 void lxdm_do_login(struct passwd *pw,char *session,char *lang,char *option);
 void lxdm_do_reboot(void);
 void lxdm_do_shutdown(void);

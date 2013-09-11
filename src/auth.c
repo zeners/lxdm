@@ -93,7 +93,7 @@ int lxdm_auth_cleanup(LXDM_AUTH *a)
 	return 0;
 }
 
-int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
+int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,int type)
 {
 	struct passwd *pw;
 	struct spwd *sp;
@@ -116,6 +116,10 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
         g_debug("user %s have nologin shell\n",user);
         return AUTH_PRIV;
     }
+    if(type==AUTH_TYPE_AUTO_LOGIN && !pass)
+    {
+		goto out;
+	}
     sp = getspnam(user);
     if( !sp )
     {
@@ -143,6 +147,7 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
         g_debug("user %s password not match\n",user);
         return AUTH_FAIL;
     }
+out:
     g_debug("user %s auth ok\n",pw->pw_name);
 	passwd_copy(&a->pw,pw);
     return AUTH_SUCCESS;
@@ -229,7 +234,7 @@ int lxdm_auth_cleanup(LXDM_AUTH *a)
 	return 0;
 }
 
-int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
+int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,int type)
 {
 	struct passwd *pw;
 	if(!user || !user[0])
@@ -259,6 +264,8 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
 	else
 	{
 		int ret;
+		if(type==AUTH_TYPE_AUTO_LOGIN && !pass)
+			goto out;
 		user_pass[0]=(char*)user;user_pass[1]=(char*)pass;
 		ret=pam_authenticate(a->handle,PAM_SILENT);
 		user_pass[0]=0;user_pass[1]=0;
@@ -274,6 +281,7 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
 			return AUTH_FAIL;
 		}
 	}
+out:
 	passwd_copy(&a->pw,pw);
 	return AUTH_SUCCESS;
 }
@@ -452,7 +460,7 @@ static int check_child(LXDM_AUTH *a)
 	return 0;
 }
 
-int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
+int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,int type)
 {
 	char temp[128];
 	char res[8];
@@ -462,10 +470,17 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass)
 		printf("check child fail\n");
 		return -1;
 	}
+	if(type==AUTH_TYPE_AUTO_LOGIN && pass)
+		type=AUTH_TYPE_NORMAL;
+	else if(type==AUTH_TYPE_NORMAL && !pass)
+		type=AUTH_TYPE_NULL_PASS;
 	xwrite(a->pipe[0],"auth\n",5);
+	ret=sprintf(temp,"%d\n",type);
+	xwrite(a->pipe[0],temp,ret);
 	ret=sprintf(temp,"%s\n",user);
 	xwrite(a->pipe[0],temp,ret);
-	ret=sprintf(temp,"%s\n",pass?:"");
+	if(pass!=NULL)
+		ret=sprintf(temp,"%s\n",pass);
 	xwrite(a->pipe[0],temp,ret);
 	ret=xreadline(a->pipe[1],res,sizeof(res));
 	if(ret<=0)
@@ -572,7 +587,7 @@ char **lxdm_auth_append_env(LXDM_AUTH *a,char **env)
 	env=g_renew(char *,env,g_strv_length(env)+1+pa+10);
 	for(i=0;penv[i]!=NULL;i++)
 	{
-		fprintf(stderr,"PAM %s\n",penv[i]);
+		g_debug("PAM %s\n",penv[i]);
 		n=strcspn(penv[i],"=")+1;
 		for(j=0;env[j]!=NULL;j++)
 		{
