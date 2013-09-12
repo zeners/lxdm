@@ -134,7 +134,7 @@ static void set_active_vt(int vt)
 	if( fd < 0 )
 		fd = 0;
 	ioctl(fd, VT_ACTIVATE, vt);
-	if( fd != 0 )
+	if(fd!=0)
 		close(fd);
 }
 
@@ -148,14 +148,17 @@ void stop_pid(int pid)
     {
         if( kill(pid, SIGTERM) )
             kill(pid, SIGKILL);
-        while( 1 )
-        {
-            int wpid, status;
-            wpid = waitpid(pid,&status,0);
-            if(wpid<0 || pid == wpid)
-            	break;
-        }
     }
+    while( 1 )
+    {
+        int wpid, status;
+        wpid = waitpid(pid,&status,0);
+        if(pid == wpid)
+            break;
+	if(wpid<0 && errno!=EINTR)
+		break;
+    }
+
     while( waitpid(-1, 0, WNOHANG) > 0 ) ;
 }
 
@@ -419,6 +422,7 @@ static char *lxsession_xserver_command(LXSession *s)
 	int arc;
 	char **arg;
 	int i;
+	int novtswitch=0;
 	
 	if(s->option)
 	{
@@ -454,6 +458,10 @@ static char *lxsession_xserver_command(LXSession *s)
 			g_free(arg[i]);
 			arc--;memcpy(arg+i,arg+i+1,(arc-i)*sizeof(char*));
 		}
+		else if(!strcmp(p,"-novtswitch"))
+		{
+			novtswitch=1;
+		}
 		else
 		{
 			i++;
@@ -473,6 +481,10 @@ static char *lxsession_xserver_command(LXSession *s)
 	{
 		arg[arc++] = g_strdup("-nolisten");
 		arg[arc++] = g_strdup("tcp");
+	}
+	if(!novtswitch)
+	{
+		arg[arc++] = g_strdup("-novtswitch");
 	}
 	arg[arc] = NULL;
 	p=g_strjoinv(" ", arg);
@@ -1703,7 +1715,7 @@ int main(int arc, char *arg[])
 	}
 	log_init();
 
-	if( debugmode )
+	if( !debugmode )
 	{
 		/* turn of debug output */
 		g_log_set_handler(NULL, G_LOG_LEVEL_DEBUG, log_ignore, NULL);
