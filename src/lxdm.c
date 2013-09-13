@@ -1224,6 +1224,8 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 	LXSession *s,*prev;
 	
 	lxdm_save_login(session,lang);
+	if(!strcmp(session,"__default__"))
+		session=NULL;
 
 	if(!session ||!session[0] || !lang || !lang[0])
 	{
@@ -1703,21 +1705,21 @@ int main(int arc, char *arg[])
 			return res?0:-1;
 		}
 	}
-	if( getuid() != 0 )
+	if(getuid() != 0)
 	{
 		fprintf(stderr, "only root is allowed to use this program\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if( daemonmode )
+	if(daemonmode)
 	{
 		(void)daemon(1, 1);
 	}
 	log_init();
 
-	if( !debugmode )
+	if(!debugmode)
 	{
-		/* turn of debug output */
+		/* turn off debug output */
 		g_log_set_handler(NULL, G_LOG_LEVEL_DEBUG, log_ignore, NULL);
 	}
 
@@ -1755,3 +1757,4 @@ int main(int arc, char *arg[])
 
 	return 0;
 }
+
