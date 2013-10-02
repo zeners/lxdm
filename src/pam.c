@@ -41,6 +41,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <poll.h>
+#include <sys/stat.h>
 
 #include <pwd.h>
 #include <grp.h>
@@ -407,7 +408,7 @@ void switch_user(struct passwd *pw, const char *run, char **env)
 	close_left_fds();
 
 	g_spawn_command_line_async ("/etc/lxdm/PostLogin",NULL);
-	execle("/etc/lxdm/Xsession", "/etc/lxdm/Xsession", run, NULL, environ);
+	execl("/etc/lxdm/Xsession","/etc/lxdm/Xsession",run,NULL);
 	perror("execle");
 	exit(EXIT_FAILURE);
 }

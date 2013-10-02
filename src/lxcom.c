@@ -12,37 +12,57 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <sys/ioctl.h>
-#if !defined(linux) && !defined(__NetBSD__)
+
+#if defined(__sun)
+#include <ucred.h>
+#include <sys/filio.h>
+#define _XPG4_2
+#elif !defined(linux) && !defined(__NetBSD__)
 #include <sys/ucred.h>
 #endif
 
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <sys/ioctl.h>
+
 #ifndef SCM_CREDS
-#define SCM_CREDS SCM_CREDENTIALS
+  #if defined(SCM_CREDENTIALS)
+    #define SCM_CREDS SCM_CREDENTIALS
+  #elif defined(SCM_UCRED)
+    #define SCM_CREDS SCM_UCRED
+  #else
+    #error not support unix socket creds
+  #endif
 #endif
 
 #ifndef linux
-#  ifndef __NetBSD__
+#  if defined(__sun)
+#    define LXDM_PEER_UID(c)   ucred_geteuid(c)
+#    define LXDM_PEER_GID(c)   ucred_getegid(c)
+#    define LXDM_PEER_PID(c)   ucred_getpid(c)
+#  elif !defined(__NetBSD__)
 #    define LXDM_PEER_UID(c)   ((c)->cr_uid)
 #    define LXDM_PEER_GID(c)   ((c)->cr_groups[0])
+#    define LXDM_PEER_PID -1
 #  else
 #    define LXDM_PEER_UID(c)   ((c)->sc_uid)
 #    define LXDM_PEER_GID(c)   ((c)->sc_gid)
+#    define LXDM_PEER_PID -1
 #  endif
-#  define LXDM_PEER_PID -1
 #else
 #  define LXDM_PEER_UID(c)   ((c)->uid)
 #  define LXDM_PEER_GID(c)   ((c)->gid)
 #  define LXDM_PEER_PID(c)   ((c)->pid)
 #endif
 
-#ifdef __NetBSD__
+#if defined(__NetBSD__)
 typedef struct sockcred LXDM_CRED;
+#elif defined(__sun)
+typedef ucred_t LXDM_CRED;
 #else
 typedef struct ucred LXDM_CRED;
 #endif
+
 #include <glib.h>
 #include "lxcom.h"
 
@@ -95,7 +115,7 @@ static gboolean lxcom_check(GSource *source)
 static gboolean lxcom_dispatch (GSource *source,GSourceFunc callback,gpointer user_data)
 {
 	char buf[4096];
-	char ctrl[CMSG_SPACE(sizeof(struct ucred))];
+	char ctrl[/*CMSG_SPACE(sizeof(LXDM_CRED))*/1024];
 	struct sockaddr_un peer;
 	struct iovec v={buf,sizeof(buf)};
 	struct msghdr h={&peer,sizeof(peer),&v,1,ctrl,sizeof(ctrl),0};
@@ -118,11 +138,13 @@ static gboolean lxcom_dispatch (GSource *source,GSourceFunc callback,gpointer us
 			char **argv;
 			GString *res;
 
-			#ifndef __NetBSD__
-			size = sizeof(LXDM_CRED);
-			#else
+			#if defined(__sun)
+			size = ucred_size();
+			#elif defined(__NetBSD__)
 			if (cmptr->cmsg_len < SOCKCREDSIZE(0)) break;
 			size = SOCKCREDSIZE(((cred *)CMSG_DATA(cmptr))->sc_ngroups);
+			#else
+			size = sizeof(LXDM_CRED);
 			#endif
 			if (cmptr->cmsg_len != CMSG_LEN(size)) break;
                         if (cmptr->cmsg_level != SOL_SOCKET) break;
@@ -259,7 +281,11 @@ void lxcom_init(const char *sock)
 	strcpy(su.sun_path,sock);
 	self_server_fd=socket(AF_UNIX,SOCK_DGRAM,0);
 	assert(self_server_fd!=-1);
+#if defined(__sun)
+	ret=setsockopt(self_server_fd,SOL_SOCKET,SO_RECVUCRED,&on,sizeof(on));
+#else
 	ret=setsockopt(self_server_fd,SOL_SOCKET,SO_PASSCRED,&on,sizeof(on));
+#endif
 	assert(ret==0);
 	fcntl(self_server_fd,F_SETFL,O_NONBLOCK|fcntl(self_server_fd,F_GETFL));
 	ret=bind(self_server_fd,(struct sockaddr*)&su,sizeof(su));
@@ -290,20 +316,20 @@ void lxcom_init(const char *sock)
 static ssize_t lxcom_write(int s,const void *buf,size_t count)
 {
 	struct iovec iov[1] ={{(void*)buf,count,}};
-        struct msghdr msg = { 0, 0, iov, 1, 0, 0, 0 };
-#if !defined(linux) && !defined(__NetBSD__)
-        char ctrl[CMSG_SPACE(sizeof(LXDM_CRED))];
-        struct cmsghdr  *cmptr;
+	struct msghdr msg = { 0, 0, iov, 1, 0, 0, 0 };
+#if !defined(linux) && !defined(__NetBSD__) && !defined(__sun)
+	char ctrl[CMSG_SPACE(sizeof(LXDM_CRED))];
+	struct cmsghdr  *cmptr;
 	char *p;
 	int i;
 
-        msg.msg_control    = ctrl;
-        msg.msg_controllen = sizeof(ctrl);
+	msg.msg_control    = ctrl;
+	msg.msg_controllen = sizeof(ctrl);
 
-        cmptr = CMSG_FIRSTHDR(&msg);
-        cmptr->cmsg_len   = CMSG_LEN(sizeof(LXDM_CRED));
-        cmptr->cmsg_level = SOL_SOCKET;
-        cmptr->cmsg_type  = SCM_CREDS;
+	cmptr = CMSG_FIRSTHDR(&msg);
+	cmptr->cmsg_len   = CMSG_LEN(sizeof(LXDM_CRED));
+	cmptr->cmsg_level = SOL_SOCKET;
+	cmptr->cmsg_type  = SCM_CREDS;
 	p=(char*)CMSG_DATA(cmptr);
 	for(i=0;i<sizeof(LXDM_CRED);i++)
 		p[i]=0;

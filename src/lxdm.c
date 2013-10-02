@@ -572,7 +572,7 @@ static void log_ignore(const gchar *log_domain, GLogLevelFlags log_level,
                        const gchar *message, gpointer user_data)
 {
 }
-
+#if 0
 GSList *do_scan_xsessions(void)
 {
     GSList *xsessions = NULL;
@@ -639,6 +639,7 @@ void free_xsessions(GSList *l)
     }
     g_slist_free(l);
 }
+#endif
 
 static void replace_env(char** env, const char* name, const char* new_val)
 {
@@ -813,25 +814,25 @@ static void close_left_fds(void)
 
 void switch_user(struct passwd *pw, const char *run, char **env)
 {
-    int fd;
+	int fd;
     
-    setenv("USER",pw->pw_name,1);
-    setenv("LOGNAME",pw->pw_name,1);
-    setenv("SHELL",pw->pw_shell,1);
-    setenv("HOME",pw->pw_dir,1);
+	setenv("USER",pw->pw_name,1);
+	setenv("LOGNAME",pw->pw_name,1);
+	setenv("SHELL",pw->pw_shell,1);
+	setenv("HOME",pw->pw_dir,1);
 
-    g_spawn_command_line_sync ("/etc/lxdm/PreLogin",NULL,NULL,NULL,NULL);
+	g_spawn_command_line_sync ("/etc/lxdm/PreLogin",NULL,NULL,NULL,NULL);
 
-    if( !pw || initgroups(pw->pw_name, pw->pw_gid) ||
-        setgid(pw->pw_gid) || setuid(pw->pw_uid) || setsid() == -1 )
-        exit(EXIT_FAILURE);
-    chdir(pw->pw_dir);
-    fd=open(".xsession-errors",O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR);
-    if(fd!=-1)
-    {
-        dup2(fd,STDERR_FILENO);
-        close(fd);
-    }
+	if( !pw || initgroups(pw->pw_name, pw->pw_gid) ||
+			setgid(pw->pw_gid) || setuid(pw->pw_uid) || setsid() == -1 )
+		exit(EXIT_FAILURE);
+	chdir(pw->pw_dir);
+	fd=open(".xsession-errors",O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR);
+	if(fd!=-1)
+	{
+		dup2(fd,STDERR_FILENO);
+		close(fd);
+	}
 
 	/* reset signal */
 	signal(SIGCHLD, SIG_DFL);
@@ -848,45 +849,45 @@ void switch_user(struct passwd *pw, const char *run, char **env)
 
 static void get_lock(void)
 {
-    FILE *fp;
-    char *lockfile;
+	FILE *fp;
+	char *lockfile;
 
-    lockfile = g_key_file_get_string(config, "base", "lock", 0);
-    if( !lockfile ) lockfile = g_strdup("/var/run/lxdm.pid");
+	lockfile = g_key_file_get_string(config, "base", "lock", 0);
+	if( !lockfile ) lockfile = g_strdup("/var/run/lxdm.pid");
 
-    fp = fopen(lockfile, "r");
-    if( fp )
-    {
-        int pid;
-        int ret;
-        ret = fscanf(fp, "%d", &pid);
-        fclose(fp);
-        if(ret == 1 && pid!=getpid())
+	fp = fopen(lockfile, "r");
+	if( fp )
+	{
+		int pid;
+		int ret;
+		ret = fscanf(fp, "%d", &pid);
+		fclose(fp);
+		if(ret == 1 && pid!=getpid())
 		{
-				if(kill(pid, 0) == 0 || (ret == -1 && errno == EPERM))
-				{
-					/* we should only quit if the pid running is lxdm */
+			if(kill(pid, 0) == 0 || (ret == -1 && errno == EPERM))
+			{
+				/* we should only quit if the pid running is lxdm */
 #ifdef __linux__
-					char path[64],buf[128];
-					sprintf(path,"/proc/%d/exe",pid);
-					ret=readlink(path,buf,128);
-					if(ret<128 && ret>0 && strstr(buf,"lxdm-binary"))
-						lxdm_quit_self(1);
-#else
+				char path[64],buf[128];
+				sprintf(path,"/proc/%d/exe",pid);
+				ret=readlink(path,buf,128);
+				if(ret<128 && ret>0 && strstr(buf,"lxdm-binary"))
 					lxdm_quit_self(1);
+#else
+				lxdm_quit_self(1);
 #endif	
-				}
+			}
 		}
-    }
-    fp = fopen(lockfile, "w");
-    if( !fp )
-    {
-        g_critical("open lock file %s fail\n",lockfile);
-        lxdm_quit_self(0);
-    }
-    fprintf( fp, "%d", getpid() );
-    fclose(fp);
-    g_free(lockfile);
+	}
+	fp = fopen(lockfile, "w");
+	if( !fp )
+	{
+		g_critical("open lock file %s fail\n",lockfile);
+		lxdm_quit_self(0);
+	}
+	fprintf( fp, "%d", getpid() );
+	fclose(fp);
+	g_free(lockfile);
 }
 
 static void put_lock(void)
@@ -1331,7 +1332,9 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 		g_message("create ConsoleKit connector fail\n");
 	}
 #endif
-
+#ifdef __sun
+	extern char **environ;
+#endif
 	char** env, *path;
 	int n_env,i;
 	n_env  = g_strv_length(environ);
