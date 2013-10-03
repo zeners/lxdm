@@ -147,9 +147,9 @@ static gboolean lxcom_dispatch (GSource *source,GSourceFunc callback,gpointer us
 			size = sizeof(LXDM_CRED);
 			#endif
 			if (cmptr->cmsg_len != CMSG_LEN(size)) break;
-                        if (cmptr->cmsg_level != SOL_SOCKET) break;
-                        if (cmptr->cmsg_type != SCM_CREDS) break;
-                        c=(LXDM_CRED*)CMSG_DATA(cmptr);
+			if (cmptr->cmsg_level != SOL_SOCKET) break;
+			if (cmptr->cmsg_type != SCM_CREDS) break;
+			c=(LXDM_CRED*)CMSG_DATA(cmptr);
 			if(g_shell_parse_argv(buf,&argc,&argv,NULL))
 			{
 				res=((LXComFunc)callback)(user_data,LXDM_PEER_UID(c),LXDM_PEER_PID(c),argc,argv);
@@ -357,9 +357,6 @@ gboolean lxcom_send(const char *sock,const char *buf,char **res)
 	
 	memset(&su,0,sizeof(su));
 	su.sun_family=AF_UNIX;
-	s=socket(AF_UNIX,SOCK_DGRAM,0);
-	assert(s!=-1);
-	fcntl(s,F_SETFL,O_NONBLOCK|fcntl(self_server_fd,F_GETFL));
 	s=socket(AF_UNIX,SOCK_DGRAM,0);
 	assert(s!=-1);
 	fcntl(s,F_SETFL,O_NONBLOCK|fcntl(self_client_fd,F_GETFL));
