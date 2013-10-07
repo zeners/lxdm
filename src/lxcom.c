@@ -16,7 +16,6 @@
 #if defined(__sun)
 #include <ucred.h>
 #include <sys/filio.h>
-#define _XPG4_2
 #elif !defined(linux) && !defined(__NetBSD__)
 #include <sys/ucred.h>
 #endif
@@ -317,8 +316,14 @@ static ssize_t lxcom_write(int s,const void *buf,size_t count)
 {
 	struct iovec iov[1] ={{(void*)buf,count,}};
 	struct msghdr msg = { 0, 0, iov, 1, 0, 0, 0 };
-#if !defined(linux) && !defined(__NetBSD__) && !defined(__sun)
-	char ctrl[CMSG_SPACE(sizeof(LXDM_CRED))];
+#if !defined(linux) && !defined(__NetBSD__)
+
+#if defined(__sun)
+	int size = ucred_size();
+#else
+	int size = sizeof(LXDM_CRED);
+#endif
+	char ctrl[CMSG_SPACE(size)];
 	struct cmsghdr  *cmptr;
 	char *p;
 	int i;
@@ -327,11 +332,11 @@ static ssize_t lxcom_write(int s,const void *buf,size_t count)
 	msg.msg_controllen = sizeof(ctrl);
 
 	cmptr = CMSG_FIRSTHDR(&msg);
-	cmptr->cmsg_len   = CMSG_LEN(sizeof(LXDM_CRED));
+	cmptr->cmsg_len   = CMSG_LEN(size);
 	cmptr->cmsg_level = SOL_SOCKET;
 	cmptr->cmsg_type  = SCM_CREDS;
 	p=(char*)CMSG_DATA(cmptr);
-	for(i=0;i<sizeof(LXDM_CRED);i++)
+	for(i=0;i<size;i++)
 		p[i]=0;
 #endif
 	return sendmsg(s,&msg,0);
