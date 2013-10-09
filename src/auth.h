@@ -26,6 +26,7 @@ typedef struct{
 	struct passwd pw;
 	int pipe[2];
 	int child;
+	int in_session;
 }LXDM_AUTH;
 
 enum{

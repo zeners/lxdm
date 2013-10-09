@@ -55,9 +55,9 @@ void xconn_clean(xconn_t c)
 	unsigned int nchildren;
 	unsigned int i;
 	Window Root;
-    
+
 	if(!c) return;
-    
+
 	XSetErrorHandler(CatchErrors);
 	XSetIOErrorHandler(CatchIOErrors);
 

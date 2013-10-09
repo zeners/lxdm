@@ -97,8 +97,8 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,i
 {
 	struct passwd *pw;
 	struct spwd *sp;
-    char *real;
-    char *enc;
+	char *real;
+	char *enc;
 	if(!user || !user[0])
 	{
 		g_debug("user==NULL\n");
@@ -112,45 +112,45 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,i
 		return AUTH_BAD_USER;
 	}
 	if(strstr(pw->pw_shell, "nologin"))
-    {
-        g_debug("user %s have nologin shell\n",user);
-        return AUTH_PRIV;
-    }
-    if(type==AUTH_TYPE_AUTO_LOGIN && !pass)
-    {
+	{
+		g_debug("user %s have nologin shell\n",user);
+		return AUTH_PRIV;
+	}
+	if(type==AUTH_TYPE_AUTO_LOGIN && !pass)
+	{
 		goto out;
 	}
-    sp = getspnam(user);
-    if( !sp )
-    {
+	sp = getspnam(user);
+	if( !sp )
+	{
 		return AUTH_FAIL;
 	}
-    endspent();
-    real = sp->sp_pwdp;
-    if( !real || !real[0] )
-    {
-        if( !pass || !pass[0] )
-        {
-            *ppw = pw;
-            g_debug("user %s auth with no password ok\n",user);
-            return AUTH_SUCCESS;
-        }
-        else
-        {
-            g_debug("user %s password not match\n",user);
-            return AUTH_FAIL;
-        }
-    }
-    enc = crypt(pass, real);
-    if( strcmp(real, enc) )
-    {
-        g_debug("user %s password not match\n",user);
-        return AUTH_FAIL;
-    }
+	endspent();
+	real = sp->sp_pwdp;
+	if( !real || !real[0] )
+	{
+		if( !pass || !pass[0] )
+		{
+			*ppw = pw;
+			g_debug("user %s auth with no password ok\n",user);
+			return AUTH_SUCCESS;
+		}
+		else
+		{
+			g_debug("user %s password not match\n",user);
+			return AUTH_FAIL;
+		}
+	}
+	enc = crypt(pass, real);
+	if( strcmp(real, enc) )
+	{
+		g_debug("user %s password not match\n",user);
+		return AUTH_FAIL;
+	}
 out:
-    g_debug("user %s auth ok\n",pw->pw_name);
+	g_debug("user %s auth ok\n",pw->pw_name);
 	passwd_copy(&a->pw,pw);
-    return AUTH_SUCCESS;
+	return AUTH_SUCCESS;
 }
 
 int lxdm_auth_session_begin(LXDM_AUTH *a,int tty,int display,char mcookie[16])
@@ -250,10 +250,10 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,i
 		return AUTH_BAD_USER;
 	}
 	if(strstr(pw->pw_shell, "nologin"))
-    {
-        g_debug("user %s have nologin shell\n",user);
-        return AUTH_PRIV;
-    }
+	{
+		g_debug("user %s have nologin shell\n",user);
+		return AUTH_PRIV;
+	}
 	if(a->handle) pam_end(a->handle,0);
 	if(PAM_SUCCESS != pam_start("lxdm", pw->pw_name, &conv, (pam_handle_t**)&a->handle))
 	{
@@ -292,15 +292,15 @@ int lxdm_auth_session_begin(LXDM_AUTH *a,const char *name,int tty,int display,ch
 	char x[256];
 	
 	if(!a->handle)
-    {
-        g_message("begin session without auth\n");
-        return -1;
-    }
+	{
+		g_message("begin session without auth\n");
+		return -1;
+	}
 	sprintf(x, "tty%d", tty);
-    pam_set_item(a->handle, PAM_TTY, x);
+	pam_set_item(a->handle, PAM_TTY, x);
 #ifdef PAM_XDISPLAY
 	sprintf(x,":%d",display);
-    pam_set_item(a->handle, PAM_XDISPLAY, x);
+	pam_set_item(a->handle, PAM_XDISPLAY, x);
 #endif
 #if !defined(DISABLE_XAUTH) && defined(PAM_XAUTHDATA)
 	struct pam_xauth_data value;
@@ -310,28 +310,34 @@ int lxdm_auth_session_begin(LXDM_AUTH *a,const char *name,int tty,int display,ch
 	value.datalen=16;
 	pam_set_item (a->handle, PAM_XAUTHDATA, &value);
 #endif
-    if(name && name[0])
-    {
-        char *env;
-        env = g_strdup_printf ("DESKTOP_SESSION=%s", name);
-        pam_putenv (a->handle, env);
-        g_free (env);
-    }
+	if(name && name[0])
+	{
+		char *env;
+		env = g_strdup_printf ("DESKTOP_SESSION=%s", name);
+		pam_putenv (a->handle, env);
+		g_free (env);
+	}
 	err = pam_open_session(a->handle, 0); /* FIXME pam session failed */
-    if( err != PAM_SUCCESS )
-        g_warning( "pam open session error \"%s\"\n", pam_strerror(a->handle, err));
+	if( err != PAM_SUCCESS )
+		g_warning( "pam open session error \"%s\"\n", pam_strerror(a->handle, err));
+	else
+		a->in_session=1;
 	return 0;
 }
 
 int lxdm_auth_session_end(LXDM_AUTH *a)
 {
 	int err;
-    if(!a->handle)
+	if(!a->handle)
 		return 0;
-    err = pam_close_session(a->handle, 0);
-    pam_end(a->handle, err);
-    a->handle = NULL;
-    passwd_clean(&a->pw);
+	if(a->in_session)
+	{
+		err = pam_close_session(a->handle, 0);
+		a->in_session=0;
+	}
+	pam_end(a->handle, err);
+	a->handle = NULL;	
+	passwd_clean(&a->pw);
 	return 0;
 }
 
