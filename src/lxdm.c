@@ -945,6 +945,8 @@ void lxdm_startx(LXSession *s)
 	int i;
 	char display[16];
 	
+	lxsession_set_active(s);
+	
 	sprintf(display,":%d",s->display);
 	setenv("DISPLAY",display,1);
 
