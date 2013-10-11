@@ -1270,7 +1270,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 	}
 	prev=lxsession_find_user(pw->pw_uid);
 	s=lxsession_find_greeter();
-	if(prev)
+	if(prev && prev->child>0)
 	{
 		if(s) lxsession_free(s);
 		lxsession_set_active(prev);

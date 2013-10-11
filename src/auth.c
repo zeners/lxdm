@@ -520,7 +520,7 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,i
 #include <assert.h>
 int lxdm_auth_session_begin(LXDM_AUTH *a,const char *name,int tty,int display,char mcookie[16])
 {
-	char temp[32];
+	char temp[256];
 	char res[8];
 	gchar *b64;
 	int ret;
