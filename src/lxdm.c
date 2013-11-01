@@ -641,35 +641,6 @@ void free_xsessions(GSList *l)
 }
 #endif
 
-static void replace_env(char** env, const char* name, const char* new_val)
-{
-    register char** penv;
-    for(penv = env; *penv; ++penv)
-    {
-        if(g_str_has_prefix(*penv, name))
-        {
-            g_free(*penv);
-            *penv = g_strconcat(name, new_val, NULL);
-            return;
-        }
-    }
-    *penv = g_strconcat(name, new_val, NULL);
-    *(penv + 1) = NULL;
-}
-
-static const char *get_env(char **env, const char *name)
-{
-	register char** penv;
-    for(penv = env; *penv; ++penv)
-    {
-        if(g_str_has_prefix(*penv, name))
-        {
-            return *penv+strlen(name);
-        }
-    }
-    return NULL;
-}
-
 #ifndef DISABLE_XAUTH
 
 static inline void xauth_write_uint16(int fd,uint16_t data)
@@ -729,20 +700,20 @@ static void create_server_auth(LXSession *s)
 	g_free(authfile);
 }
 
-static void create_client_auth(struct passwd *pw,char **env)
+static char ** create_client_auth(struct passwd *pw,char **env)
 {
 	LXSession *s;
 	char *authfile;
 	
 	if(pw->pw_uid==0) /* root don't need it */
-		return;
+		return env;
         
 	s=lxsession_find_user(pw->pw_uid);
 	if(!s)
-		return;
+		return env;
 	
 	/* pam_mktemp may provide XAUTHORITY to DM, just use it */
-	if((authfile=(char*)get_env(env,"XAUTHORITY="))!=NULL)
+	if((authfile=(char*)g_environ_getenv(env,"XAUTHORITY"))!=NULL)
 	{
 		authfile=g_strdup(authfile);
 	}
@@ -762,9 +733,11 @@ static void create_client_auth(struct passwd *pw,char **env)
 	}
 	remove(authfile);
 	xauth_write_file(authfile,s->display,s->mcookie);
-	replace_env(env,"XAUTHORITY=",authfile);
+	env=g_environ_setenv(env,"XAUTHORITY",authfile,TRUE);
 	chown(authfile,pw->pw_uid,pw->pw_gid);
 	g_free(authfile);
+	
+	return env;
 }
 #endif
 
@@ -1334,42 +1307,33 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 		g_message("create ConsoleKit connector fail\n");
 	}
 #endif
-#ifdef __sun
-	extern char **environ;
-#endif
-	char** env, *path;
-	int n_env,i;
-	n_env  = g_strv_length(environ);
-	/* copy all environment variables and override some of them */
-	env = g_new(char*, n_env + 1 + 13);
-	for( i = 0; i < n_env; ++i )
-		env[i] = g_strdup(environ[i]);
-	env[i] = NULL;
+	char **env, *path;
+	env=g_get_environ();
 
-	replace_env(env, "HOME=", pw->pw_dir);
-	replace_env(env, "SHELL=", pw->pw_shell);
-	replace_env(env, "USER=", pw->pw_name);
-	replace_env(env, "LOGNAME=", pw->pw_name);
+	env=g_environ_setenv(env, "HOME", pw->pw_dir, TRUE);
+	env=g_environ_setenv(env, "SHELL", pw->pw_shell, TRUE);
+	env=g_environ_setenv(env, "USER", pw->pw_name, TRUE);
+	env=g_environ_setenv(env, "LOGNAME", pw->pw_name, TRUE);
 
 	/* override $PATH if needed */
 	path = g_key_file_get_string(config, "base", "path", 0);
 	if( G_UNLIKELY(path) && path[0] ) /* if PATH is specified in config file */
-		replace_env(env, "PATH=", path); /* override current $PATH with config value */
+		env=g_environ_setenv(env, "PATH", path, TRUE); /* override current $PATH with config value */
 	else /* don't use the global env, they are bad for user */
-		replace_env(env, "PATH=", "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"); /* set proper default */
+		env=g_environ_setenv(env, "PATH", "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin", TRUE); /* set proper default */
 	g_free(path);
 	/* optionally override $LANG, $LC_MESSAGES, and $LANGUAGE */
 	if( lang && lang[0] )
 	{
-		replace_env(env, "LANG=", lang);
-		replace_env(env, "LC_MESSAGES=", lang);
-		replace_env(env, "LANGUAGE=", lang);
+		env=g_environ_setenv(env, "LANG", lang, TRUE);
+		env=g_environ_setenv(env, "LC_MESSAGES", lang, TRUE);
+		env=g_environ_setenv(env, "LANGUAGE", lang, TRUE);
 	}
-	s->env = env;
 	
 #ifndef DISABLE_XAUTH
-	create_client_auth(pw,env);
+	env=create_client_auth(pw,env);
 #endif
+	s->env = env;
 
 	/*s->child = pid = fork();
 	if(s->child==0)
