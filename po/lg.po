@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-23 15:01+0200\n"
+"POT-Creation-Date: 2013-11-13 23:52+0100\n"
 "PO-Revision-Date: 2013-07-11 12:07+0000\n"
 "Last-Translator: kizito <kbirabwa@yahoo.co.uk>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 # User selection prompt at the graphical login screen
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
-#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
+#: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
 msgid "User:"
 msgstr "Mukozesa:"
 
@@ -53,7 +53,7 @@ msgid "Background"
 msgstr "Bwaliriro"
 
 # This indicates the option that will automatically be set if the user does not select anything.
-#: ../data/config.ui.h:4 ../src/greeter.c:297 ../src/lang.c:103
+#: ../data/config.ui.h:4 ../src/greeter.c:307 ../src/lang.c:103
 msgid "Default"
 msgstr "Ekya bulijjo"
 
@@ -103,22 +103,22 @@ msgid "Unspecified"
 msgstr "Ssi kitegeke"
 
 # This is the graphical login prompt for the use password.
-#: ../src/greeter.c:158 ../src/greeter.c:187 ../src/greeter.c:908
+#: ../src/greeter.c:168 ../src/greeter.c:197 ../src/greeter.c:921
 msgid "Password:"
 msgstr "Kaama:"
 
 # The machine will reboot. It will power down and back up again, to the login screen.
-#: ../src/greeter.c:716
+#: ../src/greeter.c:726
 msgid "_Reboot"
 msgstr "_Damu-okukoleeza"
 
 # The machine will switch off and stay off.
-#: ../src/greeter.c:720
+#: ../src/greeter.c:730
 msgid "_Shutdown"
 msgstr "_Gyako-kompyuta"
 
 # I think this is a message telling you that you are logged onto the system.
-#: ../src/greeter.c:1023
+#: ../src/greeter.c:1041
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -127,7 +127,7 @@ msgstr ""
 "<i>oyingidde</i>"
 
 # I think this is a hint telling you that there are more options that are currently hidden.
-#: ../src/greeter.c:1037 ../src/lang.c:125
+#: ../src/greeter.c:1055 ../src/lang.c:125
 msgid "More ..."
 msgstr "Ebirala ..."
 

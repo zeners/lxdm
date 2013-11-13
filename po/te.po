@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-23 15:01+0200\n"
+"POT-Creation-Date: 2013-11-13 23:52+0100\n"
 "PO-Revision-Date: 2013-07-18 16:20+0000\n"
 "Last-Translator: Praveen_Illa <mail2ipn@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-POOTLE-MTIME: 1374164430.0\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
-#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
+#: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
 msgid "User:"
 msgstr "వాడుకరి:"
 
@@ -48,7 +48,7 @@ msgstr "స్వయంచాలక ప్రవేశం"
 msgid "Background"
 msgstr "నేపథ్యం"
 
-#: ../data/config.ui.h:4 ../src/greeter.c:297 ../src/lang.c:103
+#: ../data/config.ui.h:4 ../src/greeter.c:307 ../src/lang.c:103
 msgid "Default"
 msgstr "అప్రమేయం"
 
@@ -96,19 +96,19 @@ msgstr "సమయాన్ని దాయి"
 msgid "Unspecified"
 msgstr "అనిర్దిష్ట"
 
-#: ../src/greeter.c:158 ../src/greeter.c:187 ../src/greeter.c:908
+#: ../src/greeter.c:168 ../src/greeter.c:197 ../src/greeter.c:921
 msgid "Password:"
 msgstr "సంకేతపదం:"
 
-#: ../src/greeter.c:716
+#: ../src/greeter.c:726
 msgid "_Reboot"
 msgstr "పునఃప్రారంభించు(_R)"
 
-#: ../src/greeter.c:720
+#: ../src/greeter.c:730
 msgid "_Shutdown"
 msgstr "మూసివేయి(_S)"
 
-#: ../src/greeter.c:1023
+#: ../src/greeter.c:1041
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -116,7 +116,7 @@ msgstr ""
 "\n"
 "<i>ప్రవేశించారు</i>"
 
-#: ../src/greeter.c:1037 ../src/lang.c:125
+#: ../src/greeter.c:1055 ../src/lang.c:125
 msgid "More ..."
 msgstr "మరిన్ని..."
 

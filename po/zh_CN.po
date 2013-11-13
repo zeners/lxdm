@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lxdm 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-23 15:01+0200\n"
+"POT-Creation-Date: 2013-11-13 23:52+0100\n"
 "PO-Revision-Date: 2012-10-14 12:27+0200\n"
 "Last-Translator: Wylmer <wantinghard@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Generator: Pootle 2.0.5\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
-#: ../src/greeter.c:139 ../src/greeter.c:229 ../src/greeter.c:922
+#: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
 msgid "User:"
 msgstr "用户："
 
@@ -48,7 +48,7 @@ msgstr "自动登录"
 msgid "Background"
 msgstr "背景"
 
-#: ../data/config.ui.h:4 ../src/greeter.c:297 ../src/lang.c:103
+#: ../data/config.ui.h:4 ../src/greeter.c:307 ../src/lang.c:103
 msgid "Default"
 msgstr "默认"
 
@@ -96,19 +96,19 @@ msgstr "隐藏时间"
 msgid "Unspecified"
 msgstr "未定义"
 
-#: ../src/greeter.c:158 ../src/greeter.c:187 ../src/greeter.c:908
+#: ../src/greeter.c:168 ../src/greeter.c:197 ../src/greeter.c:921
 msgid "Password:"
 msgstr "密码："
 
-#: ../src/greeter.c:716
+#: ../src/greeter.c:726
 msgid "_Reboot"
 msgstr "重启(_R)"
 
-#: ../src/greeter.c:720
+#: ../src/greeter.c:730
 msgid "_Shutdown"
 msgstr "关机(_S)"
 
-#: ../src/greeter.c:1023
+#: ../src/greeter.c:1041
 msgid ""
 "\n"
 "<i>logged in</i>"
@@ -116,7 +116,7 @@ msgstr ""
 "\n"
 "<i>已登录</i>"
 
-#: ../src/greeter.c:1037 ../src/lang.c:125
+#: ../src/greeter.c:1055 ../src/lang.c:125
 msgid "More ..."
 msgstr "更多 ..."
 
