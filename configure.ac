@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.63])
 AC_INIT([lxdm], [0.5.0], [http://lxde.org/])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects no-dist-gzip dist-xz])
 
 AC_CONFIG_SRCDIR([src/lxdm.c])
 AC_CONFIG_HEADERS([config.h])
