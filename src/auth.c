@@ -83,7 +83,7 @@ static void passwd_copy(struct passwd *dst,struct passwd *src)
 
 int lxdm_auth_init(LXDM_AUTH *a)
 {
-	memset(a,0m,sizeof(*a));
+	memset(a,0,sizeof(*a));
 	return 0;
 }
 
@@ -131,7 +131,7 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,i
 	{
 		if( !pass || !pass[0] )
 		{
-			*ppw = pw;
+			passwd_copy(&a->pw,pw);
 			g_debug("user %s auth with no password ok\n",user);
 			return AUTH_SUCCESS;
 		}
@@ -153,7 +153,7 @@ out:
 	return AUTH_SUCCESS;
 }
 
-int lxdm_auth_session_begin(LXDM_AUTH *a,int tty,int display,char mcookie[16])
+int lxdm_auth_session_begin(LXDM_AUTH *a,const char *name,int tty,int display,char mcookie[16])
 {
 	return 0;
 }

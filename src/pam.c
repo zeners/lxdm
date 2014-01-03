@@ -76,7 +76,7 @@ static void passwd_clean(struct passwd *pw)
 
 int lxdm_auth_init(LXDM_AUTH *a)
 {
-	memset(a,0m,sizeof(*a));
+	memset(a,0,sizeof(*a));
 	return 0;
 }
 
@@ -124,7 +124,7 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,i
 	{
 		if( !pass || !pass[0] )
 		{
-			*ppw = pw;
+			passwd_copy(&a->pw,pw);
 			g_debug("user %s auth with no password ok\n",user);
 			return AUTH_SUCCESS;
 		}
@@ -140,12 +140,13 @@ int lxdm_auth_user_authenticate(LXDM_AUTH *a,const char *user,const char *pass,i
 		g_debug("user %s password not match\n",user);
 		return AUTH_FAIL;
 	}
+out:
 	g_debug("user %s auth ok\n",pw->pw_name);
 	passwd_copy(&a->pw,pw);
 	return AUTH_SUCCESS;
 }
 
-int lxdm_auth_session_begin(LXDM_AUTH *a,int tty,int display,char mcookie[16])
+int lxdm_auth_session_begin(LXDM_AUTH *a,const char *name,int tty,int display,char mcookie[16])
 {
 	return 0;
 }
@@ -161,6 +162,10 @@ int lxdm_auth_clean_for_child(LXDM_AUTH *a)
 }
 
 void lxdm_auth_print_env(LXDM_AUTH *a)
+{
+}
+
+void lxdm_auth_put_env(LXDM_AUTH *a)
 {
 }
 
