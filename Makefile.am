@@ -3,12 +3,15 @@ NULL =
 SUBDIRS= \
 	src \
 	po \
-	pam \
 	data \
 	$(NULL)
 
 if HAVE_SYSTEMD
 SUBDIRS += systemd
+endif
+
+if HAVE_PAM
+SUBDIRS += pam
 endif
 
 rpm: dist @PACKAGE_NAME@.spec

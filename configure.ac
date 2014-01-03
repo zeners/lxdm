@@ -27,6 +27,7 @@ if test "x$USE_PAM" != "xno" ; then
 			AC_MSG_ERROR(["PAM support requested, but pam_open_session not found."])
 		 fi])
 fi
+AM_CONDITIONAL(HAVE_PAM, [test -n "$USE_PAM" -a "x$USE_PAM" != xno ])
 
 # Checks for header files.
 AC_PATH_X
