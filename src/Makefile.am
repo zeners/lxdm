@@ -94,7 +94,7 @@ lxdm_session_CFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(NULL)
 
-lxdm_session_LDFLAGS = \
+lxdm_session_LDADD = \
 	$(GLIB_LIBS) \
 	$(NULL)
 
