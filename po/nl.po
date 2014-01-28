@@ -4,13 +4,12 @@
 # lxdm package.
 # Vincent Van Houtte, 2009.
 # Pjotr, 2011.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-13 23:52+0100\n"
-"PO-Revision-Date: 2012-09-25 23:18+0200\n"
+"PO-Revision-Date: 2014-01-28 14:27+0000\n"
 "Last-Translator: Pjotr <pjotrvertaalt@gmail.com>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -18,7 +17,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.5\n"
+"X-Generator: Pootle 2.5.0\n"
+"X-POOTLE-MTIME: 1390919255.0\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 #: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
@@ -79,7 +79,7 @@ msgstr "Toon toetsenbordindelingen"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr "Verberg de afsluitknop"
+msgstr "Verberg afsluitknop"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
@@ -123,7 +123,7 @@ msgstr "Meer ..."
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
-msgstr "Blader voor meer foto's..."
+msgstr "Blader naar meer afbeeldingen..."
 
 #~ msgid "US English"
 #~ msgstr "Engels (Verenigde Staten)"
