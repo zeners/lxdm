@@ -459,7 +459,7 @@ static int check_child(LXDM_AUTH *a)
 				   &pid, a->pipe + 0, a->pipe + 1, NULL, NULL);
 	if(ret==FALSE)
 	{
-		g_message("spawn lxdm-auth fail\n");
+		g_message("spawn lxdm-session fail\n");
 		return -1;
 	}
 	a->child=(int)pid;

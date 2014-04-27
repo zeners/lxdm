@@ -433,6 +433,7 @@ void run_session(LXDM_AUTH *a,const char *run)
 		lxdm_auth_put_env(a);
 		lxdm_auth_clean_for_child(a);
 		switch_user(&a->pw,run,NULL);
+		//execle(run,run,NULL,environ);
 		_exit(EXIT_FAILURE);
 	}
 }
@@ -569,7 +570,7 @@ int main(int arc,char *arg[])
 			char env[1024];
 			while(file_get_line(env,sizeof(env),stdin)>0)
 			{
-				putenv(env);
+				putenv(strdup(env));
 			}
 		}
 		else if(!strcmp(cmd,"exec"))
