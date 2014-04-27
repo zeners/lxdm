@@ -576,8 +576,11 @@ int main(int arc,char *arg[])
 		else if(!strcmp(cmd,"exec"))
 		{
 			char run[256];
-			if(file_get_line(run,sizeof(run),stdin)>0)
+			if(file_get_line(run,sizeof(run),stdin)>0) {
+				// some pam module likely replace the SIGCHLD handler
+				signal(SIGCHLD,sig_handler);
 				run_session(&a,run);
+			}
 		}
 		else if(!strcmp(cmd,"exit"))
 		{
