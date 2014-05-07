@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-13 23:52+0100\n"
-"PO-Revision-Date: 2014-05-03 20:28+0000\n"
+"PO-Revision-Date: 2014-05-07 16:20+0000\n"
 "Last-Translator: Peter <flywheel@illogical.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.5.0\n"
-"X-POOTLE-MTIME: 1399148888.0\n"
+"X-POOTLE-MTIME: 1399479627.0\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 #: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
@@ -54,11 +54,11 @@ msgstr "Standard"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "Aktiver bundpanel"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "Indstillinger for bundpanel"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
@@ -89,8 +89,9 @@ msgid "Show user list"
 msgstr "Vis brugerliste"
 
 #: ../data/config.ui.h:14
+#, fuzzy
 msgid "Hide time"
-msgstr ""
+msgstr "Skjuletid"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
