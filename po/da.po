@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-13 23:52+0100\n"
-"PO-Revision-Date: 2014-05-07 16:20+0000\n"
+"PO-Revision-Date: 2014-05-07 16:26+0000\n"
 "Last-Translator: Peter <flywheel@illogical.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.5.0\n"
-"X-POOTLE-MTIME: 1399479627.0\n"
+"X-POOTLE-MTIME: 1399479977.0\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 #: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
@@ -94,8 +94,9 @@ msgid "Hide time"
 msgstr "Skjuletid"
 
 #: ../src/gdm/gdm-languages.c:614
+#, fuzzy
 msgid "Unspecified"
-msgstr "Ikke angivet:"
+msgstr "Skjuletid"
 
 #: ../src/greeter.c:168 ../src/greeter.c:197 ../src/greeter.c:921
 msgid "Password:"
@@ -115,11 +116,11 @@ msgid ""
 "<i>logged in</i>"
 msgstr ""
 "\n"
-"<i>Logget ind</i>"
+"<i>logget ind</i>"
 
 #: ../src/greeter.c:1055 ../src/lang.c:125
 msgid "More ..."
-msgstr "Mere..."
+msgstr "Mere ..."
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
