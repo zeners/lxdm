@@ -10,7 +10,7 @@ Summary:	Light weight X11 display manager
 License:	GPL
 Group:		User Interface/X
 URL:		http://lxde.sourceforge.net/
-Source0:	lxdm-%{version}.tar.gz
+Source0:	lxdm-%{version}.tar.xz
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}
 
@@ -62,6 +62,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/lxdm-greeter-gtk
 %{_libexecdir}/lxdm-greeter-gdk
 %{_libexecdir}/lxdm-numlock
+%{_libexecdir}/lxdm-session
 %{_sysconfdir}/lxdm/Xsession
 %config %{_sysconfdir}/lxdm/lxdm.conf
 %{_sysconfdir}/pam.d/lxdm

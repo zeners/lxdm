@@ -22,7 +22,8 @@ AC_ARG_WITH(pam, AC_HELP_STRING([--with-pam],[Use PAM for authentication]),
 if test "x$USE_PAM" != "xno" ; then
 	AC_SEARCH_LIBS(pam_open_session,[pam])
 	AC_CHECK_FUNC(pam_open_session, 
-		[AC_DEFINE(USE_PAM,1,[Use PAM for authentication])],
+		[USE_PAM=1
+			AC_DEFINE(USE_PAM,1,[Use PAM for authentication])],
 		[if test "x$USE_PAM" != "xtry" ; then
 			AC_MSG_ERROR(["PAM support requested, but pam_open_session not found."])
 		 fi])
