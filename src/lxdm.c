@@ -669,7 +669,7 @@ static void xauth_write_file(const char *file,int dpy,char data[16])
 	gethostname(addr,sizeof(addr));
 	
 	fd=open(file,O_CREAT|O_TRUNC|O_WRONLY,0600);
-	if(!fd==-1) return;
+	if(fd==-1) return;
 	xauth_write_uint16(fd,256);		//FamilyLocalHost
 	xauth_write_string(fd,addr);
 	xauth_write_string(fd,buf);
