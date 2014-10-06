@@ -184,6 +184,7 @@ AC_CONFIG_FILES([
 	data/PreReboot
 	data/PreShutdown
 	data/LoginReady
+	data/lxdm.conf
 ])
 AC_CONFIG_FILES([data/lxdm], [chmod +x data/lxdm])
 AC_OUTPUT
