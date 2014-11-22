@@ -1022,7 +1022,18 @@ static void on_session_stop(void *data,int pid, int status)
 	int level;
 	LXSession *s=data;
 
-	lxsession_stop(s);
+	gchar *argv[] = { "/etc/lxdm/PostLogout", NULL };
+	g_spawn_async(NULL, argv, s->env, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+
+	if(g_key_file_get_integer(config,"server","reset",NULL)!=1)
+	{
+		lxsession_stop(s);
+	}
+	else
+	{
+		lxsession_free(s);
+		s=NULL;
+	}
 
 	level=get_run_level();
 	if(level=='0' || level=='6')
@@ -1034,17 +1045,14 @@ static void on_session_stop(void *data,int pid, int status)
 		g_message("run level %c\n",level);
 		lxdm_quit_self(0);
 	}
-	if(s!=lxsession_greeter())
+	if(s && s!=lxsession_greeter())
 	{
 		lxsession_free(s);
 	}
-	else if(g_key_file_get_integer(config,"server","reset",NULL)==1)
+	else if(!s)
 	{
-		lxsession_free(s);
 		lxsession_greeter();
 	}
-	gchar *argv[] = { "/etc/lxdm/PostLogout", NULL };
-	g_spawn_async(NULL, argv, s->env, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
 }
 
 gboolean lxdm_get_session_info(const char *session,char **pname,char **pexec,char **pdesktop_names)
