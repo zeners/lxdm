@@ -1047,9 +1047,9 @@ static void on_session_stop(void *data,int pid, int status)
 	g_spawn_async(NULL, argv, s->env, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
 }
 
-gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
+gboolean lxdm_get_session_info(const char *session,char **pname,char **pexec,char **pdesktop_names)
 {
-	char *name=NULL,*exec=NULL;
+	char *name=NULL,*exec=NULL,**names=NULL,*desktop_names=NULL;
 	if(!session || !session[0])
 	{
 		name=g_key_file_get_string(config, "base", "session", 0);
@@ -1072,6 +1072,11 @@ gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 			}
 			name=g_key_file_get_string(cfg,"Desktop Entry","Name",NULL);
 			exec=g_key_file_get_string(cfg,"Desktop Entry","Exec",NULL);
+			names = g_key_file_get_string_list (cfg, "Desktop Entry", "DesktopNames", NULL, NULL);
+			if (names != NULL) {
+				desktop_names = g_strjoinv (":", names);
+				g_strfreev (names);
+			}
 			g_key_file_free(cfg);
 			if(!name || !exec)
 			{
@@ -1097,6 +1102,11 @@ gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 			{
 				name = g_key_file_get_locale_string(f, "Desktop Entry", "Name", NULL, NULL);
 				exec = g_key_file_get_string(f, "Desktop Entry", "Exec", NULL);
+				names = g_key_file_get_string_list (f, "Desktop Entry", "DesktopNames", NULL, NULL);
+				if (names != NULL) {
+					desktop_names = g_strjoinv (":", names);
+					g_strfreev (names);
+				}
 			}
 			else
 			{
@@ -1120,6 +1130,7 @@ gboolean lxdm_get_session_info(char *session,char **pname,char **pexec)
 	}
 	if(pname) *pname=name;
 	if(pexec) *pexec=exec;
+	if(pdesktop_names) *pdesktop_names=desktop_names;
 	return TRUE;
 }
 
@@ -1194,7 +1205,7 @@ static void lxdm_save_login(char *session,char *lang)
 
 void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 {
-	char *session_name=0,*session_exec=0;
+	char *session_name=0,*session_exec=0,*session_desktop_names=0;
 	gboolean alloc_session=FALSE,alloc_lang=FALSE;
 	int pid;
 	LXSession *s,*prev;
@@ -1222,7 +1233,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 		g_key_file_free(dmrc);
 	}
 
-	if(!lxdm_get_session_info(session,&session_name,&session_exec))
+	if(!lxdm_get_session_info(session,&session_name,&session_exec,&session_desktop_names))
 	{
 		if(alloc_session)
 			g_free(session);
@@ -1329,6 +1340,9 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 		env=g_environ_setenv(env, "LC_MESSAGES", lang, TRUE);
 		env=g_environ_setenv(env, "LANGUAGE", lang, TRUE);
 	}
+
+	if( session_desktop_names && session_desktop_names[0] )
+		env=g_environ_setenv(env, "XDG_CURRENT_DESKTOP", session_desktop_names, TRUE);
 	
 #ifndef DISABLE_XAUTH
 	env=create_client_auth(pw,env);
@@ -1348,6 +1362,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 	
 	g_free(session_name);
 	g_free(session_exec);
+	g_free(session_desktop_names);
 	if(alloc_session)
 		g_free(session);
 	if(alloc_lang)
