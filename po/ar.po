@@ -8,21 +8,22 @@ msgstr ""
 "Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-13 23:52+0100\n"
-"PO-Revision-Date: 2014-07-11 11:51+0300\n"
-"Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
+"PO-Revision-Date: 2014-11-28 05:46+0000\n"
+"Last-Translator: <safa1996alfulaij@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && "
-"n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
-"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Pootle 2.6.0-rc2\n"
+"X-POOTLE-MTIME: 1417153606.000000\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 #: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
 msgid "User:"
-msgstr "المستخدِم:"
+msgstr "المستخدم:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
 msgid "Desktop:"
@@ -42,23 +43,23 @@ msgstr "تضبيط lxdm"
 
 #: ../data/config.ui.h:2
 msgid "Automatic Login"
-msgstr "ولوج تلقائي"
+msgstr "ولوج آليّ"
 
 #: ../data/config.ui.h:3
 msgid "Background"
-msgstr "الخلفية"
+msgstr "الخلفيّة"
 
 #: ../data/config.ui.h:4 ../src/greeter.c:307 ../src/lang.c:103
 msgid "Default"
-msgstr "الافتراضية"
+msgstr "الافتراضيّة"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr "مكّن اللوحة السفلية"
+msgstr "مكّن اللوحة السفليّة"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr "خيارات اللوحة السفلية"
+msgstr "خيارات اللوحة السفليّة"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
@@ -78,7 +79,7 @@ msgstr "أظهر تخطيطات لوحة مفاتيح"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr "أخفِ زر الإنهاء"
+msgstr "أخفِ زرّ الإنهاء"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
@@ -86,7 +87,7 @@ msgstr "خيارات أخرى"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
-msgstr "أظهر قائمة المستخدِمين"
+msgstr "أظهر قائمة المستخدمين"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
@@ -118,10 +119,8 @@ msgstr ""
 
 #: ../src/greeter.c:1055 ../src/lang.c:125
 msgid "More ..."
-msgstr "أكثر ..."
+msgstr "أكثر..."
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
 msgstr "تصفّح صورًا أكثر..."
-
-
