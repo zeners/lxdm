@@ -1,121 +1,123 @@
-# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Sveinn í Felli <sv1@fellsnet.is>, 2014.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-13 23:52+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2014-12-02 08:19+0000\n"
+"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
+"Language-Team: Icelandic <kde-i18n-doc@kde.org>\n"
 "Language: is\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.10.0\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 #: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
 msgid "User:"
-msgstr ""
+msgstr "Notandi:"
 
 #: ../data/lxdm.glade.h:2 ../data/themes/Industrial/greeter.ui.h:2
 msgid "Desktop:"
-msgstr ""
+msgstr "Skjáborð:"
 
 #: ../data/lxdm.glade.h:3 ../data/themes/Industrial/greeter.ui.h:3
 msgid "Language:"
-msgstr ""
+msgstr "Tungumál:"
 
 #: ../data/lxdm.glade.h:4 ../data/themes/Industrial/greeter.ui.h:4
 msgid "Keyboard:"
-msgstr ""
+msgstr "Lyklaborð:"
 
 #: ../data/config.ui.h:1
 msgid "lxdm config"
-msgstr ""
+msgstr "lxdm stillingar"
 
 #: ../data/config.ui.h:2
 msgid "Automatic Login"
-msgstr ""
+msgstr "Sjálfvirk innskráning"
 
 #: ../data/config.ui.h:3
 msgid "Background"
-msgstr ""
+msgstr "Bakgrunnur"
 
 #: ../data/config.ui.h:4 ../src/greeter.c:307 ../src/lang.c:103
 msgid "Default"
-msgstr ""
+msgstr "Sjálfgefið"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr ""
+msgstr "Virkja stiku við neðri brún"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr ""
+msgstr "Stillingar neðri stiku"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
-msgstr ""
+msgstr "Gegnsæ stika"
 
 #: ../data/config.ui.h:8
 msgid "Hide sessions"
-msgstr ""
+msgstr "Fela setur"
 
 #: ../data/config.ui.h:9
 msgid "Show languages menu"
-msgstr ""
+msgstr "Birta tungumálavalmynd"
 
 #: ../data/config.ui.h:10
 msgid "Show keyboard layouts"
-msgstr ""
+msgstr "Birta lyklaborðsframsetningar"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
-msgstr ""
+msgstr "Fela Hætta-hnapp"
 
 #: ../data/config.ui.h:12
 msgid "Other Options"
-msgstr ""
+msgstr "Aðrir valkostir"
 
 #: ../data/config.ui.h:13
 msgid "Show user list"
-msgstr ""
+msgstr "Birta notendalista"
 
 #: ../data/config.ui.h:14
 msgid "Hide time"
-msgstr ""
+msgstr "Fela tíma"
 
 #: ../src/gdm/gdm-languages.c:614
 msgid "Unspecified"
-msgstr ""
+msgstr "Óskilgreint"
 
 #: ../src/greeter.c:168 ../src/greeter.c:197 ../src/greeter.c:921
 msgid "Password:"
-msgstr ""
+msgstr "Lykilorð:"
 
 #: ../src/greeter.c:726
 msgid "_Reboot"
-msgstr ""
+msgstr "Endu_rræsa"
 
 #: ../src/greeter.c:730
 msgid "_Shutdown"
-msgstr ""
+msgstr "_Slökkva"
 
 #: ../src/greeter.c:1041
 msgid ""
 "\n"
 "<i>logged in</i>"
 msgstr ""
+"\n"
+"<i>skráður inn</i>"
 
 #: ../src/greeter.c:1055 ../src/lang.c:125
 msgid "More ..."
-msgstr ""
+msgstr "Meira ..."
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
-msgstr ""
+msgstr "Finna fleiri myndir..."
+
