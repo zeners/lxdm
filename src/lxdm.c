@@ -813,6 +813,9 @@ void switch_user(struct passwd *pw, const char *run, char **env)
 	signal(SIGPIPE, SIG_DFL);
 	signal(SIGALRM, SIG_DFL);
 	signal(SIGHUP, SIG_DFL);
+	signal(SIGTTIN, SIG_DFL);
+	signal(SIGTTOU, SIG_DFL);
+	signal(SIGUSR1, SIG_DFL);
 	close_left_fds();
 
 	g_spawn_command_line_async ("/etc/lxdm/PostLogin",NULL);
