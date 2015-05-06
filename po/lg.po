@@ -2,14 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-13 23:52+0100\n"
 "PO-Revision-Date: 2014-07-29 17:04+0000\n"
-"Last-Translator:   <kbirabwa@yahoo.co.uk>\n"
+"Last-Translator: <kbirabwa@yahoo.co.uk>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: lg\n"
 "MIME-Version: 1.0\n"
@@ -18,6 +17,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.6.0-rc1\n"
 "X-POOTLE-MTIME: 1406653463.000000\n"
+"X-Pootle-Path: /lg/lxdm/po/lg.po\n"
+"X-Pootle-Revision: 0\n"
 
 # User selection prompt at the graphical login screen
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1

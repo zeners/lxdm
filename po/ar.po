@@ -1,6 +1,5 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
 # Tareq Al Jurf <taljurf@fedoraproject.org>, 2010.
 # Safa Alfulaij <safa1996alfulaij@gmail.com>, 2014.
 msgid ""
@@ -8,8 +7,8 @@ msgstr ""
 "Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-13 23:52+0100\n"
-"PO-Revision-Date: 2014-11-28 05:46+0000\n"
-"Last-Translator: <safa1996alfulaij@gmail.com>\n"
+"PO-Revision-Date: 2015-04-10 15:49+0000\n"
+"Last-Translator: صفا الفليج <safa1996alfulaij@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
@@ -17,8 +16,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Pootle 2.6.0-rc2\n"
-"X-POOTLE-MTIME: 1417153606.000000\n"
+"X-Generator: Pootle 2.7.0-alpha1\n"
+"X-POOTLE-MTIME: 1428680981.000000\n"
+"X-Pootle-Path: /ar/lxdm/po/ar.po\n"
+"X-Pootle-Revision: 590\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 #: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
@@ -39,7 +40,7 @@ msgstr "لوحة المفاتيح:"
 
 #: ../data/config.ui.h:1
 msgid "lxdm config"
-msgstr "تضبيط lxdm"
+msgstr "ضبط lxdm"
 
 #: ../data/config.ui.h:2
 msgid "Automatic Login"
@@ -55,11 +56,11 @@ msgstr "الافتراضيّة"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr "مكّن اللوحة السفليّة"
+msgstr "مكّن اللوحة السّفليّة"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
-msgstr "خيارات اللوحة السفليّة"
+msgstr "خيارات اللوحة السّفليّة"
 
 #: ../data/config.ui.h:7
 msgid "Transparent panel"
@@ -75,7 +76,7 @@ msgstr "أظهر قائمة اللغات"
 
 #: ../data/config.ui.h:10
 msgid "Show keyboard layouts"
-msgstr "أظهر تخطيطات لوحة مفاتيح"
+msgstr "أظهر تخطيطات لوحة المفاتيح"
 
 #: ../data/config.ui.h:11
 msgid "Hide quit button"
