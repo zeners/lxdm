@@ -172,7 +172,7 @@ void xconn_close(xconn_t c)
 	free(c);
 }
 
-#if 0
+#if 1
 static xcb_window_t xconn_get_root(xconn_t c)
 {
 	const xcb_setup_t *setup;
@@ -185,7 +185,7 @@ static xcb_window_t xconn_get_root(xconn_t c)
 
 void xconn_clean(xconn_t c)
 {
-#if 0
+#if 1
 	xcb_query_tree_cookie_t wintree;
 	xcb_query_tree_reply_t *rep;
 	xcb_window_t *children;

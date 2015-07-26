@@ -372,6 +372,7 @@ int lxdm_auth_session_end(LXDM_AUTH *a)
 	int err;
 	if(!a->handle)
 		return 0;
+	killpg(a->child,SIGTERM);
 	if(a->in_session)
 	{
 		char xdg_session_id[32]={0};
@@ -385,6 +386,7 @@ int lxdm_auth_session_end(LXDM_AUTH *a)
 		a->in_session=0;
 		if(p!=NULL)
 		{
+			usleep(100*1000);
 			kill_left_process(xdg_session_id);
 		}
 	}
@@ -472,7 +474,7 @@ void switch_user(struct passwd *pw, const char *run, char **env)
 	g_spawn_command_line_sync ("/etc/lxdm/PreLogin",NULL,NULL,NULL,NULL);
 
 	if( !pw || initgroups(pw->pw_name, pw->pw_gid) ||
-			setgid(pw->pw_gid) || setuid(pw->pw_uid)/* || setsid() == -1 */)
+			setgid(pw->pw_gid) || setuid(pw->pw_uid) || setpgid(0,0)==-1/* || setsid() == -1 */)
 		exit(EXIT_FAILURE);
 	chdir(pw->pw_dir);
 	fd=open(".xsession-errors",O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR);
