@@ -474,8 +474,10 @@ void switch_user(struct passwd *pw, const char *run, char **env)
 	g_spawn_command_line_sync ("/etc/lxdm/PreLogin",NULL,NULL,NULL,NULL);
 
 	if( !pw || initgroups(pw->pw_name, pw->pw_gid) ||
-			setgid(pw->pw_gid) || setuid(pw->pw_uid) || setpgid(0,0)==-1/* || setsid() == -1 */)
+			setgid(pw->pw_gid) || setuid(pw->pw_uid) || setsid()==-1)
+	{
 		exit(EXIT_FAILURE);
+	}
 	chdir(pw->pw_dir);
 	fd=open(".xsession-errors",O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR);
 	if(fd!=-1)
@@ -500,7 +502,6 @@ void switch_user(struct passwd *pw, const char *run, char **env)
 
 void run_session(LXDM_AUTH *a,const char *run)
 {
-	setsid();
 	a->child=fork();
 	if(a->child==0)
 	{
@@ -579,7 +580,7 @@ int main(int arc,char *arg[])
 
 	setvbuf(stdout, NULL, _IOLBF, 0 );
 	signal(SIGCHLD,sig_handler);
-	
+
 	lxdm_auth_init(&a);
 	while(file_get_line(cmd,sizeof(cmd),stdin)>=0)
 	{
