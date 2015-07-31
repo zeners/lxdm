@@ -1269,6 +1269,9 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 	{
 		if(s) lxsession_free(s);
 		lxsession_set_active(prev);
+		g_free(session_name);
+		g_free(session_exec);
+		g_free(session_desktop_names);
 		return;
 	}
 	if(!s) s=lxsession_find_idle();
@@ -1514,7 +1517,7 @@ static void lxdm_signal_handler(void *data,int sig)
 	switch(sig){
 	case SIGTERM:
 	case SIGINT:
-		g_critical("QUIT BY SIGNAL\n");
+		g_critical("QUIT BY SIGNAL %d\n",sig);
 		lxdm_quit_self(0);
 		break;
 	default:
@@ -1650,6 +1653,7 @@ static GString *lxdm_user_cmd(void *data,int user,int arc,char **arg)
 		if(p)
 		{
 			res=g_string_new_len(p,len);
+			g_free(p);
 		}
 		g_key_file_free(kf);
 	}

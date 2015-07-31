@@ -372,7 +372,6 @@ int lxdm_auth_session_end(LXDM_AUTH *a)
 	int err;
 	if(!a->handle)
 		return 0;
-	killpg(a->child,SIGTERM);
 	if(a->in_session)
 	{
 		char xdg_session_id[32]={0};
