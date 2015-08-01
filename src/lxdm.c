@@ -886,16 +886,47 @@ static void put_lock(void)
     g_free(lockfile);
 }
 
+static int get_run_level(void)
+{
+#if defined(HAVE_UTMPX_H) && defined(RUN_LVL)
+	int res=0;
+	struct utmpx *ut,tmp;
+
+	setutxent();
+	tmp.ut_type=RUN_LVL;
+	ut=getutxid(&tmp);
+	if(!ut)
+	{
+		endutxent();
+		return 5;
+	}
+	res=ut->ut_pid & 0xff;
+	endutxent();
+	//g_message("runlevel %c\n",res);
+	return res;
+#else
+	return 5;
+#endif
+}
+
 static void on_xserver_stop(void *data,int pid, int status)
 {
 	LXSession *s=data;
 	LXSession *greeter;
-
-	g_message("xserver stop, restart. return status %x\n",status);
+	int level;
 
 	stop_pid(pid);
 	s->server = -1;
 	lxsession_stop(s);
+	
+	level=get_run_level();
+	if(level==6 || level==0)
+	{
+		return;
+	}
+	
+	g_message("xserver stop, restart. return status %x\n",status);
+
 	greeter=lxsession_find_greeter();
 	if(s->greeter || !greeter)
 	{
@@ -995,29 +1026,6 @@ static void exit_cb(void)
 	put_lock();
 	set_active_vt(old_tty);
 	g_key_file_free(config);
-}
-
-static int get_run_level(void)
-{
-#if defined(HAVE_UTMPX_H) && defined(RUN_LVL)
-	int res=0;
-	struct utmpx *ut,tmp;
-
-	setutxent();
-	tmp.ut_type=RUN_LVL;
-	ut=getutxid(&tmp);
-	if(!ut)
-	{
-		endutxent();
-		return 5;
-	}
-	res=ut->ut_pid & 0xff;
-	endutxent();
-	//g_message("runlevel %c\n",res);
-	return res;
-#else
-	return 5;
-#endif
 }
 
 static void on_session_stop(void *data,int pid, int status)
