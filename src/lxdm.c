@@ -889,7 +889,7 @@ static void put_lock(void)
 static int get_run_level(void)
 {
 #if defined(HAVE_UTMPX_H) && defined(RUN_LVL)
-	int res=0;
+	int res;
 	struct utmpx *ut,tmp;
 
 	setutxent();
@@ -898,14 +898,14 @@ static int get_run_level(void)
 	if(!ut)
 	{
 		endutxent();
-		return 5;
+		return '5';
 	}
 	res=ut->ut_pid & 0xff;
 	endutxent();
 	//g_message("runlevel %c\n",res);
 	return res;
 #else
-	return 5;
+	return '5';
 #endif
 }
 
@@ -920,7 +920,7 @@ static void on_xserver_stop(void *data,int pid, int status)
 	lxsession_stop(s);
 	
 	level=get_run_level();
-	if(level==6 || level==0)
+	if(level=='6' || level=='0')
 	{
 		return;
 	}
