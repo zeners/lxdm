@@ -909,6 +909,20 @@ static int get_run_level(void)
 #endif
 }
 
+static gboolean delay_restart_xserver(void *userdata)
+{
+	LXSession *s;
+	s=lxsession_find_greeter();
+	if(!s || s->dpy)
+	{
+		return FALSE;
+	}
+	lxdm_startx(s);
+	ui_prepare();
+	lxsession_set_active(s);
+	return FALSE;
+}
+
 static void on_xserver_stop(void *data,int pid, int status)
 {
 	LXSession *s=data;
@@ -933,10 +947,8 @@ static void on_xserver_stop(void *data,int pid, int status)
 		s->greeter=TRUE;
 		xconn_close(s->dpy);
 		s->dpy=NULL;
-		lxdm_startx(s);
 		ui_drop();
-		ui_prepare();
-		lxsession_set_active(greeter);
+		g_timeout_add_seconds(3,(GSourceFunc)delay_restart_xserver,NULL);
 	}
 	else
 	{
