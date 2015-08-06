@@ -909,20 +909,6 @@ static int get_run_level(void)
 #endif
 }
 
-static gboolean delay_restart_xserver(void *userdata)
-{
-	LXSession *s;
-	s=lxsession_find_greeter();
-	if(!s || s->dpy)
-	{
-		return FALSE;
-	}
-	lxdm_startx(s);
-	ui_prepare();
-	lxsession_set_active(s);
-	return FALSE;
-}
-
 static void on_xserver_stop(void *data,int pid, int status)
 {
 	LXSession *s=data;
@@ -948,7 +934,9 @@ static void on_xserver_stop(void *data,int pid, int status)
 		xconn_close(s->dpy);
 		s->dpy=NULL;
 		ui_drop();
-		g_timeout_add_seconds(3,(GSourceFunc)delay_restart_xserver,NULL);
+		lxdm_startx(s);
+		ui_prepare();
+		lxsession_set_active(s);
 	}
 	else
 	{
@@ -957,7 +945,7 @@ static void on_xserver_stop(void *data,int pid, int status)
 	}
 }
 
-void lxdm_startx(LXSession *s)
+static void lxdm_startx(LXSession *s)
 {
 	char *arg;
 	char **args;
@@ -1058,6 +1046,8 @@ static void on_session_stop(void *data,int pid, int status)
 		s=NULL;
 	}
 
+	usleep(300*1000);
+
 	level=get_run_level();
 	if(level=='0' || level=='6')
 	{
@@ -1067,6 +1057,7 @@ static void on_session_stop(void *data,int pid, int status)
 			g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
 		g_message("run level %c\n",level);
 		lxdm_quit_self(0);
+		return;
 	}
 	if(s && s!=lxsession_greeter())
 	{
