@@ -1028,6 +1028,34 @@ static void exit_cb(void)
 	g_key_file_free(config);
 }
 
+static gboolean delayed_restart_greeter(LXSession *s)
+{
+	int level;
+	
+	level=get_run_level();
+	if(level=='0' || level=='6')
+	{
+		if(level=='0')
+			g_spawn_command_line_sync("/etc/lxdm/PreShutdown",0,0,0,0);
+		else
+			g_spawn_command_line_sync("/etc/lxdm/PreReboot",0,0,0,0);
+		g_message("run level %c\n",level);
+		lxdm_quit_self(0);
+		return FALSE;
+	}
+	
+	if(s && s!=lxsession_greeter())
+	{
+		lxsession_free(s);
+	}
+	else if(!s)
+	{
+		lxsession_greeter();
+	}
+	
+	return FALSE;
+}
+
 static void on_session_stop(void *data,int pid, int status)
 {
 	int level;
@@ -1046,8 +1074,6 @@ static void on_session_stop(void *data,int pid, int status)
 		s=NULL;
 	}
 
-	usleep(300*1000);
-
 	level=get_run_level();
 	if(level=='0' || level=='6')
 	{
@@ -1059,14 +1085,7 @@ static void on_session_stop(void *data,int pid, int status)
 		lxdm_quit_self(0);
 		return;
 	}
-	if(s && s!=lxsession_greeter())
-	{
-		lxsession_free(s);
-	}
-	else if(!s)
-	{
-		lxsession_greeter();
-	}
+	g_timeout_add(300,(GSourceFunc)delayed_restart_greeter,s);
 }
 
 gboolean lxdm_get_session_info(const char *session,char **pname,char **pexec,char **pdesktop_names)
