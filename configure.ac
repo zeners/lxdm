@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([lxdm], [0.5.1], [http://lxde.org/])
+AC_INIT([lxdm], [0.5.2], [http://lxde.org/])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects no-dist-gzip dist-xz])
 
 AC_CONFIG_SRCDIR([src/lxdm.c])
