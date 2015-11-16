@@ -1009,9 +1009,6 @@ static void lxdm_startx(LXSession *s)
 	g_message("%ld: start xserver in %d retry",time(NULL),i);
 	if(s->dpy==NULL)
 		exit(EXIT_FAILURE);
-	#ifndef DISABLE_XAUTH
-	unsetenv("XAUTHORITY");
-	#endif
 	
 	if(s->option && g_key_file_has_key(config,s->option,"numlock",NULL))
 	{
@@ -1028,6 +1025,9 @@ static void lxdm_startx(LXSession *s)
 		g_spawn_command_line_async(arg,NULL);
 		g_free(arg);
 	}
+	#ifndef DISABLE_XAUTH
+	unsetenv("XAUTHORITY");
+	#endif
 }
 
 static void exit_cb(void)
