@@ -670,7 +670,7 @@ static inline void xauth_write_string(int fd,const char *s)
 	write(fd,s,len);
 }
 
-static void xauth_write_file(const char *file,int dpy,char data[16])
+static int xauth_write_file(const char *file,int dpy,char data[16])
 {
 	int fd;
 	char addr[128];
@@ -680,7 +680,7 @@ static void xauth_write_file(const char *file,int dpy,char data[16])
 	gethostname(addr,sizeof(addr));
 	
 	fd=open(file,O_CREAT|O_TRUNC|O_WRONLY,0600);
-	if(fd==-1) return;
+	if(fd==-1) return -1;
 	xauth_write_uint16(fd,256);		//FamilyLocalHost
 	xauth_write_string(fd,addr);
 	xauth_write_string(fd,buf);
@@ -688,6 +688,7 @@ static void xauth_write_file(const char *file,int dpy,char data[16])
 	xauth_write_uint16(fd,16);
 	write(fd,data,16);
 	close(fd);
+	return 0;
 }
 
 static void create_server_auth(LXSession *s)
@@ -743,7 +744,13 @@ static char ** create_client_auth(struct passwd *pw,char **env)
 		}
 	}
 	remove(authfile);
-	xauth_write_file(authfile,s->display,s->mcookie);
+	if(xauth_write_file(authfile,s->display,s->mcookie)==-1)
+	{
+		g_free(authfile);
+		authfile = g_strdup_printf("/var/run/lxdm/.Xauth%d",pw->pw_uid);
+		remove(authfile);
+		xauth_write_file(authfile,s->display,s->mcookie);
+	}
 	env=g_environ_setenv(env,"XAUTHORITY",authfile,TRUE);
 	chown(authfile,pw->pw_uid,pw->pw_gid);
 	g_free(authfile);
