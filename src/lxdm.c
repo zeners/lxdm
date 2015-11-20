@@ -1402,6 +1402,7 @@ void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
 	if( session_desktop_names && session_desktop_names[0] )
 		env=g_environ_setenv(env, "XDG_CURRENT_DESKTOP", session_desktop_names, TRUE);
 	
+	env=lxdm_auth_append_env(&s->auth,env);
 #ifndef DISABLE_XAUTH
 	env=create_client_auth(pw,env);
 #endif
