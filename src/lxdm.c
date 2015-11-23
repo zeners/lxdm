@@ -696,6 +696,7 @@ static void create_server_auth(LXSession *s)
 	GRand *h;
 	int i;
 	char *authfile;
+	struct passwd *pw;
 
 	h = g_rand_new();
 	for( i = 0; i < 16; i++ )
@@ -709,6 +710,11 @@ static void create_server_auth(LXSession *s)
 	setenv("XAUTHORITY",authfile,1);
 	remove(authfile);
 	xauth_write_file(authfile,s->display,s->mcookie);
+	pw=getpwnam("lxdm");endpwent();
+	if(pw!=NULL)
+	{
+		chown(authfile,pw->pw_uid,pw->pw_gid);
+	}
 	g_free(authfile);
 }
 
@@ -716,9 +722,6 @@ static char ** create_client_auth(struct passwd *pw,char **env)
 {
 	LXSession *s;
 	char *authfile;
-	
-	if(pw->pw_uid==0) /* root don't need it */
-		return env;
         
 	s=lxsession_find_user(pw->pw_uid);
 	if(!s)
