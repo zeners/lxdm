@@ -750,7 +750,13 @@ static char ** create_client_auth(struct passwd *pw,char **env)
 	if(xauth_write_file(authfile,s->display,s->mcookie)==-1)
 	{
 		g_free(authfile);
-		authfile = g_strdup_printf("/var/run/lxdm/.Xauth%d",pw->pw_uid);
+
+		gchar *authdir = g_strdup_printf("/var/run/lxdm/%d", pw->pw_uid);
+		g_mkdir_with_parents(authdir, S_IRWXU);
+		chown(authdir, pw->pw_uid, pw->pw_gid);
+
+		authfile = g_strdup_printf("%s/.Xauthority", authdir);
+		g_free(authdir);
 		remove(authfile);
 		xauth_write_file(authfile,s->display,s->mcookie);
 	}
