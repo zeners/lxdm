@@ -22,6 +22,7 @@
 
 #define XLIB_ILLEGAL_ACCESS
 
+#include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
@@ -88,12 +89,14 @@ static void on_ui_expose(void)
 	}
 	
 	cr=gdk_cairo_create(win);
+#if GTK_CHECK_VERSION(3,0,0)
 	cairo_pattern_t *pattern=gdk_window_get_background_pattern(win);
 	if(pattern)
 	{
 		cairo_set_source(cr,pattern);
 		cairo_paint(cr);
 	}
+#endif
 
 	gdk_cairo_set_source_color(cr, &bg);
 	cairo_rectangle(cr, rc.x, rc.y, rc.width, rc.height);
