@@ -146,7 +146,7 @@ static void switch_to_input_user(void)
 		if(user_list_scrolled)
 			gtk_widget_show(user_list_scrolled);
 		else
-			gtk_widget_hide(user_list);
+			gtk_widget_show(user_list);
 		gtk_widget_grab_focus(user_list);
 	}
 	else
