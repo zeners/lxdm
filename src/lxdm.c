@@ -962,6 +962,11 @@ static void on_xserver_stop(void *data,int pid, int status)
 		s->dpy=NULL;
 		ui_drop();
 		lxdm_startx(s);
+		#ifndef DISABLE_XAUTH
+		char temp[256];
+		sprintf(temp,"/var/run/lxdm/lxdm-:%d.auth",s->display);
+		setenv("XAUTHORITY",temp,1);
+		#endif
 		ui_prepare();
 		lxsession_set_active(s);
 	}
