@@ -17,6 +17,7 @@
 	color: #000000;
 }
 
+#bottom_pane label,
 #bottom_pane GtkLabel {
 	font: Sans 12;
 	color: #9E9D9B;
