@@ -49,7 +49,9 @@
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 
+#ifdef HAVE_EXECINFO_H
 #include <execinfo.h>
+#endif
 
 #ifdef HAVE_UTMPX_H
 #include <utmpx.h>
@@ -1552,6 +1554,7 @@ int lxdm_do_auto_login(void)
 
 static void log_sigsegv(void)
 {
+#ifdef HAVE_EXECINFO_H
 	void *array[40];
 	size_t size;
 	char **bt_strs;
@@ -1564,6 +1567,7 @@ static void log_sigsegv(void)
 	    fprintf(stderr, "%s\n", bt_strs[i]);
 
 	free(bt_strs);
+#endif
 }
 
 static void sigsegv_handler(int sig)

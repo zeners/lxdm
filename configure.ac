@@ -32,7 +32,7 @@ AM_CONDITIONAL(HAVE_PAM, [test -n "$USE_PAM" -a "x$USE_PAM" != xno ])
 
 # Checks for header files.
 AC_PATH_X
-AC_CHECK_HEADERS([shadow.h stdlib.h string.h unistd.h utmpx.h])
+AC_CHECK_HEADERS([execinfo.h shadow.h stdlib.h string.h unistd.h utmpx.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_PID_T
