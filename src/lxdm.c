@@ -490,6 +490,9 @@ static char *lxsession_xserver_command(LXSession *s)
 	{
 		arg[arc++] = g_strdup("-nolisten");
 		arg[arc++] = g_strdup("tcp");
+	} else {
+		arg[arc++] = g_strdup("-listen");
+		arg[arc++] = g_strdup("tcp");
 	}
 	if(!novtswitch)
 	{
