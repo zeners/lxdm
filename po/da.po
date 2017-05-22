@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: lxde.lxdm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-13 23:52+0100\n"
-"PO-Revision-Date: 2017-05-22 19:48+0000\n"
+"PO-Revision-Date: 2017-05-22 22:57+0000\n"
 "Last-Translator: scootergrisen <scootergrisen@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.8\n"
-"X-POOTLE-MTIME: 1495482503.888063\n"
+"X-POOTLE-MTIME: 1495493822.263428\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 #: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
@@ -54,7 +54,7 @@ msgstr "Standard"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
-msgstr "Aktiver bundpanel"
+msgstr "Aktivér bundpanel"
 
 #: ../data/config.ui.h:6
 msgid "Bottom Panel Options"
