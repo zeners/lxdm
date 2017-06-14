@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-13 23:52+0100\n"
-"PO-Revision-Date: 2015-08-16 11:03+0000\n"
+"PO-Revision-Date: 2017-06-09 12:05+0000\n"
 "Last-Translator: Davidmp <rbndavid@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: ca\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.7\n"
-"X-POOTLE-MTIME: 1439723012.000000\n"
+"X-Generator: Pootle 2.8\n"
+"X-POOTLE-MTIME: 1497009904.804427\n"
 
 #: ../data/lxdm.glade.h:1 ../data/themes/Industrial/greeter.ui.h:1
 #: ../src/greeter.c:141 ../src/greeter.c:239 ../src/greeter.c:935
@@ -38,7 +38,7 @@ msgstr "Teclat:"
 
 #: ../data/config.ui.h:1
 msgid "lxdm config"
-msgstr "Configuració d'lxdm"
+msgstr "Configuració d'Lxdm"
 
 #: ../data/config.ui.h:2
 msgid "Automatic Login"
@@ -50,7 +50,7 @@ msgstr "Fons"
 
 #: ../data/config.ui.h:4 ../src/greeter.c:307 ../src/lang.c:103
 msgid "Default"
-msgstr "Predeterminat"
+msgstr "Per defecte"
 
 #: ../data/config.ui.h:5
 msgid "Enable bottom panel"
@@ -115,11 +115,11 @@ msgid ""
 "<i>logged in</i>"
 msgstr ""
 "\n"
-"<i>validat</i>"
+"<i>connectat</i>"
 
 #: ../src/greeter.c:1055 ../src/lang.c:125
 msgid "More ..."
-msgstr "Més ..."
+msgstr "Més..."
 
 #: ../src/config.c:313
 msgid "Browse for more pictures..."
