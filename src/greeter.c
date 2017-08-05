@@ -1000,7 +1000,7 @@ static gboolean load_user_list(GtkWidget *widget)
 	{
 		if(user_list_scrolled)
 		{
-			gtk_alignment_set(GTK_ALIGNMENT(alignment2), 0.5, 0.1, 0, 0.3);
+			//gtk_alignment_set(GTK_ALIGNMENT(alignment2), 0.5, 0.1, 0, 0.3);
 			gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(user_list_scrolled), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 		}
 		else

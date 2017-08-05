@@ -8,17 +8,17 @@
 }
 
 #time {
-	font: Sans 12;
+	font: 12px Sans;
 	color: #ffffff;
 }
 
 #prompt {
-	font: Sans 14;
+	font: 14px Sans;
 	color: #000000;
 }
 
 #bottom_pane label,
 #bottom_pane GtkLabel {
-	font: Sans 12;
+	font: 12px Sans;
 	color: #9E9D9B;
 }
